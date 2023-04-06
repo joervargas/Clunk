@@ -29,6 +29,7 @@ target_include_directories(${Target}
 
 target_link_libraries(${Target}
     vulkan
+    SDL2
     Defines
     PCH
 )

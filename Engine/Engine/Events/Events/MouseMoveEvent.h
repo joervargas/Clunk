@@ -4,7 +4,7 @@
 #include "EventDataTypes.h"
 
 #include <Defines/Defines.h>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <list>
 
 class MouseMoveEvent : IEvent

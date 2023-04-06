@@ -410,7 +410,7 @@ namespace Clunk
             f32 dot = Vec3::Dot(V1, V1);
             f32 length = sqrt(sqV1) * sqrt(sqV2);
 
-            return acosf32(dot/ length);
+            return cosf(dot/ length);
         }
 
         static Vec3 Project(const Vec3& V1, const Vec3& V2)

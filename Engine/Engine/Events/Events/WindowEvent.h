@@ -3,7 +3,7 @@
 #include "IEvent.h"
 #include "EventDataTypes.h"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <list>
 
 class WindowEvent : IEvent
