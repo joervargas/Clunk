@@ -1,0 +1,81 @@
+project(ClunkEngine VERSION 0.0.1)
+# set(Target Engine)
+
+file(GLOB SRC_FILES 
+    ${PROJECT_NAME}/*.cpp
+)
+
+file(GLOB HDR_FILES
+    ${PROJECT_NAME}/*.h
+)
+
+# set(ENGINE_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "The directory for the engine library")
+
+set(Engine_DIR ./ClunkEngine)
+add_subdirectory(${Engine_DIR}/Defines)
+add_subdirectory(${Engine_DIR}/PCH)
+add_subdirectory(${Engine_DIR}/ClMath)
+add_subdirectory(${Engine_DIR}/Events)
+add_subdirectory(${Engine_DIR}/ClPlatforms)
+add_subdirectory(${Engine_DIR}/ClRenderManager)
+add_subdirectory(${Engine_DIR}/Core)
+
+# find_package(Vulkan REQUIRED)
+if(${VULKAN_GRAPHICS})
+    add_compile_definitions(VK_GFX)
+    # add_compile_definitions(VK_NO_PROTOTYPES)
+    add_subdirectory(${Engine_DIR}/ClVulkanRenderer)
+    message("Vulkan found in ${Target}!")
+else()
+    message("***Vulkan not found in ${Target}***")
+endif()
+
+# add_compile_definitions(CLUNK_DIR="${PROJECT_BINARY_DIR}/")
+# if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+#     find_library(SDL2::SDL2 ${ENGINE_LIB_DIR})
+# endif()
+
+add_library(${PROJECT_NAME}
+    ${SRC_FILES}
+)
+
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        ${HDR_FILES}
+    PRIVATE
+        ${SRC_FILES}
+)
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${PROJECT_NAME}/
+)
+
+target_link_libraries(${PROJECT_NAME}
+    SDL2::SDL2
+    SDL2::SDL2main
+    #SDL2
+    TinyXML2
+    TinyObjLoader
+    Defines
+    ClMath
+    ClPlatforms
+    ClRenderManager
+    Core
+    Events
+)
+
+if(${VULKAN_GRAPHICS})
+    target_link_libraries(${PROJECT_NAME}
+        # vulkan
+        ClVulkanRenderer
+    )
+endif()
+
+# if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+#     add_custom_command(
+#         TARGET ${PROJECT_NAME} POST_BUILD
+#         COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:SDL2::SDL2>" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+#         VERBATIM
+#     )
+# endif()

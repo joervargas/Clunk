@@ -2637,7 +2637,7 @@ static void* vma_aligned_alloc(size_t alignment, size_t size)
 #include <cstdlib>
 
 #if defined(__APPLE__)
-#include <AvailabilityMacros.h>
+    #include <AvailabilityMacros.h>
 #endif
 
 static void* vma_aligned_alloc(size_t alignment, size_t size)

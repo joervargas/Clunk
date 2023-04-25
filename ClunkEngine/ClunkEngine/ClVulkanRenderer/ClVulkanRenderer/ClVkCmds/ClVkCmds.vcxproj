@@ -1,0 +1,317 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D500457F-A22B-3A01-864B-D62368075610}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ClVkCmds</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ClVkCmds.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ClVkCmds</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ClVkCmds.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ClVkCmds</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ClVkCmds.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ClVkCmds</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ClVkCmds.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ClVkCmds</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-debug;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/VulkanSDK/1.3.243.0/Include"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;VK_GFX;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;VK_GFX;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-debug;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-debug;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-release;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/VulkanSDK/1.3.243.0/Include"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VK_GFX;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VK_GFX;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-release;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-release;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-minsizerel;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/VulkanSDK/1.3.243.0/Include"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VK_GFX;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VK_GFX;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-minsizerel;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-minsizerel;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-relwithdebinfo;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/VulkanSDK/1.3.243.0/Include"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VK_GFX;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;VK_GFX;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-relwithdebinfo;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Defines\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClMath\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Core\.;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include;D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\include-config-relwithdebinfo;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClPlatforms\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClRenderManager\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\.;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\src;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\include;D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\src;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\ClVkExt\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkContext\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkImage\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkBuffer\include;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkDescriptor\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkSwapchain\.;D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkPipeline\.;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Projects/Cpp/GameEngine/Clunk/Engine/Engine/ClVulkanRenderer/ClVulkanRenderer/ClVkCmds/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Projects/Cpp/GameEngine/Clunk -BD:/Projects/Cpp/GameEngine/Clunk --check-stamp-file D:/Projects/Cpp/GameEngine/Clunk/Engine/Engine/ClVulkanRenderer/ClVulkanRenderer/ClVkCmds/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Projects/Cpp/GameEngine/Clunk/Engine/Engine/ClVulkanRenderer/ClVulkanRenderer/ClVkCmds/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Projects/Cpp/GameEngine/Clunk -BD:/Projects/Cpp/GameEngine/Clunk --check-stamp-file D:/Projects/Cpp/GameEngine/Clunk/Engine/Engine/ClVulkanRenderer/ClVulkanRenderer/ClVkCmds/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Projects/Cpp/GameEngine/Clunk/Engine/Engine/ClVulkanRenderer/ClVulkanRenderer/ClVkCmds/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Projects/Cpp/GameEngine/Clunk -BD:/Projects/Cpp/GameEngine/Clunk --check-stamp-file D:/Projects/Cpp/GameEngine/Clunk/Engine/Engine/ClVulkanRenderer/ClVulkanRenderer/ClVkCmds/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Projects/Cpp/GameEngine/Clunk/Engine/Engine/ClVulkanRenderer/ClVulkanRenderer/ClVkCmds/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Projects/Cpp/GameEngine/Clunk -BD:/Projects/Cpp/GameEngine/Clunk --check-stamp-file D:/Projects/Cpp/GameEngine/Clunk/Engine/Engine/ClVulkanRenderer/ClVulkanRenderer/ClVkCmds/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds\ClVkCmdPools.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Projects\Cpp\GameEngine\Clunk\ZERO_CHECK.proj">
+      <Project>{D0177980-5FF4-3D29-89F5-89943CB063D1}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\Events\Events.vcxproj">
+      <Project>{A0786567-E62E-374C-A1A0-C07773AE795B}</Project>
+      <Name>Events</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\MeshOptimizer\MeshOptimizer.vcxproj">
+      <Project>{4AFD37CA-BA3F-3662-8690-D3B037171E7E}</Project>
+      <Name>MeshOptimizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\PCH\PCH.vcxproj">
+      <Project>{29BE14B8-1337-3DAC-BE21-C472E3B2396A}</Project>
+      <Name>PCH</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Projects\Cpp\GameEngine\Clunk\_deps\sdl2-build\SDL2.vcxproj">
+      <Project>{9AEAE149-0877-3647-A5DC-3126AD49FE9E}</Project>
+      <Name>SDL2</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\STB_Image\STB_Image.vcxproj">
+      <Project>{56130B2D-5089-379A-9852-7D6F1C9E11CA}</Project>
+      <Name>STB_Image</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyObjLoader\TinyObjLoader.vcxproj">
+      <Project>{3EB21716-456D-34E8-AD23-79ADA2F7F7DC}</Project>
+      <Name>TinyObjLoader</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\TinyXML2\TinyXML2.vcxproj">
+      <Project>{96427AD7-18A9-31EA-9F64-D86717DFC7B6}</Project>
+      <Name>TinyXML2</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Projects\Cpp\GameEngine\Clunk\ThirdParty\VkMemAllocator\VkMemAllocator.vcxproj">
+      <Project>{123EF301-34FC-3E56-B93F-A033CB2DB0C8}</Project>
+      <Name>VkMemAllocator</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

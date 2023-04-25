@@ -1,7 +1,8 @@
-set(Target ClunkyEditor)
+# set(Target ClunkyEditor)
+project(ClunkyEditor)
 
 file(GLOB SRC_FILES 
-    ClunkyEditor/*.cpp
+    ${PROJECT_NAME}/*.cpp
 )
 
 # include(FetchContent)
@@ -41,24 +42,47 @@ file(GLOB SRC_FILES
 # FetchContent_MakeAvailable(imgui)
 
 
-set(Engine_DIR ../Engine)
+set(Engine_DIR ../ClunkEngine)
 include_directories(${Engine_DIR})
 
 
 if(${VULKAN_GRAPHICS})
     # add_compile_definitions(VK_NO_PROTOTYPES)
     message("Vulkan found in ${Target}!")
+    message("vulkan libraries: ${Vulkan_LIBRARY}")
 else()
     message("***Vulkan not found in ${Target}***")
 endif()
 
-add_executable(${Target}
+
+add_executable(${PROJECT_NAME}
     ${SRC_FILES}
 )
 
-target_link_libraries(${Target}
-    Engine
-    ImGui
+# add_dependencies(${Target} Engine)
+
+target_link_libraries(${PROJECT_NAME}
+    ClunkEngine
+    # ImGui
 )
 
-target_compile_features(${Target} PUBLIC cxx_std_17)
+# if(${VULKAN_GRAPHICS})
+#     target_link_libraries(${Target} ${Vulkan_LIBRARY})
+# endif()
+
+if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:SDL2::SDL2>" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+        VERBATIM
+    )
+endif()
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/Assets" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/Shaders" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+    VERBATIM
+)
+
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
