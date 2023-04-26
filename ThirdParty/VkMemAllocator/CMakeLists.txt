@@ -1,11 +1,15 @@
-add_library(VkMemAllocator
+set(Target VkMemAllocator)
+
+add_library(${Target}
     src/vk_mem_alloc.cpp
 )
 
-target_include_directories(VkMemAllocator 
+target_include_directories(${Target}
     PUBLIC 
         include
         src
 )
 
-target_compile_features(VkMemAllocator PUBLIC cxx_std_17)
+target_link_libraries(${Target} Vulkan::Vulkan)
+
+target_compile_features(${Target} PUBLIC cxx_std_17)

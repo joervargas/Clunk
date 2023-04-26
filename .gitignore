@@ -1,4 +1,11 @@
 .git/
 .vscode/
+.vs/
+_deps/
 Build/
 build/
+out/
+CMakePresets.json
+CMakeSettings.json
+ZERO_CHECK.proj
+ZERO_CHECK.proj.filters

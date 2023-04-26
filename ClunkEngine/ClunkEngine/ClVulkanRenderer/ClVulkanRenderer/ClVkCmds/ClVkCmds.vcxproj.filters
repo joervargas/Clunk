@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\ClVkCmds\ClVkCmdPools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Projects\Cpp\GameEngine\Clunk\Engine\Engine\ClVulkanRenderer\ClVulkanRenderer\ClVkCmds\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{48919D2A-D942-3B17-8880-CB1BDC0BF51F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

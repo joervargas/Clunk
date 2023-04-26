@@ -1,0 +1,136 @@
+#include "ClVkQueueFamilies.h"
+#include "ClVkDevice.h"
+#include "ClVkSurface.h"
+
+#include <Core/Logger.h>
+
+#include <set>
+
+
+ClVkQueueFamilies ClVkQueueFamilies::m_ClVkQueueFamilies;
+
+void ClVkQueueFamilies::Find(const VkPhysicalDevice &PhysDevice)
+{
+    u32 queueFamilyCount{0};
+    vkGetPhysicalDeviceQueueFamilyProperties(PhysDevice, &queueFamilyCount, nullptr);
+
+    std::vector<VkQueueFamilyProperties> queueFamiliesProperties(queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(PhysDevice, &queueFamilyCount, queueFamiliesProperties.data());
+
+    ClVkSurface* Surface = ClVkSurface::Get();
+    i32 i{0};
+    for( const auto& queueFamilyProps : queueFamiliesProperties)
+    {
+        if(queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        {
+            m_indices.graphics = i;
+        }
+        if((queueFamilyProps.queueFlags & VK_QUEUE_COMPUTE_BIT) && ((queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0))
+        {
+            m_indices.compute = i;
+        }
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(PhysDevice, i, *Surface->Handle(), &presentSupport);
+        if(presentSupport)
+        {
+            m_indices.present = i;
+        }
+        i++;
+    }
+    SetSharingMode();
+}
+
+void ClVkQueueFamilies::SetQueues()
+{
+    CLOG_INFO("Setting Queue Command Handles...");
+
+    ClVkDevice* Device = ClVkDevice::Get();
+
+    if(m_indices.graphics.has_value())
+    {
+        vkGetDeviceQueue(*Device->Handle(), m_indices.graphics.value(), 0, &m_graphics);
+    }
+
+    if(m_indices.present.has_value())
+    {
+        vkGetDeviceQueue(*Device->Handle(), m_indices.present.value(), 0, &m_present);
+    }
+
+    if(m_indices.compute.has_value())
+    {
+        vkGetDeviceQueue(*Device->Handle(), m_indices.compute.value(), 0, &m_compute);
+    }
+    CLOG_INFO("Queue Command Handles Set.");
+}
+
+std::vector<VkDeviceQueueCreateInfo> ClVkQueueFamilies::DeviceQueueInfo()
+{
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos{};
+
+    std::set<u32> uniqueQueueFamilies;
+    if(m_indices.graphics.has_value())
+    {
+        uniqueQueueFamilies.emplace(m_indices.graphics.value());
+    }
+    if(m_indices.present.has_value())
+    {
+        uniqueQueueFamilies.emplace(m_indices.present.value());
+    }
+    if(m_indices.compute.has_value())
+    {
+        uniqueQueueFamilies.emplace(m_indices.compute.value());
+    }
+    // std::set<u32> uniqueQueueFamilies = {
+    //     m_indices.graphics.value(),
+    //     m_indices.present.value()
+    // };
+
+    for(u32 queueFamily : uniqueQueueFamilies)
+    {
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &m_queuePriority;
+
+        queueCreateInfos.push_back(queueCreateInfo);
+    }
+
+    return queueCreateInfos;
+}
+
+std::vector<u32> ClVkQueueFamilies::GetIndexList()
+{
+    std::vector<u32> queueIndices;
+
+    if (m_indices.graphics.has_value()) { queueIndices.push_back(m_indices.graphics.value()); }
+    if (m_indices.present.has_value()) { queueIndices.push_back(m_indices.present.value()); }
+    if (m_indices.compute.has_value()) { queueIndices.push_back(m_indices.compute.value()); }
+
+    return queueIndices;
+}
+
+void ClVkQueueFamilies::SetSharingMode()
+{
+    u32 graphics_index, present_index, compute_index;
+    graphics_index = present_index = compute_index = 0;
+
+    if (m_indices.graphics.has_value()) { graphics_index = m_indices.graphics.value(); }
+    if (m_indices.present.has_value()) { present_index = m_indices.present.value(); }
+    if (m_indices.compute.has_value()) { compute_index = m_indices.compute.value(); }
+
+    // Check if the graphics index matches present or compute
+    if( graphics_index == present_index || graphics_index == compute_index) 
+    {
+        m_sharingmode = VK_SHARING_MODE_EXCLUSIVE;
+        return;
+    }
+    // Check if present index matches compute index; Already checked if graphics and present matched above.
+    if( present_index == compute_index)
+    {
+        m_sharingmode = VK_SHARING_MODE_EXCLUSIVE;
+        return;
+    }
+
+    m_sharingmode = VK_SHARING_MODE_CONCURRENT;
+}
