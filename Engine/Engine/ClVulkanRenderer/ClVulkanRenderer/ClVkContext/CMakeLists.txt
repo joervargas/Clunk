@@ -27,8 +27,7 @@ target_include_directories(${Target}
 
 target_link_libraries(${Target}
     ClVkExt
-    vulkan
-    VkMemAllocator
+    ${Vulkan_LIBRARIES}
     PCH
     Defines
     Core

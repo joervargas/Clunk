@@ -1,6 +1,10 @@
 #include "Exception.h"
 #include "Logger.h"
 
+#ifdef PLATFORM_LINUX
+    #include <stdarg.h>
+#endif
+
 namespace Clunk
 {
 

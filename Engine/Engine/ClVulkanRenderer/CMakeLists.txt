@@ -30,7 +30,8 @@ target_include_directories(${Target}
 
 target_link_libraries(${Target}
     # ClVkLoader
-    vulkan
+    ${Vulkan_LIBRARIES}
+    # VulkanMemoryAllocator
     SDL2
     ClPlatforms
     TinyXML2

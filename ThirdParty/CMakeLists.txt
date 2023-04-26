@@ -35,7 +35,6 @@ add_subdirectory(./STB_Image)
 add_subdirectory(./TinyGLTF)
 add_subdirectory(./TinyObjLoader)
 add_subdirectory(./TinyXML2)
-add_subdirectory(./VkMemAllocator)
 add_subdirectory(./MeshOptimizer)
 
 
@@ -47,6 +46,5 @@ add_custom_target(${Target}
         TinyGLTF
         TinyObjLoader
         TinyXML2
-        VkMemAllocator
         MeshOptimizer
 )
