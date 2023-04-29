@@ -17,6 +17,13 @@ private:
         std::optional<u32> present;
         // std::optional<u32> transfer;
         std::optional<u32> compute;
+
+        void Reset()
+        {
+            graphics.reset();
+            present.reset();
+            compute.reset();
+        }
     } m_indices;
 
 public:
@@ -36,7 +43,7 @@ public:
     { 
         return m_indices.graphics.has_value() && 
             m_indices.present.has_value() && 
-            m_indices.compute.has_value(); 
+            m_indices.compute.has_value();
     }
 
     void Find(const VkPhysicalDevice& PhysDevice);
@@ -63,7 +70,4 @@ private:
     f32 m_queuePriority{1.0f};
 
     static ClVkQueueFamilies m_ClVkQueueFamilies;
-
-    void SetSharingMode();
-
 };

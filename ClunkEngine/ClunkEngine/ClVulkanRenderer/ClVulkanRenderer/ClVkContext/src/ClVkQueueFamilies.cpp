@@ -11,6 +11,8 @@ ClVkQueueFamilies ClVkQueueFamilies::m_ClVkQueueFamilies;
 
 void ClVkQueueFamilies::Find(const VkPhysicalDevice &PhysDevice)
 {
+    m_indices.Reset();
+
     u32 queueFamilyCount{0};
     vkGetPhysicalDeviceQueueFamilyProperties(PhysDevice, &queueFamilyCount, nullptr);
 
@@ -21,23 +23,83 @@ void ClVkQueueFamilies::Find(const VkPhysicalDevice &PhysDevice)
     i32 i{0};
     for( const auto& queueFamilyProps : queueFamiliesProperties)
     {
-        if(queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-        {
-            m_indices.graphics = i;
-        }
-        if((queueFamilyProps.queueFlags & VK_QUEUE_COMPUTE_BIT) && ((queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0))
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(PhysDevice, i, *Surface->Handle(), &presentSupport);
+
+        // Check for a dedicated Compute Queue
+        if((queueFamilyProps.queueFlags & VK_QUEUE_COMPUTE_BIT) && 
+            ((queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT) ==0) && 
+            !presentSupport)
         {
             m_indices.compute = i;
         }
-        VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(PhysDevice, i, *Surface->Handle(), &presentSupport);
-        if(presentSupport)
+        // if((queueFamilyProps.queueFlags & VK_QUEUE_TRANSFER_BIT) && 
+        //     ((queueFamilyProps.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0) && 
+        //     ((queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT) ==0))
+        // {
+
+        // }
+
+        // Check for a dedicated Graphics Queue
+        if((queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT) &&
+            ((queueFamilyProps.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0) &&
+            !presentSupport)
+        {
+            m_indices.graphics = i;
+        }
+
+        if(presentSupport &&
+            ((queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0) &&
+            ((queueFamilyProps.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0))
         {
             m_indices.present = i;
         }
+
+        // if(queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        // {
+        //     m_indices.graphics = i;
+        // }
+        // if((queueFamilyProps.queueFlags & VK_QUEUE_COMPUTE_BIT) && ((queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0))
+        // {
+        //     m_indices.compute = i;
+        // }
+        // VkBool32 presentSupport = false;
+        // vkGetPhysicalDeviceSurfaceSupportKHR(PhysDevice, i, *Surface->Handle(), &presentSupport);
+        // if(presentSupport)
+        // {
+        //     m_indices.present = i;
+        // }
         i++;
     }
-    SetSharingMode();
+
+    if(IsComplete())
+    {
+        m_sharingmode = VK_SHARING_MODE_CONCURRENT;
+    }
+    else
+    {
+        i = 0;
+        for(const auto& queueFamilyProps : queueFamiliesProperties)
+        {
+            if(queueFamilyProps.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+            {
+                m_indices.graphics = i;
+            }
+            if(queueFamilyProps.queueFlags & VK_QUEUE_COMPUTE_BIT)
+            {
+                m_indices.compute = i;
+            }
+            VkBool32 presentSupport = false;
+            vkGetPhysicalDeviceSurfaceSupportKHR(PhysDevice, i, *Surface->Handle(), &presentSupport);
+            if(presentSupport)
+            {
+                m_indices.present = i;
+            }
+            i++;
+        }
+        m_sharingmode = VK_SHARING_MODE_EXCLUSIVE;
+    }
+    // SetSharingMode();
 }
 
 void ClVkQueueFamilies::SetQueues()
@@ -108,29 +170,4 @@ std::vector<u32> ClVkQueueFamilies::GetIndexList()
     if (m_indices.compute.has_value()) { queueIndices.push_back(m_indices.compute.value()); }
 
     return queueIndices;
-}
-
-void ClVkQueueFamilies::SetSharingMode()
-{
-    u32 graphics_index, present_index, compute_index;
-    graphics_index = present_index = compute_index = 0;
-
-    if (m_indices.graphics.has_value()) { graphics_index = m_indices.graphics.value(); }
-    if (m_indices.present.has_value()) { present_index = m_indices.present.value(); }
-    if (m_indices.compute.has_value()) { compute_index = m_indices.compute.value(); }
-
-    // Check if the graphics index matches present or compute
-    if( graphics_index == present_index || graphics_index == compute_index) 
-    {
-        m_sharingmode = VK_SHARING_MODE_EXCLUSIVE;
-        return;
-    }
-    // Check if present index matches compute index; Already checked if graphics and present matched above.
-    if( present_index == compute_index)
-    {
-        m_sharingmode = VK_SHARING_MODE_EXCLUSIVE;
-        return;
-    }
-
-    m_sharingmode = VK_SHARING_MODE_CONCURRENT;
 }
