@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Defines/Defines.h>
+
 #include <PCH/pch.h>
 
 #include "Vec3.h"

@@ -35,10 +35,8 @@ target_include_directories(${Target}
 )
 
 target_link_libraries(${Target}
-    # SDL2
     SDL2::SDL2
     TinyXML2
-    Defines
     PCH
     ClPlatforms
     Events

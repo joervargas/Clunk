@@ -6,7 +6,6 @@
 #include <ClVkContext/ClVkMemAllocator.h>
 #include <ClVkContext/ClVkPhysicalDevice.h>
 
-#include <Defines/Defines.h>
 #include <Core/Exception.h>
 #include <Core/Logger.h>
 #include <STB_Image/stb_image.h>

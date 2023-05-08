@@ -52,13 +52,10 @@ target_include_directories(${Target}
 )
 
 target_link_libraries(${Target}
-    # vulkan
     SDL2::SDL2
     SDL2::SDL2main
-    # SDL2
     Events
     Core
-    Defines
 )
 
 if(${VULKAN_GRAPHICS})

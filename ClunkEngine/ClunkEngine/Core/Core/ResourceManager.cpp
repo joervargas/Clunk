@@ -117,7 +117,7 @@ namespace Clunk
                 for(list_iter = iter->second.begin(); list_iter != iter->second.end(); list_iter++) // for each Resource* in scope
                 {
                     (*list_iter)->unload();
-                    SDELETE(*list_iter);
+                    CLUNK_DELETE(*list_iter);
                 }
                 iter->second.clear();
             }

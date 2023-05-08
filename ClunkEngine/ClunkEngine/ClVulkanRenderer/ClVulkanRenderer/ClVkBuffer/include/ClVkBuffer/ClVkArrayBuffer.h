@@ -8,7 +8,6 @@
 #include <VkMemAllocator/vk_mem_alloc.h>
 
 #include <memory>
-#include <Defines/Defines.h>
 #include <PCH/pch.h>
 
 namespace Clunk

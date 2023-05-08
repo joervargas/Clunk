@@ -2,7 +2,6 @@
 
 
 #include <vulkan/vulkan.h>
-#include <Defines/Defines.h>
 
 
 class ClVkPipelineLayout

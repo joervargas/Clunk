@@ -5,7 +5,6 @@
 
 #include <ClVkContext/ClVkMemAllocator.h>
 
-#include <Defines/Defines.h>
 #include <PCH/pch.h>
 
 #include <Core/Exception.h>

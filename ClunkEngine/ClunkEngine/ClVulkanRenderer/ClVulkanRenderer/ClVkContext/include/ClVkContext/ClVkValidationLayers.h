@@ -4,7 +4,6 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
-#include <Defines/Defines.h>
 #include <PCH/pch.h>
 #include <Core/Exception.h>
 #include <Core/Logger.h>

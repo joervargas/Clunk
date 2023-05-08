@@ -43,10 +43,7 @@ target_include_directories(${Target}
 )
 
 target_link_libraries(${Target}
-    # ClVkLoader
-    # vulkan
     SDL2::SDL2
-    # SDL2
     Vulkan::Vulkan
     ClPlatforms
     TinyXML2
@@ -54,7 +51,6 @@ target_link_libraries(${Target}
     MeshOptimizer
     VkMemAllocator
     STB_Image
-    Defines
     PCH
     Core
     ClMath

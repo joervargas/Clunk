@@ -63,23 +63,23 @@ namespace Clunk
         // m_descSets.Create(*m_descSetLayout.Handle(), *m_descPool.Handle(), m_worldTransformUBOs.buffers, *m_Mesh.Texture()->GetView(), *m_Mesh.Texture()->GetSampler());
     }
 
-    void ClVkRenderer::Update()
-    {
-        // static variable persists
-        static auto startTime = std::chrono::high_resolution_clock::now();
-        auto currentTime = std::chrono::high_resolution_clock::now();
+    // void ClVkRenderer::Update()
+    // {
+    //     // static variable persists
+    //     static auto startTime = std::chrono::high_resolution_clock::now();
+    //     auto currentTime = std::chrono::high_resolution_clock::now();
 
-        f32 time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+    //     f32 time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-        // m_worldTransform.model = glm::rotate(m_worldTransform.model, (time - m_lastTime) * glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        // m_worldTransform.model = Mat4::Rotate(m_worldTransform.model, (time - m_lastTime) * Math::DegToRad(30.f), Vec3(0.0f, 0.0f, 1.0f));
-        // m_worldTransform.model = Mat4::RotateZ(m_worldTransform.model, (time - m_lastTime) * Math::DegToRad(30.0f));
-        // m_worldTransform.model.RotateZ((time - m_lastTime) * Math::DegToRad(30.f));
-        m_Mesh.Update(time);
-        m_worldTransformUBOs.Update(m_currentFrame, m_worldTransform);
+    //     // m_worldTransform.model = glm::rotate(m_worldTransform.model, (time - m_lastTime) * glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    //     // m_worldTransform.model = Mat4::Rotate(m_worldTransform.model, (time - m_lastTime) * Math::DegToRad(30.f), Vec3(0.0f, 0.0f, 1.0f));
+    //     // m_worldTransform.model = Mat4::RotateZ(m_worldTransform.model, (time - m_lastTime) * Math::DegToRad(30.0f));
+    //     // m_worldTransform.model.RotateZ((time - m_lastTime) * Math::DegToRad(30.f));
+    //     m_Mesh.Update(time);
+    //     m_worldTransformUBOs.Update(m_currentFrame, m_worldTransform);
 
-        m_lastTime = time;
-    }
+    //     m_lastTime = time;
+    // }
 
     void ClVkRenderer::Destroy()
     {
@@ -110,12 +110,12 @@ namespace Clunk
 
     }
 
-    void ClVkRenderer::RenderFrame()
+    void ClVkRenderer::BeginFrame()
     {
         VK_CHECK(m_swapchain->WaitForInFlightFence(UINT64_MAX, m_currentFrame));
 
-        u32 imageIndex;
-        VkResult result = m_swapchain->AquireNextImage(UINT64_MAX, m_currentFrame, &imageIndex);
+        // u32 imageIndex;
+        VkResult result = m_swapchain->AquireNextImage(UINT64_MAX, m_currentFrame, &m_imageIndex);
         if(result == VK_ERROR_OUT_OF_DATE_KHR)
         {
             CLOG_WARN("vkAquireNextImageKHR: VK_ERROR_OUT_OF_DATE_KHR.");
@@ -128,13 +128,44 @@ namespace Clunk
         }
 
         VK_CHECK(m_swapchain->ResetInFlightFence(m_currentFrame));
-        Update();
         VK_CHECK(vkResetCommandBuffer(m_drawCmdBuffers[m_currentFrame], 0));
-        RecordDrawCmdBuffer(m_drawCmdBuffers[m_currentFrame], imageIndex);
+
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = 0;
+
+        VK_CHECK(vkBeginCommandBuffer(m_drawCmdBuffers[m_currentFrame], &beginInfo))
+
+        VkExtent2D swapchainExtent = *m_swapchain->GetExtent();
+        m_renderPass.Begin(m_drawCmdBuffers[m_currentFrame], m_swapchain->GetFrameBuffer(m_imageIndex), swapchainExtent);
+
+
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = static_cast<float>(swapchainExtent.width);
+        viewport.height = static_cast<float>(swapchainExtent.height);
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        vkCmdSetViewport(m_drawCmdBuffers[m_currentFrame], 0, 1, &viewport);
+
+        VkRect2D scissor{};
+        scissor.offset = {0, 0};
+        scissor.extent = swapchainExtent;
+        vkCmdSetScissor(m_drawCmdBuffers[m_currentFrame], 0, 1, &scissor);
+    }
+
+    void ClVkRenderer::RenderFrame()
+    {
+        // TODO: Move drawing done in Record Draw buffers to Scene ECS
+        RecordDrawCmdBuffer(m_drawCmdBuffers[m_currentFrame], m_imageIndex);
+
+        m_renderPass.End(m_drawCmdBuffers[m_currentFrame]);
+        VK_CHECK(vkEndCommandBuffer(m_drawCmdBuffers[m_currentFrame]));
 
         VK_CHECK(m_swapchain->SubmitFrame(m_drawCmdBuffers[m_currentFrame], m_currentFrame));
 
-        result = m_swapchain->PresentFrame(m_currentFrame, imageIndex);
+        VkResult result = m_swapchain->PresentFrame(m_currentFrame, m_imageIndex);
         if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_bIsResized)
         {
             CLOG_WARN("vkQueuePresentKHR: VK_ERROR_OUT_OF_DATE_KHR or VK_SUBOPTIMAL_KHR.");
@@ -151,49 +182,25 @@ namespace Clunk
 
     void ClVkRenderer::RecordDrawCmdBuffer(const VkCommandBuffer &DrawBuffer, const u32 &ImageIndex)
     {
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.flags = 0;
+        // update  properties
+        static auto startTime = std::chrono::high_resolution_clock::now();
+        auto currentTime = std::chrono::high_resolution_clock::now();
 
-        VK_CHECK(vkBeginCommandBuffer(DrawBuffer, &beginInfo))
+        f32 time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-        VkExtent2D swapchainExtent = *m_swapchain->GetExtent();
-        m_renderPass.Begin(DrawBuffer, m_swapchain->GetFrameBuffer(ImageIndex), swapchainExtent);
+        // m_worldTransform.model = glm::rotate(m_worldTransform.model, (time - m_lastTime) * glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        // m_worldTransform.model = Mat4::Rotate(m_worldTransform.model, (time - m_lastTime) * Math::DegToRad(30.f), Vec3(0.0f, 0.0f, 1.0f));
+        // m_worldTransform.model = Mat4::RotateZ(m_worldTransform.model, (time - m_lastTime) * Math::DegToRad(30.0f));
+        // m_worldTransform.model.RotateZ((time - m_lastTime) * Math::DegToRad(30.f));
+        m_Mesh.Update(time);
+        m_worldTransformUBOs.Update(m_currentFrame, m_worldTransform);
 
+        m_lastTime = time;
+
+        // render
         vkCmdBindPipeline(DrawBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *m_basicPipeline.Get());
-
-        VkViewport viewport{};
-        viewport.x = 0.0f;
-        viewport.y = 0.0f;
-        viewport.width = static_cast<float>(swapchainExtent.width);
-        viewport.height = static_cast<float>(swapchainExtent.height);
-        viewport.minDepth = 0.0f;
-        viewport.maxDepth = 1.0f;
-        vkCmdSetViewport(DrawBuffer, 0, 1, &viewport);
-
-        VkRect2D scissor{};
-        scissor.offset = {0, 0};
-        scissor.extent = swapchainExtent;
-        vkCmdSetScissor(DrawBuffer, 0, 1, &scissor);
 
         // m_Mesh.Render(DrawBuffer, *m_basicPipeline.GetLayout(), m_descSets.Get(m_currentFrame));
         m_Mesh.Render(DrawBuffer, *m_pipelineLayout.Handle(), m_worldTransformUBOs.buffers[m_currentFrame]);
-        // VkBuffer vertexBuffer[] = {m_VAO.buffer};
-        // VkDeviceSize offsets[] = {0};
-        // vkCmdBindVertexBuffers(DrawBuffer, 0, 1, vertexBuffer, offsets);
-        // vkCmdBindIndexBuffer(DrawBuffer, m_IBO.buffer, 0, VK_INDEX_TYPE_UINT16);
-        // vkCmdBindDescriptorSets(
-        //     DrawBuffer, 
-        //     VK_PIPELINE_BIND_POINT_GRAPHICS, 
-        //     *m_basicPipeline.GetLayout(), 
-        //     0, 1, 
-        //     m_descSets.Get(m_currentFrame), 
-        //     0, nullptr);
-        // // vkCmdDraw(DrawBuffer, VAO.len, 1, 0, 0);
-        // vkCmdDrawIndexed(DrawBuffer, m_IBO.len, 1, 0, 0, 0);
-
-        // vkCmdEndRenderPass(DrawBuffer);
-        m_renderPass.End(DrawBuffer);
-        VK_CHECK(vkEndCommandBuffer(DrawBuffer));
     }
 }

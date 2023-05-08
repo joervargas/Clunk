@@ -3,7 +3,8 @@
 // #include <Defines/defines.h>
 #include "Object.h"
 #include "Exception.h"
-#include <Defines/Defines.h>
+// #include <Defines/Defines.h>
+#include <PCH/pch.h>
 #include <sstream>
 #include <fstream>
 

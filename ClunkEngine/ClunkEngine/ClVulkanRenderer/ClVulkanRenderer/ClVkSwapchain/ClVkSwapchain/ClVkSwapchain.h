@@ -10,7 +10,6 @@
 
 #include <vulkan/vulkan.h>
 
-#include <Defines/Defines.h>
 #include <PCH/pch.h>
 
 

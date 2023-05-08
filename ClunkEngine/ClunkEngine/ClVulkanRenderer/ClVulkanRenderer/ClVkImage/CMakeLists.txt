@@ -27,7 +27,6 @@ target_include_directories(${Target}
 target_link_libraries(${Target}
     STB_Image
     PCH
-    Defines
     Core
     ClVkContext
 )

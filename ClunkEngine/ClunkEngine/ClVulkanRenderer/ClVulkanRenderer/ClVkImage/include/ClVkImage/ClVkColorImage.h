@@ -3,7 +3,6 @@
 #include <vulkan/vulkan.h>
 #include <VkMemAllocator/vk_mem_alloc.h>
 
-#include <Defines/Defines.h>
 #include <PCH/pch.h>
 
 namespace Clunk

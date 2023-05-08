@@ -30,6 +30,5 @@ target_link_libraries(${Target}
     Vulkan::Vulkan
     VkMemAllocator
     PCH
-    Defines
     Core
 )

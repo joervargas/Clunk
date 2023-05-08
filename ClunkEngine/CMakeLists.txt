@@ -11,7 +11,6 @@ file(GLOB HDR_FILES
 
 
 set(Engine_DIR ./ClunkEngine)
-add_subdirectory(${Engine_DIR}/Defines)
 add_subdirectory(${Engine_DIR}/PCH)
 add_subdirectory(${Engine_DIR}/ClMath)
 add_subdirectory(${Engine_DIR}/Events)
@@ -50,7 +49,6 @@ target_link_libraries(${PROJECT_NAME}
     SDL2::SDL2main
     TinyXML2
     TinyObjLoader
-    Defines
     ClMath
     ClPlatforms
     ClRenderManager

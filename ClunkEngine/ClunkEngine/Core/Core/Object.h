@@ -1,7 +1,7 @@
 #ifndef EOBJECT_H
 #define EOBJECT_H
 
-#include <Defines/Defines.h>
+#include <PCH/pch.h>
 
 namespace Clunk
 {

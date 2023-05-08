@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Defines/Defines.h>
+#include <PCH/pch.h>
 
 #ifdef PLATFORM_SDL
     #define SDL_MAIN_HANDLED

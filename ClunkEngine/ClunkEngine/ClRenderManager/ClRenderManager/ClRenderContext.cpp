@@ -26,14 +26,19 @@ namespace Clunk
         m_renderer->Init();
     }
 
-    void ClRenderContext::Update()
-    {
-        m_renderer->Update();
-    }
+    // void ClRenderContext::Update()
+    // {
+    //     m_renderer->Update();
+    // }
 
     void ClRenderContext::Destroy()
     {
         m_renderer->Destroy();
+    }
+
+    void ClRenderContext::BeginFrame()
+    {
+        m_renderer->BeginFrame();
     }
 
     void ClRenderContext::RenderFrame()

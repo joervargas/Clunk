@@ -28,7 +28,6 @@ target_link_libraries(${Target}
     # VkMemAllocator
     ClPlatforms
     PCH
-    Defines
     Core
     ClVkImage
 )

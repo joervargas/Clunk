@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ClRenderManager/ClIMeshComp.h>
-#include <Defines/Defines.h>
 #include <PCH/pch.h>
 
 #include <ClVkBuffer/ClVkArrayBuffer.h>

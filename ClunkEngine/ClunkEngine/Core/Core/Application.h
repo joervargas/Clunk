@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Logger.h"
-#include <Defines/Defines.h>
 #include <PCH/pch.h>
 
 // #include <WindowContext/WindowContext.h>
@@ -12,7 +11,6 @@
 #include <Events/KeyListener.h>
 #include <Events/EventDataTypes.h>
 
-#include <ClRenderManager/ClRenderManager.h>
 #include <ClRenderManager/ClRenderContext.h>
 
 namespace Clunk 
@@ -37,12 +35,12 @@ namespace Clunk
          */
         b8 Run();
 
-        /**
-         * @brief Updates data to be rendered.
-         * @param DeltaTime The time in seconds since last frame.
-         * @return Returns true on success.
-         */
-        b8 Update(f32 DeltaTime);
+        // /**
+        //  * @brief Updates data to be rendered.
+        //  * @param DeltaTime The time in seconds since last frame.
+        //  * @return Returns true on success.
+        //  */
+        // b8 Update(f32 DeltaTime);
 
         /**
          * @brief Render to frame
@@ -63,7 +61,6 @@ namespace Clunk
         ClPlatform* m_platformCtx;
         b8 bIsRunning;
 
-        // ClRenderManager RenderManager;
         ClRenderContext RenderCtx;
 
         WindowListener<Application>* OnClose;

@@ -24,9 +24,10 @@ namespace Clunk
         // static ClRenderContext* GetRenderContext();
      
         void Init();
-        void Update();
+        // void Update();
         void Destroy();
 
+        void BeginFrame();
         void RenderFrame();
 
         // void ToggleFullScreen();
@@ -45,8 +46,5 @@ namespace Clunk
             ClVkRenderer VkRenderer;
         #endif
 
-        // ClRenderContext* m_renderContext;
-        // std::list<clRenderObject*> m_RenderObjects;
-        // TODO: pointer to scene manager
     };
 }

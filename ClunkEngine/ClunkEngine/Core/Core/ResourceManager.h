@@ -4,7 +4,6 @@
 #include "Object.h"
 #include "Resource.h"
 
-#include <Defines/Defines.h>
 #include <PCH/pch.h>
 
 #include <list>

@@ -2,7 +2,6 @@
 
 #ifdef PLATFORM_SDL
 
-#include <Defines/Defines.h>
 #include <Core/Logger.h>
 #include <Events/WindowEvents.h>
 #include <Events/KeyEvents.h>

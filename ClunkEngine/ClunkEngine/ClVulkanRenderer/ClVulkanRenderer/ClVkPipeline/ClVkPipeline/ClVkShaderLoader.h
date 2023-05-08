@@ -5,7 +5,6 @@
 #include <optional>
 
 #include <PCH/pch.h>
-#include <Defines/Defines.h>
 
 
 class ClVkShaderLoader

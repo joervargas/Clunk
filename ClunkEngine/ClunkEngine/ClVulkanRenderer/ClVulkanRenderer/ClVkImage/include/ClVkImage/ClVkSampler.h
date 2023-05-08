@@ -6,7 +6,6 @@
 #include <ClVkContext/ClVkDevice.h>
 #include <ClVkContext/ClVkPhysicalDevice.h>
 
-#include <Defines/Defines.h>
 #include <Core/Exception.h>
 #include <Core/Logger.h>
 

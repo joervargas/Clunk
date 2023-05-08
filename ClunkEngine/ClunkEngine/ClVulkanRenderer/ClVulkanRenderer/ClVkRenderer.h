@@ -24,7 +24,7 @@
 #include <ClVkDescriptor/ClVkDescriptorSet.h>
 #include "ClVkMesh.h"
 
-#include <Defines/Defines.h>
+#include <PCH/pch.h>
 #include <ClPlatforms/ClPlatform.h>
 
 #include <vulkan/vulkan.h>
@@ -46,10 +46,12 @@ namespace Clunk
         virtual void SetIsResized(b8 bIsResized) override { m_bIsResized = bIsResized; }
         
         virtual void Init() override;
-        virtual void Update() override;
+        // virtual void Update();
         virtual void Destroy() override;
 
         virtual void ResetFrame();
+        
+        virtual void BeginFrame() override;
 
         virtual void RenderFrame() override;
 
@@ -76,6 +78,7 @@ namespace Clunk
 
         const u32 MAX_FRAMES_IN_FLIGHT{2};
         u32 m_currentFrame{0};
+        u32 m_imageIndex{0};
         f32 m_lastTime{0.0f};
         
         // ClVkArrayBuffer m_VAO;

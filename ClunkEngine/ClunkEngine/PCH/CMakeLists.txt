@@ -26,7 +26,6 @@ target_include_directories(${Target}
 )
 
 target_link_libraries(${Target}
-    Defines
     ClMath
 )
 

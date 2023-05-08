@@ -9,7 +9,7 @@ file(GLOB HDR_FILES
 )
 
 include_directories(../)
-include_directories(../Defines)
+# include_directories(../Defines)
 
 if(${VULKAN_GRAPHICS})
     add_compile_definitions(VK_GFX)
@@ -40,9 +40,7 @@ target_include_directories(${Target}
 
 target_link_libraries(${Target}
     SDL2::SDL2
-    # SDL2
     TinyXML2
-    Defines
     PCH
     Core
 )
