@@ -232,5 +232,18 @@ STATIC_ASSERT(sizeof(f64) == 8, "Expected f64 to be 8 bytes.");
 namespace Clunk
 {
     using uuid64 = size_t;
-    uuid64 Generate_UUID();
+    uuid64 GenerateUUID();
+
+    CLUNK_INLINE const u32 GetUniqueTypeID()
+    {
+        static u32 type = 1u;
+        return type++;
+    }
+
+    template<typename T>
+    CLUNK_INLINE const u32 TypeID()
+    {
+        static const u32 type = GetUniqueTypeID();
+        return type;
+    }
 }

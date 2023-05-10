@@ -1,4 +1,4 @@
-set(Target ClScene)
+set(Target ClAssets)
 
 file(GLOB SRC_FILES 
     ${Target}/*.cpp

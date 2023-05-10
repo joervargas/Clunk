@@ -16,6 +16,8 @@ add_subdirectory(${Engine_DIR}/ClMath)
 add_subdirectory(${Engine_DIR}/Events)
 add_subdirectory(${Engine_DIR}/ClPlatforms)
 add_subdirectory(${Engine_DIR}/ClRenderManager)
+add_subdirectory(${Engine_DIR}/ClScene)
+add_subdirectory(${Engine_DIR}/ClAssets)
 add_subdirectory(${Engine_DIR}/Core)
 
 
@@ -52,6 +54,8 @@ target_link_libraries(${PROJECT_NAME}
     ClMath
     ClPlatforms
     ClRenderManager
+    ClScene
+    ClAssets
     Core
     Events
 )
