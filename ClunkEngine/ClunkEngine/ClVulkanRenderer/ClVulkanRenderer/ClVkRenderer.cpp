@@ -59,8 +59,8 @@ namespace Clunk
 
         m_worldTransformUBOs.Create(m_worldTransform, MAX_FRAMES_IN_FLIGHT);
         
-        // m_descPool.Create();
-        // m_descSets.Create(*m_descSetLayout.Handle(), *m_descPool.Handle(), m_worldTransformUBOs.buffers, *m_Mesh.Texture()->GetView(), *m_Mesh.Texture()->GetSampler());
+        m_descPool.Create();
+        m_descSets.Create(*m_descSetLayout.Handle(), *m_descPool.Handle(), m_worldTransformUBOs.buffers, *m_Mesh.Texture()->GetView(), *m_Mesh.Texture()->GetSampler());
     }
 
     // void ClVkRenderer::Update()
@@ -94,7 +94,7 @@ namespace Clunk
 
         m_swapchain->Destroy();
 
-        // m_descPool.Destroy();
+        m_descPool.Destroy();
         m_descSetLayout.Destroy();
 
         m_renderPass.Destroy();
@@ -200,7 +200,7 @@ namespace Clunk
         // render
         vkCmdBindPipeline(DrawBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *m_basicPipeline.Get());
 
-        // m_Mesh.Render(DrawBuffer, *m_basicPipeline.GetLayout(), m_descSets.Get(m_currentFrame));
-        m_Mesh.Render(DrawBuffer, *m_pipelineLayout.Handle(), m_worldTransformUBOs.buffers[m_currentFrame]);
+        m_Mesh.Render(DrawBuffer, *m_pipelineLayout.Handle(), m_descSets.Get(m_currentFrame));
+        // m_Mesh.Render(DrawBuffer, *m_pipelineLayout.Handle(), m_worldTransformUBOs.buffers[m_currentFrame]);
     }
 }

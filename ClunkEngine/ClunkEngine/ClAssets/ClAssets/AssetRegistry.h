@@ -30,7 +30,7 @@ namespace Clunk::Assets
 
             for(IAsset& asset : m_data.at(type))
             {
-                if(asset->Id) { return static_cast<T*>(asset); }
+                if(asset.Id) { return static_cast<T*>(asset); }
             }
             return nullptr;
         }
