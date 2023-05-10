@@ -50,6 +50,8 @@ private:
     VkPhysicalDeviceProperties2KHR m_physicalDeviceProperties;
     VkPhysicalDeviceMemoryProperties2KHR m_physicalDeviceMemoryProperties;
     VkPhysicalDeviceFeatures2KHR m_physicalDeviceFeatures;
+    
+    VkPhysicalDeviceDescriptorIndexingFeaturesEXT m_descriptorIndexingFeatures;
 
     u32 m_deviceCount;
     // std::multimap<i32, VkPhysicalDevice> m_candidates;
