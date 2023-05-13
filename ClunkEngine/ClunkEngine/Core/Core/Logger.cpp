@@ -28,7 +28,7 @@ namespace Clunk
     void Log_Output(ELog_Level level, String message, String fileName, i32 lineNumber, ...)
     {
         const char* level_strings[6] = {"{FATAL}: ", "{ERROR}: ", "{WARN}: ", "{INFO}: ", "{DEBUG}: ", "{TRACE}: "};
-        const char* color_strings[6] = {"0;41", "1;31", "1;33", "1;32", "1;34", "1;30"};
+        const char* color_strings[6] = {"0;41", "1;31", "1;33", "1;34", "1;32", "1;35"};
         b8 is_error = level < ELog_Level::WARN_LEVEL;
 
 
@@ -54,9 +54,9 @@ namespace Clunk
             msg << "\n********************************* ERROR *********************************\n";
         }
         msg << level_strings[level] << 
-            "\n\t" << out_msg << 
-            "\n\tFile: " << fileName <<
-            " Line: " << lineNumber;
+            "\n" << out_msg << 
+            "\nFile: " << fileName <<
+            "\nLine: " << lineNumber;
         if(is_error)
         {
             msg << "\n************************************************************************\n";
@@ -64,7 +64,7 @@ namespace Clunk
 
         // printf("\033[%sm%s\033[0m", colour_strings[color], message);
         // std::cout << "\033[" << color_strings[level] << "m" << out_msg << "\033[m" << std::endl;
-        std::cout << "\033[" << color_strings[level] << "m" << msg.str() << "\033[m" << std::endl;
+        std::cout << "\n\t" << "\033[" << color_strings[level] << "m" << msg.str() << "\033[m" << std::endl;
 
         LogFileManager* LogFile = LogFileManager::GetLogFileManager();
         LogFile->logBuffer << msg.str() << std::endl;

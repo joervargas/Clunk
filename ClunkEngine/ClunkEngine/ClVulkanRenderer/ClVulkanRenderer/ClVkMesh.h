@@ -24,8 +24,8 @@ namespace Clunk
         
         void Update(f32 DeltaTime);
         
-        void Render(const VkCommandBuffer& DrawBuffer, const VkPipelineLayout& PipelineLayout, const VkDescriptorSet* pDescriptorSet);
-        // void Render(const VkCommandBuffer& DrawBuffer, const VkPipelineLayout& PipelineLayout, const VkBuffer& TransformUBO);
+        // void Render(const VkCommandBuffer& DrawBuffer, const VkPipelineLayout& PipelineLayout, const VkDescriptorSet* pDescriptorSet);
+        void Render(const VkCommandBuffer& DrawBuffer, const VkPipelineLayout& PipelineLayout, const VkBuffer& TransformUBO);
 
         ClVkTexture* Texture() { return &m_Texture; }
 

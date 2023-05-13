@@ -18,7 +18,7 @@ namespace Clunk
     void ClVkGraphicsPipeline::Create(const VkRenderPass& RenderPass, const VkSampleCountFlagBits& MsaaSampleCount, const VkPipelineLayout* pPipelineLayout)
     {
         // CLOG_WARN("The current directory is %s", get_current_dir_name());
-        CLOG_WARN("The current directory is %s", std::filesystem::current_path().c_str() );
+        // CLOG_WARN("The current directory is %s", std::filesystem::current_path().c_str() );
 
         CLOG_INFO("Creating VkPipelines...");
 

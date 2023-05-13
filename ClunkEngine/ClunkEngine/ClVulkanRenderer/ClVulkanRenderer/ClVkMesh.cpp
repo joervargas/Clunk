@@ -92,47 +92,47 @@ namespace Clunk
         m_transform.rotation.SetAngleAxis(Math::DegToRad(30.f) * DeltaTime, Vec3(0.0f, 0.0f, 1.0f));
     }
 
-    void ClVkMesh::Render(const VkCommandBuffer& DrawBuffer, const VkPipelineLayout& PipelineLayout, const VkDescriptorSet* pDescriptorSet)
-    // void ClVkMesh::Render(const VkCommandBuffer& DrawBuffer, const VkPipelineLayout& PipelineLayout, const VkBuffer& TransformUBO)
+    // void ClVkMesh::Render(const VkCommandBuffer& DrawBuffer, const VkPipelineLayout& PipelineLayout, const VkDescriptorSet* pDescriptorSet)
+    void ClVkMesh::Render(const VkCommandBuffer& DrawBuffer, const VkPipelineLayout& PipelineLayout, const VkBuffer& TransformUBO)
     {
         VkDeviceSize offset = 0;
         vkCmdBindVertexBuffers(DrawBuffer, 0, 1, &m_VertBuffer.buffer, &offset);
         vkCmdBindIndexBuffer(DrawBuffer, m_IndexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
         
-        // VkDescriptorBufferInfo bufferInfo{};
-        // bufferInfo.buffer = TransformUBO;
-        // bufferInfo.offset = 0;
-        // bufferInfo.range = sizeof(ClVkTransforms);
+        VkDescriptorBufferInfo bufferInfo{};
+        bufferInfo.buffer = TransformUBO;
+        bufferInfo.offset = 0;
+        bufferInfo.range = sizeof(ClVkTransforms);
 
-        // VkDescriptorImageInfo imageInfo{};
-        // imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        // imageInfo.imageView = *m_Texture.GetView();
-        // imageInfo.sampler = *m_Texture.GetSampler();
+        VkDescriptorImageInfo imageInfo{};
+        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        imageInfo.imageView = *m_Texture.GetView();
+        imageInfo.sampler = *m_Texture.GetSampler();
         
-        // std::array<VkWriteDescriptorSet, 2> descWrites{};
-        // descWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        // descWrites[0].dstSet = 0;
-        // descWrites[0].dstBinding = 0;
-        // descWrites[0].dstArrayElement = 0;
-        // descWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        // descWrites[0].descriptorCount = 1;
-        // descWrites[0].pBufferInfo = &bufferInfo;
-        // descWrites[0].pImageInfo = nullptr;
-        // descWrites[0].pTexelBufferView = nullptr;
+        std::array<VkWriteDescriptorSet, 2> descWrites{};
+        descWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrites[0].dstSet = 0;
+        descWrites[0].dstBinding = 0;
+        descWrites[0].dstArrayElement = 0;
+        descWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descWrites[0].descriptorCount = 1;
+        descWrites[0].pBufferInfo = &bufferInfo;
+        descWrites[0].pImageInfo = nullptr;
+        descWrites[0].pTexelBufferView = nullptr;
 
-        // descWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        // descWrites[1].dstSet = 0;
-        // descWrites[1].dstBinding = 1;
-        // descWrites[1].dstArrayElement = 0;
-        // descWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        // descWrites[1].descriptorCount = 1;
-        // descWrites[1].pBufferInfo = nullptr;
-        // descWrites[1].pImageInfo = &imageInfo;
-        // descWrites[1].pTexelBufferView = nullptr;
-        // vk_ext::vkCmdPushDescriptorSetKHR(DrawBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, PipelineLayout, 0, 2, descWrites.data());
+        descWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrites[1].dstSet = 0;
+        descWrites[1].dstBinding = 1;
+        descWrites[1].dstArrayElement = 0;
+        descWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descWrites[1].descriptorCount = 1;
+        descWrites[1].pBufferInfo = nullptr;
+        descWrites[1].pImageInfo = &imageInfo;
+        descWrites[1].pTexelBufferView = nullptr;
+        vk_ext::vkCmdPushDescriptorSetKHR(DrawBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, PipelineLayout, 0, 2, descWrites.data());
 
         vkCmdPushConstants(DrawBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(Transform3d), &m_transform);
-        vkCmdBindDescriptorSets(DrawBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, PipelineLayout, 0, 1, pDescriptorSet, 0, nullptr);
+        // vkCmdBindDescriptorSets(DrawBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, PipelineLayout, 0, 1, pDescriptorSet, 0, nullptr);
 
         vkCmdDrawIndexed(DrawBuffer, m_IndexBuffer.len, 1, 0, 0, 0);
 

@@ -62,7 +62,6 @@ void ClVkPhysicalDevice::Pick()
 
 b8 ClVkPhysicalDevice::IsDeviceSuitable(const VkPhysicalDevice &PhysDevice)
 {
-    CLOG_WARN("IsDeviceSuitable Called");
     ClVkQueueFamilies* QueueFamilies = ClVkQueueFamilies::Get();
     QueueFamilies->Find(PhysDevice);
 
@@ -75,6 +74,16 @@ b8 ClVkPhysicalDevice::IsDeviceSuitable(const VkPhysicalDevice &PhysDevice)
 
     // b8 bindless_supported = descriptorIndexing.descriptorBindingPartiallyBound &&
     //     descriptorIndexing.runtimeDescriptorArray;
+    VkPhysicalDevicePushDescriptorPropertiesKHR pushDescriptorProperties{};
+    pushDescriptorProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR;
+
+    VkPhysicalDeviceProperties2KHR physicalDeviceProperties{};
+    physicalDeviceProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+    physicalDeviceProperties.pNext = &pushDescriptorProperties;
+
+    vk_ext::vkGetPhysicalDeviceProperties2KHR(PhysDevice, &physicalDeviceProperties);
+
+    b8 bPushDescriptorProperties = pushDescriptorProperties.maxPushDescriptors > 0;
         
     ClVkSurface* Surface = ClVkSurface::Get();
     Surface->QueryDetails(PhysDevice);
@@ -84,14 +93,14 @@ b8 ClVkPhysicalDevice::IsDeviceSuitable(const VkPhysicalDevice &PhysDevice)
     b8 bIsSuitable = bSwapChainAdequate &&
         physDeviceFeatures.features.samplerAnisotropy &&
         CheckDeviceExtensionSupport(PhysDevice) &&
-        QueueFamilies->IsComplete();
+        QueueFamilies->IsComplete() &&
+        bPushDescriptorProperties;
 
     return bIsSuitable;
 }
 
 u32 ClVkPhysicalDevice::RateDeviceSuitability(const VkPhysicalDevice &PhysDevice)
 {
-    CLOG_WARN("RateDeviceSuitability Called");
     VkPhysicalDeviceProperties physDeviceProperties;
     vkGetPhysicalDeviceProperties(PhysDevice, &physDeviceProperties);
     
@@ -125,11 +134,11 @@ b8 ClVkPhysicalDevice::CheckDeviceExtensionSupport(const VkPhysicalDevice &PhysD
 
 void ClVkPhysicalDevice::SetPropertiesAndFeatures(const VkPhysicalDevice &PhysDevice)
 {
-    // VkPhysicalDevicePushDescriptorPropertiesKHR pushDescriptorProperties{};
-    // pushDescriptorProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR;
+    VkPhysicalDevicePushDescriptorPropertiesKHR pushDescriptorProperties{};
+    pushDescriptorProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR;
 
     m_physicalDeviceProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-    // m_physicalDeviceProperties.pNext = &pushDescriptorProperties;
+    m_physicalDeviceProperties.pNext = &pushDescriptorProperties;
 
     vk_ext::vkGetPhysicalDeviceProperties2KHR(PhysDevice, &m_physicalDeviceProperties);
 
