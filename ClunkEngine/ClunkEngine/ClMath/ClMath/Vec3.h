@@ -57,10 +57,10 @@ namespace Clunk
 
 /////////////////////////////////////////////////////////
 
-        bool operator==(const Vec3& Other)
-        {
-            return x == Other.x && y == Other.y && z == Other.z;
-        }
+        // bool operator==(const Vec3& Other)
+        // {
+        //     return x == Other.x && y == Other.y && z == Other.z;
+        // }
 
         const bool operator==(const Vec3& Other) const
         {

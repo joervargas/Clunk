@@ -8,5 +8,3 @@ target_include_directories(STB_Image
         include
         src
 )
-
-target_compile_features(STB_Image PUBLIC cxx_std_17)

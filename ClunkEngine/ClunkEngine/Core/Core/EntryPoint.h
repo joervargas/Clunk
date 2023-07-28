@@ -4,7 +4,6 @@
 
 #include "Application.h"
 #include "Logger.h"
-#include "Exception.h"
 // #include <unistd.h>
 
 
@@ -31,7 +30,7 @@ int main(int argc, char* argv[])
             THROW_EXCEPTION("Application did not shutdown gracefully.");
         }
     }
-    catch(Clunk::clException& e)
+    catch(Clunk::CLException& e)
     {
         LogFile->LogException(e);
     }

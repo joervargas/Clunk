@@ -35,5 +35,3 @@ target_link_libraries(${Target}
     SDL2::SDL2
     PCH
 )
-
-target_compile_features(${Target} PUBLIC cxx_std_17)

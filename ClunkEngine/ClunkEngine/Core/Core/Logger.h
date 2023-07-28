@@ -1,13 +1,8 @@
 #pragma once
 
-// #include <Defines/defines.h>
-#include "Object.h"
-#include "Exception.h"
-// #include <Defines/Defines.h>
 #include <PCH/pch.h>
 #include <sstream>
 #include <fstream>
-
 
 namespace Clunk
 {
@@ -37,30 +32,24 @@ namespace Clunk
         TRACE_LEVEL = 5
     } ELog_Level;
 
-    /**
-     * @brief Initializes logging system. Call twice; once with state = 0 to get required memory size,
-     * then a second time passing allocated memory to state.
-     * 
-     * @param memory_requirement A pointer to hold the required memory size of internal state.
-     * @param state 0 if just requesting memory requirement, otherwise allocated block of memory.
-     * @return b8 True on success; otherwise false.
-     */
-    b8 initialize_logging();
-    // b8 initialize_logging(u64* memory_requirement, void* state);
-
-    /**
-     * @brief Shuts down the logging system.
-     * @param state A pointer to the system state.
-     */
-    void shutdown_logging(void* state);
 
     /**
      * @brief Outputs console logging at the given level.
      * @param level The log level to use.
      * @param message The message to be logged.
+     * @param fileName The file throwing error
+     * @param lineNumber The line Number of fileName where this was called
      * @param ... Any formatted data that should be included in the log entry.
      */
-    void Log_Output(ELog_Level level, String message, String fileName, i32 lineNumber, ...);
+    void log_output(ELog_Level level, String message, String fileName, i32 lineNumber, ...);
+
+    /**
+     * @brief Outputs for Validation layers
+     * @param level 
+     * @param message 
+     * @param ... Any formatted data that should be included in the log entry
+     */
+    void log_validation_layer(ELog_Level level, String message, ...);
 
     /**
      * @brief Outputs logging at the given level.
@@ -68,14 +57,14 @@ namespace Clunk
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_PRINT(level, message, ...) Log_Output(level, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_PRINT(level, message, ...) log_output(level, message, __FILE__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs a fatal-level message. Should be used to stop the application when hit.
      * @param message The message to be logged. Can be a format string for additional parameters.
      * @param ... Additional parameters to be logged.
      */
-    #define CLOG_FATAL(message, ...) Log_Output(Clunk::ELog_Level::FATAL_LEVEL, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_FATAL(message, ...) log_output(ELog_Level::FATAL_LEVEL, __FILE__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs an error-level message. Should be used to indicate critical runtime problems 
@@ -83,7 +72,7 @@ namespace Clunk
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_ERROR(message, ...) Log_Output(Clunk::ELog_Level::ERROR_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_ERROR(message, ...) log_output(ELog_Level::ERROR_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs a warning-level message. Should be used to indicate non-critial problems with 
@@ -91,7 +80,7 @@ namespace Clunk
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_WARN(message, ...) Log_Output(Clunk::ELog_Level::WARN_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_WARN(message, ...) log_output(ELog_Level::WARN_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs a warning-level message. Should be used to indicate non-critial problems with 
@@ -99,26 +88,52 @@ namespace Clunk
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_INFO(message, ...) Log_Output(Clunk::ELog_Level::INFO_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_INFO(message, ...) log_output(ELog_Level::INFO_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs an info-level message. Should be used for non-erronuous informational purposes.
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_DEBUG(message, ...) Log_Output(Clunk::ELog_Level::DEBUG_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_DEBUG(message, ...) log_output(ELog_Level::DEBUG_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs a trace-level message. Should be used for verbose debugging purposes.
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_TRACE(message, ...) Log_Output(Clunk::ELog_Level::TRACE_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_TRACE(message, ...) log_output(ELog_Level::TRACE_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
 
 
-    class LogFileManager : public ClObject
+    class CLException : public std::exception
     {
-   public:
+    public:
+
+        String m_ErrorDesc;
+
+        String m_SrcFileName;
+        
+        String m_LineNumber;
+
+        String m_ErrText;
+
+        /**
+         * @brief Overrides std::exception::what()
+         * @return const char* (C string) featuring: Error number, Error Desc, Src File, Line Number
+         */
+        const char* what();
+
+        CLException(String ErrorDesc, String SrcFileName, i32 LineNumber, ...);
+
+    protected:
+
+    private:
+
+    };
+
+    class LogFileManager
+    {
+    public:
 
         // Log File buffer
         std::stringstream logBuffer;
@@ -151,7 +166,7 @@ namespace Clunk
          * @brief Writes an exception to the log file.
          * @param e VException to log.
          */
-        void LogException(clException e);
+        void LogException(CLException e);
 
         /**
          * @brief Gets the time as string. 
@@ -175,5 +190,10 @@ namespace Clunk
         virtual ~LogFileManager() {};
 
     };
+
+    /**
+     * Throws errors. Takes a formatable ErrorDesc whicha accepsts variable arguments
+     */
+    #define THROW_EXCEPTION(ErrorDesc, ...) throw Clunk::CLException(ErrorDesc, __FILE__, __LINE__, ##__VA_ARGS__)
 
 }

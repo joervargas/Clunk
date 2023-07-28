@@ -20,5 +20,3 @@ target_include_directories(${Target}
 )
 
 target_link_libraries(${Target} Vulkan::Vulkan)
-
-target_compile_features(${Target} PUBLIC cxx_std_17)

@@ -18,5 +18,3 @@ target_include_directories(${Target}
     PRIVATE
         ${Target}
 )
-
-target_compile_features(${Target} PUBLIC cxx_std_17)

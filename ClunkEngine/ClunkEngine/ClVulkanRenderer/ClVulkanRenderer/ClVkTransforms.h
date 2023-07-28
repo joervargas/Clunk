@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
+// #include <glm/glm.hpp>
 
 #include <ClMath/Mat4.h>
 

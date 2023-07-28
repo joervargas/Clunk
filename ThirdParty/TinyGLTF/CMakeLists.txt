@@ -18,5 +18,3 @@ target_link_libraries(TinyGLTF
     Json
     STB_Image
 )
-
-target_compile_features(TinyGLTF PUBLIC cxx_std_11)

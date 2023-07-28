@@ -51,5 +51,3 @@ if(${VULKAN_GRAPHICS})
         ClVulkanRenderer
     )
 endif()
-
-target_compile_features(${Target} PUBLIC cxx_std_17)

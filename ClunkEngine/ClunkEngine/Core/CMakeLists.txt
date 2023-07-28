@@ -42,5 +42,3 @@ target_link_libraries(${Target}
     Events
     ClRenderManager
 )
-
-target_compile_features(${Target} PUBLIC cxx_std_17)

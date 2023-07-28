@@ -23,13 +23,13 @@ endif()
 # endif()
 
 # add_subdirectory(${Target}/ClVkLoader)
-add_subdirectory(${Target}/ClVkContext)
-add_subdirectory(${Target}/ClVkImage)
-add_subdirectory(${Target}/ClVkBuffer)
-add_subdirectory(${Target}/ClVkDescriptor)
-add_subdirectory(${Target}/ClVkSwapchain)
-add_subdirectory(${Target}/ClVkPipeline)
-add_subdirectory(${Target}/ClVkCmds)
+add_subdirectory(${Target}/ClVulkan)
+# add_subdirectory(${Target}/ClVkImage)
+# add_subdirectory(${Target}/ClVkBuffer)
+# add_subdirectory(${Target}/ClVkDescriptor)
+# add_subdirectory(${Target}/ClVkSwapchain)
+# add_subdirectory(${Target}/ClVkPipeline)
+# add_subdirectory(${Target}/ClVkCmds)
 
 
 add_library(${Target}
@@ -55,12 +55,6 @@ target_link_libraries(${Target}
     Core
     ClMath
     ClVkExt
-    ClVkContext
-    ClVkImage
-    ClVkBuffer
-    ClVkDescriptor
-    ClVkSwapchain
-    ClVkPipeline
-    ClVkCmds
+    ClVulkan
     ClRenderManager
 )

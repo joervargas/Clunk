@@ -35,4 +35,4 @@ add_custom_command(
     VERBATIM
 )
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+# target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)

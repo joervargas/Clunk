@@ -39,7 +39,7 @@ namespace Clunk
         {
             return Quat();
         }
-        else if (fn == tn * -1.0f)
+        else if (fn == (tn * -1.0f))
         {
             Vec3 ortho = Vec3(1, 0, 0);
             if(fabsf(fn.y) < fabsf(fn.x))
