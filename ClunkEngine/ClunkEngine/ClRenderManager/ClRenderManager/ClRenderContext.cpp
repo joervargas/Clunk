@@ -19,30 +19,26 @@ namespace Clunk
 
         if(!m_renderer)
         {
-            CLOG_ERROR("Failed to set a render strategy!");
+            THROW_EXCEPTION("Failed to set a render strategy!");
             return;
         }
         
         m_renderer->Init();
     }
 
-    // void ClRenderContext::Update()
-    // {
-    //     m_renderer->Update();
-    // }
+    void ClRenderContext::Update()
+    {
+        m_renderer->Update();
+    }
 
     void ClRenderContext::Destroy()
     {
         m_renderer->Destroy();
     }
 
-    void ClRenderContext::BeginFrame()
-    {
-        m_renderer->BeginFrame();
-    }
 
     void ClRenderContext::RenderFrame()
     {
-        m_renderer->RenderFrame();
+        m_renderer->Render();
     }
 };

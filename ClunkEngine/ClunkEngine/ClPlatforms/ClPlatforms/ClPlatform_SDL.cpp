@@ -3,8 +3,10 @@
 #ifdef PLATFORM_SDL
 
 #include <Core/Logger.h>
-#include <Events/WindowEvents.h>
-#include <Events/KeyEvents.h>
+#include "ClPlatform_EventTypes.h"
+#include "ClPlatform_EventStatics.h"
+// #include <Events/WindowEvents.h>
+// #include <Events/KeyEvents.h>
 
 namespace Clunk
 {
@@ -101,13 +103,15 @@ namespace Clunk
 
     void ClPlatform::ProcessWindowEvents(const SDL_WindowEvent &WindowEvent)
     {
+        const WindowData data = { .windowID = WindowEvent.windowID };
         switch (WindowEvent.event)
         {
             // case SDL_WINDOWEVENT_SHOWN:
             //     SDL_Log("~ SDL Window %d shown \n", windowEvent.windowID);
             //     break;
             case SDL_WINDOWEVENT_RESIZED:
-                WindowEvents::WE_Resize.Set(WindowEvent);
+                // WindowEvents::WE_Resize.Set(WindowEvent);
+                Events::Window::Resize.Listener->fire_callback(Events::Window::Resize.Listener->Obj, data);
                 // SDL_Log(
                 //     "~ SDL Window %d size changed to %d x %d \n",
                 //     windowEvent.windowID,
@@ -116,15 +120,15 @@ namespace Clunk
                 // );
                 break;
             case SDL_WINDOWEVENT_MINIMIZED:
-                WindowEvents::WE_Minimize.Set(WindowEvent);
+                // WindowEvents::WE_Minimize.Set(WindowEvent);
                 // SDL_Log("~ SDL Window %d minimized", windowEvent.windowID);
                 break;
             case SDL_WINDOWEVENT_MAXIMIZED:
-                WindowEvents::WE_Maximize.Set(WindowEvent);
+                // WindowEvents::WE_Maximize.Set(WindowEvent);
                 // SDL_Log("~ SDL Window %d maximized", windowEvent.windowID);
                 break;
             case SDL_WINDOWEVENT_CLOSE:
-                WindowEvents::WE_Close.Set(WindowEvent);
+                // WindowEvents::WE_Close.Set(WindowEvent);
                 // SDL_Log("~ SDL Window %d closed \n", windowEvent.windowID);
                 break;
             default:
@@ -139,7 +143,8 @@ namespace Clunk
             case SDL_KEYDOWN:
                 if(KeyboardEvent.keysym.sym == SDLK_ESCAPE)
                 {
-                    KeyEvents::KE_ESC.Set(KeyboardEvent);
+                    // KeyEvents::KE_ESC.Set(KeyboardEvent);
+                    Events::Key::ESC_Key.Listener->fire_callback(Events::Key::ESC_Key.Listener->Obj, EButtonState::BS_PRESSED);
                 }
                 break;
             case SDL_KEYUP:

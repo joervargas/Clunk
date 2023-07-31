@@ -137,13 +137,6 @@ namespace Clunk::Vk
         CLOG_INFO("VmaAllocator created")
     }
 
-    struct VkSwapchainDetails
-    {
-        VkSurfaceCapabilitiesKHR Capabilities;
-        std::vector<VkSurfaceFormatKHR> Formats;
-        std::vector<VkPresentModeKHR> PresentModes;
-    };
-
     VkSwapchainDetails query_vk_swapchain_details(VkPhysicalDevice PhysicalDevice, VkSurfaceKHR Surface)
     {
         VkSwapchainDetails details;
@@ -198,31 +191,27 @@ namespace Clunk::Vk
         return imageCountExceeded ? capabilities.maxImageCount : imageCount;
     }
 
-    void create_vk_swapchain(const VkDevice Device, VkPhysicalDevice PhysicalDevice, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, u32 Width, u32 Height, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots)
+    void create_vk_swapchain(const VkDevice Device, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, VkSurfaceCapabilitiesKHR Capabilities, VkSurfaceFormatKHR Format, VkPresentModeKHR PresentMode, VkExtent2D Extent, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots)
     {
         CLOG_INFO("Creating VkSwapchain...");
-
-        VkSwapchainDetails swapchainDetails = query_vk_swapchain_details(PhysicalDevice, Surface);
-        VkSurfaceFormatKHR surfaceFormat = choose_vk_swap_surface_format(swapchainDetails.Formats);
-        VkPresentModeKHR presentMode = choose_vk_swap_present_mode(swapchainDetails.PresentModes);
 
         const VkSwapchainCreateInfoKHR ci =
         {
             .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
             .flags = 0,
             .surface = Surface,
-            .minImageCount = choose_vk_swapchain_image_count(swapchainDetails.Capabilities),
-            .imageFormat = surfaceFormat.format,
-            .imageColorSpace = surfaceFormat.colorSpace,
-            .imageExtent = { .width = Width, .height = Height },
+            .minImageCount = choose_vk_swapchain_image_count(Capabilities),
+            .imageFormat = Format.format,
+            .imageColorSpace = Format.colorSpace,
+            .imageExtent = Extent,
             .imageArrayLayers = 1,
             .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
             .imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
             .queueFamilyIndexCount = static_cast<u32>(QueueFamilyIndices.size()),
             .pQueueFamilyIndices = QueueFamilyIndices.data(),
-            .preTransform = swapchainDetails.Capabilities.currentTransform,
+            .preTransform = Capabilities.currentTransform,
             .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-            .presentMode = presentMode,
+            .presentMode = PresentMode,
             .clipped = VK_TRUE,
             .oldSwapchain = VK_NULL_HANDLE
         };

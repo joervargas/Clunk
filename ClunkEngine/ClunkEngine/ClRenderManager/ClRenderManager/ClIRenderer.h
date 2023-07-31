@@ -7,6 +7,10 @@ namespace Clunk
     class ClIRenderer
     {
     public:
+
+        ClIRenderer() {};
+
+        ~ClIRenderer() {};
         
         virtual void SetIsResized(b8 bIsResized) = 0;
 

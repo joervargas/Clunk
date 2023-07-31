@@ -38,8 +38,6 @@ namespace Clunk
         while (bIsRunning)
         {
             m_platformCtx->PumpEvents();
-            RenderCtx.BeginFrame();
-
 
             RenderCtx.RenderFrame();
         }

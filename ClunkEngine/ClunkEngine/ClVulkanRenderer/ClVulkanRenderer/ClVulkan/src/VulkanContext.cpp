@@ -34,7 +34,14 @@ namespace Clunk::Vk
     VulkanSwapchain create_vulkan_swapchain(const VkDevice Device, VkPhysicalDevice PhysicalDevice, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, u32 Width, u32 Height)
     {
         VulkanSwapchain vkSwapchain;
-        create_vk_swapchain(Device, PhysicalDevice, Surface, QueueFamilyIndices, Width, Height, &vkSwapchain.Handle);
+
+        VkSwapchainDetails details = query_vk_swapchain_details(PhysicalDevice, Surface);
+        VkSurfaceFormatKHR format = choose_vk_swap_surface_format(details.Formats);
+        vkSwapchain.Format = format.format;
+        VkPresentModeKHR presentMode = choose_vk_swap_present_mode(details.PresentModes);
+
+        vkSwapchain.Extent = { .width = Width, .height = Height };
+        create_vk_swapchain(Device, Surface, QueueFamilyIndices, details.Capabilities, format, presentMode, vkSwapchain.Extent, &vkSwapchain.Handle);
         create_vk_swapchain_images(Device, vkSwapchain.Handle, vkSwapchain.Images, vkSwapchain.ImageViews);
         
         return vkSwapchain;

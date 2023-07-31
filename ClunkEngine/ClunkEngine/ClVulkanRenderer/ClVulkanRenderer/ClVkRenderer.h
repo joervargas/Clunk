@@ -25,6 +25,11 @@ namespace Clunk::Vk
     {
     public:
 
+        ClVkRenderer() {};
+        ClVkRenderer(const char* AppName, const u32 AppVersion);
+
+        ~ClVkRenderer() {};
+
         virtual void SetIsResized(b8 bIsResized) override { m_bIsResized = bIsResized; }
         
         virtual void Init() override;
@@ -37,38 +42,15 @@ namespace Clunk::Vk
 
         void RecordDrawCmdBuffer(const VkCommandBuffer& DrawBuffer, const u32& ImageIndex);
 
+    protected:
+
+    VulkanLoader mVkLoader;
+
+    VulkanContext mVkCtx;
+
     private:
 
-        // ClVkContext* m_vkCtx;
-        // ClVkSwapchain* m_swapchain;
         b8 m_bIsResized{false};
-
-        // // ClVkDepthImage m_depthImage;
-
-        // ClVKRenderPass m_renderPass;
-        // ClVkPipelineLayout m_pipelineLayout;
-        // ClVkGraphicsPipeline m_basicPipeline;
-
-        // ClVkDescriptorSetLayout m_descSetLayout;
-        // ClVkDescriptorPool m_descPool;
-        // ClVkDescriptorSets m_descSets;
-
-        // ClVkCmdPools* m_cmdPools;
-        // std::vector<VkCommandBuffer> m_drawCmdBuffers;
-
-        // const u32 MAX_FRAMES_IN_FLIGHT{2};
-        // u32 m_currentFrame{0};
-        // u32 m_imageIndex{0};
-        // f32 m_lastTime{0.0f};
-        
-        // // ClVkArrayBuffer m_VAO;
-        // // ClVkArrayBuffer m_IBO;
-        // // ClVkTexture m_Texture;
-        // ClVkMesh m_Mesh;
-
-        // struct ClVkTransforms m_worldTransform;
-
-        // ClVkUniformBuffers<ClVkTransforms> m_worldTransformUBOs;
 
 
     };

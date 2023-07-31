@@ -74,19 +74,35 @@ namespace Clunk::Vk
      */
     void create_vk_mem_allocator(const VkInstance Instance, u32 Vk_API_Version, const VkPhysicalDevice PhysicalDevice, const VkDevice Device, VmaAllocator* pMemAllocator );
 
+    struct VkSwapchainDetails
+    {
+        VkSurfaceCapabilitiesKHR Capabilities;
+        std::vector<VkSurfaceFormatKHR> Formats;
+        std::vector<VkPresentModeKHR> PresentModes;
+    };
+
+    VkSwapchainDetails query_vk_swapchain_details(VkPhysicalDevice PhysicalDevice, VkSurfaceKHR Surface);
+
+    VkSurfaceFormatKHR choose_vk_swap_surface_format(const std::vector<VkSurfaceFormatKHR>& AvailableFormats);
+
+    VkPresentModeKHR choose_vk_swap_present_mode(const std::vector<VkPresentModeKHR>& AvailablePresentModes);
+
+    u32 choose_vk_swapchain_image_count(const VkSurfaceCapabilitiesKHR& capabilities);
+
     /**
-     * @brief Create a VkSwapchain object
+     * @brief Create a VkSwapchainKHR handle
      * 
      * @param Device VkDevice handle
-     * @param PhysicalDevice VkPhysicalDevice handle
      * @param Surface VkSurfaceKHR handle
-     * @param QueueFamilyIndices std::vector<u32> of queue family indices
-     * @param Width u32 frame width
-     * @param Height u32 frame height
-     * @param pSwapchain a pointer to VkSwapchainKHR handle
-     * @param bSupportScreenshots  
+     * @param QueueFamilyIndices u32 list of queue family indices
+     * @param Capabilities VkSurfaceCapabilitiesKHR
+     * @param Format VkSurfaceFormatKHR
+     * @param PresentMode VkPresentModeKHR
+     * @param Extent Height and Width extent
+     * @param pSwapchain VkSwapchain* handle to assign to
+     * @param bSupportScreenshots bool Support for screenshots? TODO: functionality
      */
-    void create_vk_swapchain(const VkDevice Device, VkPhysicalDevice PhysicalDevice, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, u32 Width, u32 Height, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots = false);
+    void create_vk_swapchain(const VkDevice Device, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, VkSurfaceCapabilitiesKHR Capabilities, VkSurfaceFormatKHR Format, VkPresentModeKHR PresentMode, VkExtent2D Extent, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots = false);
 
     /**
      * @brief Create  VKSwapchain Images and ImageViews

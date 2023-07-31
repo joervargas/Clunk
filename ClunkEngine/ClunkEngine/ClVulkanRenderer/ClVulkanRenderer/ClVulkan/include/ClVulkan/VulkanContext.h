@@ -56,6 +56,8 @@ namespace Clunk::Vk
         VkSwapchainKHR Handle = nullptr;
         std::vector<VkImage> Images;
         std::vector<VkImageView> ImageViews;
+        VkFormat Format;
+        VkExtent2D Extent;
     };
 
     /**
