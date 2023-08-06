@@ -22,6 +22,10 @@ typedef struct DelegateButtonListener
 typedef struct ButtonEvent
 {
     DelegateButtonListener* Listener;
+    // void Execute(const EButtonState& State)
+    // {
+    //     this->Listener->fire_callback(this->Listener->Obj, State);
+    // }
 };
 
 
@@ -45,6 +49,10 @@ typedef struct DelegateMouseMotionListener
 typedef struct MouseMotionEvent
 {
     DelegateMouseMotionListener* Listener;
+    // void Execute(const EButtonState& State)
+    // {
+    //     this->Listener->fire_callback(this->Listener->Obj, State);
+    // }
 };
 
 // Window Events
@@ -83,4 +91,8 @@ typedef struct DelegateWindowListener
 typedef struct WindowEvent
 {
     DelegateWindowListener* Listener;
+    // void Execute(const EButtonState& State)
+    // {
+    //     this->Listener->fire_callback(this->Listener->Obj, State);
+    // }
 };

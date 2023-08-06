@@ -1,4 +1,4 @@
-#include "VulkanLoader.h"
+#include "ClVkLoader.h"
 #include "VkUtils.h"
 
 #include <Core/Logger.h>
@@ -196,11 +196,11 @@ namespace Clunk::Vk
         CLOG_INFO("SDL Vulkan Surface created.");
     }
 
-    VulkanLoader create_vulkan_loader(SDL_Window *Window, const char* AppName, u32 AppVersion)
+    ClVkLoader cl_create_vk_loader(SDL_Window *Window, const char* AppName, u32 AppVersion)
     {   
         CLOG_INFO("Creating VulkanLoader...");
 
-        VulkanLoader vkLoader;
+        ClVkLoader vkLoader;
         create_vk_instance(&vkLoader.Instance, vkLoader.Vk_API_Version ,  AppName, AppVersion, "Clunk Engine", VK_MAKE_API_VERSION(0, 0, 1, 0));
         create_debug_callbacks(vkLoader.Instance, &vkLoader.Messenger, &vkLoader.ReportCallback);
         create_vk_surface(Window, vkLoader.Instance, &vkLoader.Surface);
@@ -209,7 +209,7 @@ namespace Clunk::Vk
         return vkLoader;
     }
 
-    void destroy_vulkan_loader(VulkanLoader &VkLoader)
+    void cl_destroy_vk_loader(ClVkLoader &VkLoader)
     {
         CLOG_INFO("Destroying VulkanLoader struct...");
 

@@ -1,4 +1,5 @@
 #include "VkUtils.h"
+#include "ClVkImg.h"
 
 namespace Clunk::Vk
 {
@@ -241,7 +242,7 @@ namespace Clunk::Vk
     {
         const VkCommandPoolCreateInfo ci =
         {
-            .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+            .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
             .pNext = nullptr,
             .queueFamilyIndex = QueueFamilyIndex
         };
@@ -262,28 +263,6 @@ namespace Clunk::Vk
         return vkAllocateCommandBuffers(Device, &ai, CommandBuffers.data());
     }
 
-    void create_vk_image_view(VkDevice Device, VkImage Image, VkFormat Format, VkImageAspectFlags AspectFlags, VkImageView *pImageView, VkImageViewType ImageViewType, u32 LayerCount, u32 MipLevels)
-    {
-        const VkImageViewCreateInfo view_info =
-        {
-            .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-            .pNext = nullptr,
-            .flags = 0,
-            .image = Image,
-            .viewType = ImageViewType,
-            .format = Format,
-            .subresourceRange =
-            {
-                .aspectMask = AspectFlags,
-                .baseMipLevel = 0,
-                .levelCount = MipLevels,
-                .baseArrayLayer = 0,
-                .layerCount = LayerCount
-            }
-        };
-
-        VK_CHECK(vkCreateImageView(Device, &view_info, nullptr, pImageView));
-    }
 
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore *pSemaphore)
     {

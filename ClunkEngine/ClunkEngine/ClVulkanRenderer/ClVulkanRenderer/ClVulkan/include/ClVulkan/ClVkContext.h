@@ -5,23 +5,24 @@
 #include <VkMemAllocator/vk_mem_alloc.h>
 
 #include <PCH/pch.h>
+#include "VkDefines.h"
 
-#include "VulkanLoader.h"
+#include "ClVkLoader.h"
 #include <vector>
 #include <optional>
 
 namespace Clunk::Vk
 {
 
-    struct VulkanQueue
+    struct ClVkQueue
     {
         std::optional<u32> index = std::nullopt;
         VkQueue Handle = nullptr;
     };
 
-    struct VulkanQueues
+    struct ClVkQueues
     {
-        VulkanQueue Graphics;
+        ClVkQueue Graphics;
     };
 
     /**
@@ -30,7 +31,7 @@ namespace Clunk::Vk
      * @param PhysicalDevice VkPhysicalDevice handle
      * @param Queues VulkanQueues struct containing VkQueue handles and indices
      */
-    void query_vulkan_queues_indices(const VkPhysicalDevice PhysicalDevice, VulkanQueues* Queues);
+    void cl_query_vk_queues_indices(const VkPhysicalDevice PhysicalDevice, ClVkQueues* Queues);
 
     /**
      * @brief Queueies VkDevice for VkQueue handles; populates VulkanQueues
@@ -38,7 +39,7 @@ namespace Clunk::Vk
      * @param Device VkDevice handle
      * @param Queues VulkanQueues struct containing VkQueue handles and indices
      */
-    void query_vulkan_queues_handles(const VkDevice Device, VulkanQueues* Queues);
+    void cl_query_vk_queues_handles(const VkDevice Device, ClVkQueues* Queues);
 
     /**
      * @brief Get list of all active VulkanQueue family indices
@@ -46,12 +47,12 @@ namespace Clunk::Vk
      * @param Queues VulkanQueues struct containing VkQueue handles and indices
      * @return std::vector<u32> 
      */
-    std::vector<u32> get_vulkan_queues_indices_list(const VulkanQueues* Queues);
+    std::vector<u32> cl_get_vk_queues_indices_list(const ClVkQueues* Queues);
 
     /**
      * @brief VkSwapchin Handle, Images and ImageViews
      */
-    struct VulkanSwapchain
+    struct ClVkSwapchain
     {
         VkSwapchainKHR Handle = nullptr;
         std::vector<VkImage> Images;
@@ -71,7 +72,7 @@ namespace Clunk::Vk
      * @param Height Frame Height
      * @return VulkanSwapchain stores VkSwapchain handle, swapchain images and imageViews
      */
-    VulkanSwapchain create_vulkan_swapchain(const VkDevice Device, VkPhysicalDevice PhysicalDevice, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, u32 Width, u32 Height);
+    ClVkSwapchain cl_create_vk_swapchain(const VkDevice Device, VkPhysicalDevice PhysicalDevice, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, u32 Width, u32 Height);
 
     /**
      * @brief Destroy contents of VulkanSwapchain struct
@@ -79,13 +80,13 @@ namespace Clunk::Vk
      * @param Device Device Handle
      * @param pSwapchain ponter to VulkanSwapchainStruct
      */
-    void destroy_vulkan_swapchain(const VkDevice Device, VulkanSwapchain* pSwapchain);
+    void cl_destroy_vk_swapchain(const VkDevice Device, ClVkSwapchain* pSwapchain);
 
 
     /**
      * @brief VkCommand Pool and Buffers
      */
-    struct VulkanCommands
+    struct ClVkCommands
     {
         VkCommandPool Pool;
         std::vector<VkCommandBuffer> Buffers;
@@ -94,35 +95,53 @@ namespace Clunk::Vk
     /**
      * @brief Context handles in Vulkan for the current GPU device
      */
-    struct VulkanContext
+    struct ClVkContext
     {
         VkPhysicalDevice PhysicalDevice = nullptr;
         VkDevice Device = nullptr;
 
         VmaAllocator MemAllocator;
 
-        VulkanQueues Queues;
-        VulkanSwapchain Swapchain;
+        ClVkQueues Queues;
+        ClVkSwapchain Swapchain;
 
         VkSemaphore WaitSemaphore;
         VkSemaphore RenderSemaphore;
 
-        VulkanCommands DrawCmds;
+        ClVkCommands DrawCmds;
     };
 
     /**
-     * @brief Create a VulkanContext object
+     * @brief Create a ClVkContext object
      * 
-     * @param Loader VulkanLoader 
-     * @return VulkanContext 
+     * @param Loader ClVkLoader 
+     * @return ClVkContext 
      */
-    VulkanContext create_vulkan_context(const VulkanLoader& Loader, u32 Width, u32 Height);
+    ClVkContext cl_create_vk_context(const ClVkLoader& Loader, u32 Width, u32 Height);
 
     /**
-     * @brief Destroy a VulkanContext object
+     * @brief Destroy a ClVkContext struct and all its resources.
      * 
+     * @param VkCtx* ClVkContext to destroy
      */
-    void destroy_vulkan_context(VulkanContext* Ctx);
+    void cl_destroy_vk_context(ClVkContext* VkCtx);
+
+    /**
+     * @brief Readies a single VkCommandBuffer to recieve instructions and returns it. 
+     * 
+     * @param VkCtx ClVkContext struct
+     * @return VkCommandBuffer handle ready to recieve instructions
+     */
+    VkCommandBuffer cl_begin_single_time_vk_command_buffer(ClVkContext& VkCtx);
+
+    /**
+     * @brief Submits work done on a single time buffer and frees it from memory.
+     * 
+     * @param VkCtx ClVkContext struct
+     * @param CmdBuffer VkCommandBuffer handle to submit and free.
+     */
+    void cl_end_single_time_vk_command_buffer(ClVkContext& VkCtx, VkCommandBuffer CmdBuffer);
+
 }
 
 

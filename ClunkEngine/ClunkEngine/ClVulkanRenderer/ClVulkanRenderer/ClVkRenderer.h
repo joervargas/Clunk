@@ -1,12 +1,12 @@
 #pragma once
 
 #include <ClRenderManager/ClIRenderer.h>
-
-#include <ClVulkan/VulkanLoader.h>
-#include <ClVulkan/VulkanContext.h>
-
 #include <PCH/pch.h>
 #include <ClPlatforms/ClPlatform.h>
+
+#include <ClVulkan/ClVkLoader.h>
+#include <ClVulkan/ClVkContext.h>
+#include "ClVkRenderLayerBase.h"
 
 #include <vulkan/vulkan.h>
 
@@ -44,9 +44,9 @@ namespace Clunk::Vk
 
     protected:
 
-    VulkanLoader mVkLoader;
+    ClVkLoader mVkLoader;
 
-    VulkanContext mVkCtx;
+    ClVkContext mVkCtx;
 
     private:
 

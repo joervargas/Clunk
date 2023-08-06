@@ -5,26 +5,13 @@
 #include <VkMemAllocator/vk_mem_alloc.h>
 
 #include <Core/Logger.h>
+#include "VkDefines.h"
+
 #include <vector>
 #include <optional>
 
 namespace Clunk::Vk
-{
-
-    /**
-     * Checks the VkResult of vulkan functions. Throws errors if found.
-     */
-    #define VK_CHECK(x)                                     \
-        {                                                   \
-            VkResult err = x;                               \
-            if(err)                                         \
-            {                                               \
-                THROW_EXCEPTION("Vulkan Error: %s", err);   \
-            }                                               \
-        }            
-
-
-    #endif
+{   
 
     /**
      * @brief Determines whether the given VkPhysicalDevice is suitable for engine use cases.
@@ -136,27 +123,6 @@ namespace Clunk::Vk
     VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, std::vector<VkCommandBuffer>& CommandBuffers);
 
     /**
-     * @brief Create a VkImageView object
-     * 
-     * @param Device Device handle
-     * @param Image VkImage
-     * @param Format VkFormat of the image
-     * @param AspectFlags 
-     * @param pImageView VkImageView* to create
-     * @param ImageViewType VkImageViewType
-     * @param LayerCount u32 Image layer count
-     * @param MipLevels u32 Image mip level count
-     */
-    void create_vk_image_view(
-        VkDevice Device, 
-        VkImage Image, VkFormat Format, 
-        VkImageAspectFlags AspectFlags, 
-        VkImageView* pImageView, 
-        VkImageViewType ImageViewType = VK_IMAGE_VIEW_TYPE_2D, 
-        u32 LayerCount = 1, u32 MipLevels = 1
-    );
-
-    /**
      * @brief Creates a VkSemaphore
      * 
      * @param Device VkDevice handle
@@ -166,3 +132,5 @@ namespace Clunk::Vk
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore* pSemaphore);
 
 }
+
+#endif

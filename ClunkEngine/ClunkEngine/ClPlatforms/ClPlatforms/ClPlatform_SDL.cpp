@@ -103,6 +103,8 @@ namespace Clunk
 
     void ClPlatform::ProcessWindowEvents(const SDL_WindowEvent &WindowEvent)
     {
+        using namespace Events;
+
         const WindowData data = { .windowID = WindowEvent.windowID };
         switch (WindowEvent.event)
         {
@@ -111,7 +113,7 @@ namespace Clunk
             //     break;
             case SDL_WINDOWEVENT_RESIZED:
                 // WindowEvents::WE_Resize.Set(WindowEvent);
-                Events::Window::Resize.Listener->fire_callback(Events::Window::Resize.Listener->Obj, data);
+                Window::Resize.Listener->fire_callback(Window::Resize.Listener->Obj, data);
                 // SDL_Log(
                 //     "~ SDL Window %d size changed to %d x %d \n",
                 //     windowEvent.windowID,
