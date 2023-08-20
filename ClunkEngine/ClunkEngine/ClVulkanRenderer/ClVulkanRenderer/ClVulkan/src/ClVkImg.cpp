@@ -1,7 +1,9 @@
 #include "ClVkImg.h"
 #include "ClVkContext.h"
+#include "ClVkBuffer.h"
 
 #include <STB_Image/stb_image.h>
+
 
 namespace Clunk::Vk
 {
@@ -276,6 +278,27 @@ namespace Clunk::Vk
         );
     }
 
+    void copy_vk_cmd_buffer_to_image(VkCommandBuffer CmdBuffer, VkBuffer Buffer, VkImage Image, u32 Width, u32 Height, u32 LayerCount)
+    {
+        const VkBufferImageCopy copy_region =
+        {
+            .bufferOffset = 0,
+            .bufferRowLength = 0,
+            .bufferImageHeight = 0,
+            .imageSubresource =
+            {
+                .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                .mipLevel = 0,
+                .baseArrayLayer = 0,
+                .layerCount = LayerCount
+            },
+            .imageOffset = VkOffset3D{ .x = 0, .y = 0, .z = 0 },
+            .imageExtent = VkExtent3D{ .width = Width, .height = Height, .depth = 1 }
+        };
+
+        vkCmdCopyBufferToImage(CmdBuffer, Buffer, Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy_region);
+    }
+
     VkFormat find_vk_format_depth_img(VkPhysicalDevice PhysicalDevice)
     {
         return find_supported_vk_format(
@@ -304,7 +327,52 @@ namespace Clunk::Vk
         VkDeviceSize image_size = width * height * 4;
         VkBuffer staging_buffer;
         VkDeviceMemory staging_memory;
-        return ClVkImage();
+        
+        create_vk_buffer(VkCtx.Device, VkCtx.PhysicalDevice, 
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            image_size, &staging_buffer, &staging_memory);
+
+        void* p_data;
+        vkMapMemory(VkCtx.Device, staging_memory, 0, image_size, 0, &p_data);
+            memcpy(p_data, pixels, static_cast<size_t>(image_size));
+        vkUnmapMemory(VkCtx.Device, staging_memory);
+
+        ClVkImage img;
+        create_vk_image(
+            VkCtx.Device, VkCtx.PhysicalDevice, 
+            width, height, 
+            VK_FORMAT_R8G8B8A8_UNORM,
+            VK_IMAGE_TILING_OPTIMAL,
+            VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            &img.Handle, &img.Memory);
+
+        VkCommandBuffer cmd = cl_begin_single_time_vk_command_buffer(VkCtx);
+            
+            transition_vk_image_layout(
+                cmd, img.Handle, 
+                VK_FORMAT_R8G8B8A8_UNORM, 
+                VK_IMAGE_LAYOUT_UNDEFINED, 
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+            copy_vk_cmd_buffer_to_image(cmd, staging_buffer, img.Handle, width, height);
+
+            transition_vk_image_layout(
+                cmd, img.Handle, 
+                VK_FORMAT_R8G8B8A8_UNORM, 
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            
+        cl_end_single_time_vk_command_buffer(VkCtx, cmd);
+
+        vkDestroyBuffer(VkCtx.Device, staging_buffer, nullptr);
+        vkFreeMemory(VkCtx.Device, staging_memory, nullptr);
+        stbi_image_free(pixels);
+
+        create_vk_image_view(VkCtx.Device, img.Handle, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, &img.View);
+
+        return img;
     }
 
     ClVkImage cl_create_vk_depth_image(ClVkContext &VkCtx, u32 Width, u32 Height)
@@ -334,10 +402,14 @@ namespace Clunk::Vk
         return depthImg;
     }
 
-    void cl_destroy_vk_depth_image(const VkDevice Device, ClVkImage* pImage)
+    void cl_destroy_vk_image(const VkDevice Device, ClVkImage* pImage)
     {
         vkDestroyImage(Device, pImage->Handle, nullptr);
         vkDestroyImageView(Device, pImage->View, nullptr);
         vkFreeMemory(Device, pImage->Memory, nullptr);
+
+        pImage->Handle = nullptr;
+        pImage->View = nullptr;
+        pImage->Memory = nullptr;
     }
 }

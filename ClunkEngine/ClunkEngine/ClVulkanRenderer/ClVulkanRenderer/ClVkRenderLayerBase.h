@@ -3,6 +3,8 @@
 #include <vulkan/vulkan.h>
 #include <ClVulkan/ClVkImg.h>
 #include <ClVulkan/ClVkContext.h>
+#include <ClVulkan/ClVkRenderPass.h>
+
 
 namespace Clunk::Vk
 {
@@ -27,7 +29,8 @@ namespace Clunk::Vk
         std::vector<VkDescriptorSet> mDescriptorSets;
 
         std::vector<VkFramebuffer> mFramebuffers;
-        VkRenderPass mRenderPass = nullptr;
+        // VkRenderPass mRenderPass = nullptr;
+        ClVkRenderPass mRenderPass;
 
         VkPipelineLayout mPipelineLayout = nullptr;
         VkPipeline mPipeline = nullptr;

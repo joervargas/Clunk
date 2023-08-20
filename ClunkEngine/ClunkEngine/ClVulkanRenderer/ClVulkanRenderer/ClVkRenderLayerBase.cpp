@@ -26,7 +26,7 @@ namespace Clunk::Vk
         {
             vkDestroyFramebuffer(pVkCtx->Device, frame_buffer, nullptr);
         }
-        vkDestroyRenderPass(pVkCtx->Device, mRenderPass, nullptr);
+        vkDestroyRenderPass(pVkCtx->Device, mRenderPass.Handle, nullptr);
         vkDestroyPipelineLayout(pVkCtx->Device, mPipelineLayout, nullptr);
         vkDestroyPipeline(pVkCtx->Device, mPipeline, nullptr);
     }
@@ -47,7 +47,7 @@ namespace Clunk::Vk
         {
             .sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
             .pNext = nullptr,
-            .renderPass = mRenderPass,
+            .renderPass = mRenderPass.Handle,
             .framebuffer = mFramebuffers[CurrentImage],
             .renderArea = screen_rect
         };

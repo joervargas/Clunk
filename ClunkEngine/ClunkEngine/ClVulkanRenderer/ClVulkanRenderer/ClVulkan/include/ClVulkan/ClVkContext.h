@@ -11,6 +11,10 @@
 #include <vector>
 #include <optional>
 
+
+// Forward Declarations
+struct ClVkRenderPass;
+
 namespace Clunk::Vk
 {
 
@@ -58,7 +62,9 @@ namespace Clunk::Vk
         std::vector<VkImage> Images;
         std::vector<VkImageView> ImageViews;
         VkFormat Format;
-        VkExtent2D Extent;
+        // VkExtent2D Extent;
+        u32 Width;
+        u32 Height;
     };
 
     /**
@@ -141,6 +147,32 @@ namespace Clunk::Vk
      * @param CmdBuffer VkCommandBuffer handle to submit and free.
      */
     void cl_end_single_time_vk_command_buffer(ClVkContext& VkCtx, VkCommandBuffer CmdBuffer);
+
+    /**
+     * @brief Creates a graphics capable VkPipeline handle
+     * @param VkCtx 
+     * @param RenderPass 
+     * @param PipelineLayout 
+     * @param ShaderFiles 
+     * @param bDynamicScissor 
+     * @param bUseBlending 
+     * @param CustomWidth 
+     * @param CustomHeight 
+     * @param NumPatchControlPoints 
+     * @return VkPipeline 
+     */
+    VkPipeline cl_create_vk_graphics_pipeline(
+        ClVkContext& VkCtx,
+        ClVkRenderPass RenderPass,
+        VkPipelineLayout PipelineLayout,
+        const std::vector<const char *>& ShaderFiles,
+        VkPrimitiveTopology Topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+        bool bDynamicScissor = false,
+        bool bUseBlending = true,
+        i32 CustomWidth = -1,
+        i32 CustomHeight = -1,
+        u32 NumPatchControlPoints = 0
+    );
 
 }
 

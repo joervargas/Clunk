@@ -28,6 +28,9 @@ target_include_directories(${Target}
 target_link_libraries(${Target}
     ClVkExt
     Vulkan::Vulkan
+    # SPIRV-Tools
+    glslang
+    glslang-default-resource-limits
     VkMemAllocator
     PCH
     Core

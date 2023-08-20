@@ -192,7 +192,7 @@ namespace Clunk::Vk
         return imageCountExceeded ? capabilities.maxImageCount : imageCount;
     }
 
-    void create_vk_swapchain(const VkDevice Device, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, VkSurfaceCapabilitiesKHR Capabilities, VkSurfaceFormatKHR Format, VkPresentModeKHR PresentMode, VkExtent2D Extent, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots)
+    void create_vk_swapchain(const VkDevice Device, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, VkSurfaceCapabilitiesKHR Capabilities, VkSurfaceFormatKHR Format, VkPresentModeKHR PresentMode, u32 Width, u32 Height, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots)
     {
         CLOG_INFO("Creating VkSwapchain...");
 
@@ -204,7 +204,7 @@ namespace Clunk::Vk
             .minImageCount = choose_vk_swapchain_image_count(Capabilities),
             .imageFormat = Format.format,
             .imageColorSpace = Format.colorSpace,
-            .imageExtent = Extent,
+            .imageExtent = VkExtent2D{ .width = Width, .height = Height },
             .imageArrayLayers = 1,
             .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
             .imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
@@ -274,5 +274,19 @@ namespace Clunk::Vk
         return vkCreateSemaphore(Device, &ci, nullptr, pSemaphore);
     }
 
+    VkResult create_vk_pipeline_layout(VkDevice Device, u32 DescriptorSetLayoutCount, VkDescriptorSetLayout *pDescriptorSetLayouts, u32 PushConstantRangeCount, VkPushConstantRange *pPushConstantRange, VkPipelineLayout *pPipeLineLayout)
+    {
+        const VkPipelineLayoutCreateInfo create_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .setLayoutCount = DescriptorSetLayoutCount,
+            .pSetLayouts = pDescriptorSetLayouts,
+            .pushConstantRangeCount = PushConstantRangeCount,
+            .pPushConstantRanges = pPushConstantRange
+        };
+        return vkCreatePipelineLayout(Device, &create_info, nullptr, pPipeLineLayout);
+    }
 }
 

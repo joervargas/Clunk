@@ -89,7 +89,7 @@ namespace Clunk::Vk
      * @param pSwapchain VkSwapchain* handle to assign to
      * @param bSupportScreenshots bool Support for screenshots? TODO: functionality
      */
-    void create_vk_swapchain(const VkDevice Device, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, VkSurfaceCapabilitiesKHR Capabilities, VkSurfaceFormatKHR Format, VkPresentModeKHR PresentMode, VkExtent2D Extent, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots = false);
+    void create_vk_swapchain(const VkDevice Device, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, VkSurfaceCapabilitiesKHR Capabilities, VkSurfaceFormatKHR Format, VkPresentModeKHR PresentMode, u32 Width, u32 Height, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots = false);
 
     /**
      * @brief Create  VKSwapchain Images and ImageViews
@@ -131,6 +131,7 @@ namespace Clunk::Vk
      */
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore* pSemaphore);
 
+    VkResult create_vk_pipeline_layout(VkDevice Device, u32 DescriptorSetLayoutCount, VkDescriptorSetLayout* pDescriptorSetLayouts, u32 PushConstantRangeCount, VkPushConstantRange* pPushConstantRange, VkPipelineLayout* pPipeLineLayout);
 }
 
 #endif

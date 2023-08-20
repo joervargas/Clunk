@@ -1,6 +1,9 @@
 #include "ClVkContext.h"
 #include "VkUtils.h"
-#include "ClVkContext.h"
+#include "ClVkRenderPass.h"
+#include "VkShaderUtils.h"
+
+#include <array>
 
 namespace Clunk::Vk
 {
@@ -41,8 +44,10 @@ namespace Clunk::Vk
         vkSwapchain.Format = format.format;
         VkPresentModeKHR presentMode = choose_vk_swap_present_mode(details.PresentModes);
 
-        vkSwapchain.Extent = { .width = Width, .height = Height };
-        create_vk_swapchain(Device, Surface, QueueFamilyIndices, details.Capabilities, format, presentMode, vkSwapchain.Extent, &vkSwapchain.Handle);
+        // vkSwapchain.Extent = { .width = Width, .height = Height };
+        vkSwapchain.Width = Width;
+        vkSwapchain.Height = Height;
+        create_vk_swapchain(Device, Surface, QueueFamilyIndices, details.Capabilities, format, presentMode, vkSwapchain.Width, vkSwapchain.Height, &vkSwapchain.Handle);
         create_vk_swapchain_images(Device, vkSwapchain.Handle, vkSwapchain.Images, vkSwapchain.ImageViews);
         
         return vkSwapchain;
@@ -143,5 +148,167 @@ namespace Clunk::Vk
         vkQueueWaitIdle(VkCtx.Queues.Graphics.Handle);
 
         vkFreeCommandBuffers(VkCtx.Device, VkCtx.DrawCmds.Pool, 1, &CmdBuffer);
+    }
+
+    VkPipeline cl_create_vk_graphics_pipeline(ClVkContext &VkCtx, ClVkRenderPass RenderPass, VkPipelineLayout PipelineLayout, const std::vector<const char *> &ShaderFiles, VkPrimitiveTopology Topology, bool bDynamicScissor, bool bUseBlending, i32 CustomWidth, i32 CustomHeight, u32 NumPatchControlPoints)
+    {
+        std::vector<ClVkShaderModule> shader_modules;
+        std::vector<VkPipelineShaderStageCreateInfo> shader_stages;
+
+        shader_modules.resize(ShaderFiles.size());
+        shader_stages.resize(ShaderFiles.size());
+
+        for(size_t i = 0; i < ShaderFiles.size(); i++)
+        {
+            const char* file = ShaderFiles[i];
+            shader_modules[i] = cl_create_vk_shader_module(VkCtx.Device, file);
+
+            VkShaderStageFlagBits stage = get_vk_shader_stage_from_filename(file);
+
+            shader_stages[i] = cl_get_vk_shader_stage_create_info(shader_modules[i], stage);
+        }
+
+        const VkPipelineVertexInputStateCreateInfo vertex_input_state_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO
+        };
+
+        const VkPipelineInputAssemblyStateCreateInfo input_assembly_state_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+            .topology = Topology,
+            .primitiveRestartEnable = VK_FALSE
+        };
+
+        const VkViewport viewport =
+        {
+            .x = 0.f,
+            .y = 0.f,
+            .width = static_cast<f32>(CustomWidth > 0 ? CustomWidth : VkCtx.Swapchain.Width),
+            .height = static_cast<f32>(CustomHeight > 0 ? CustomHeight : VkCtx.Swapchain.Height),
+            .minDepth = 0.f,
+            .maxDepth = 1.0f
+        };
+
+        const VkRect2D scissor =
+        {
+            .offset = { 0, 0 },
+            .extent =
+            {
+                CustomWidth > 0 ? CustomWidth : VkCtx.Swapchain.Width,
+                CustomHeight > 0 ? CustomHeight : VkCtx.Swapchain.Height
+            }
+        };
+
+        const VkPipelineViewportStateCreateInfo viewport_state_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+            .viewportCount = 1,
+            .pViewports = &viewport,
+            .scissorCount = 1,
+            .pScissors = &scissor
+        };
+
+        const VkPipelineRasterizationStateCreateInfo rasterizer_state_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+            .polygonMode = VK_POLYGON_MODE_FILL,
+            .cullMode = VK_CULL_MODE_BACK_BIT,
+            .frontFace = VK_FRONT_FACE_CLOCKWISE,
+            .lineWidth = 1.0f
+        };
+        
+        const VkPipelineMultisampleStateCreateInfo multi_sample_state_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+            .rasterizationSamples = VK_SAMPLE_COUNT_1_BIT,
+            .sampleShadingEnable = VK_FALSE,
+            .minSampleShading = 1.0f
+        };
+
+        const VkPipelineColorBlendAttachmentState color_blend_attachment_state =
+        {
+            .blendEnable = VK_TRUE,
+            .srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,
+            .dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+            .colorBlendOp = VK_BLEND_OP_ADD,
+            .srcAlphaBlendFactor = bUseBlending ? VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA : VK_BLEND_FACTOR_ONE,
+            .dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO,
+            .alphaBlendOp = VK_BLEND_OP_ADD,
+            .colorWriteMask =
+                VK_COLOR_COMPONENT_R_BIT |
+                VK_COLOR_COMPONENT_G_BIT |
+                VK_COLOR_COMPONENT_B_BIT |
+                VK_COLOR_COMPONENT_A_BIT
+        };
+
+        const VkPipelineColorBlendStateCreateInfo color_blend_state_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+            .logicOpEnable = VK_FALSE,
+            .logicOp = VK_LOGIC_OP_COPY,
+            .attachmentCount = 1,
+            .pAttachments = &color_blend_attachment_state,
+            .blendConstants = { 0.f, 0.f, 0.f, 0.f }
+        };
+
+        const VkPipelineDepthStencilStateCreateInfo depth_stencil_state_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+            .depthTestEnable = RenderPass.Info.bUseDepth ? VK_TRUE : VK_FALSE,
+            .depthWriteEnable = RenderPass.Info.bUseDepth ? VK_TRUE : VK_FALSE,
+            .depthCompareOp = VK_COMPARE_OP_LESS,
+            .depthBoundsTestEnable = VK_FALSE,
+            .minDepthBounds = 0.0f,
+            .maxDepthBounds = 1.0f
+        };
+
+        std::array<VkDynamicState, 1> dynamic_states = { VK_DYNAMIC_STATE_SCISSOR };
+        const VkPipelineDynamicStateCreateInfo dynamic_state_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .dynamicStateCount = static_cast<u32>(dynamic_states.size()),
+            .pDynamicStates = dynamic_states.data()
+        };
+
+        const VkPipelineTessellationStateCreateInfo tessellation_state_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .patchControlPoints = NumPatchControlPoints
+        };
+        
+        const VkGraphicsPipelineCreateInfo create_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+            .stageCount = static_cast<u32>(shader_stages.size()),
+            .pStages = shader_stages.data(),
+            .pVertexInputState = &vertex_input_state_info,
+            .pInputAssemblyState = &input_assembly_state_info,
+            .pTessellationState = &tessellation_state_info,
+            .pViewportState = &viewport_state_info,
+            .pRasterizationState = &rasterizer_state_info,
+            .pMultisampleState = &multi_sample_state_info,
+            .pDepthStencilState = &depth_stencil_state_info,
+            .pColorBlendState = &color_blend_state_info,
+            .pDynamicState = &bDynamicScissor ? &dynamic_state_info : nullptr,
+            .layout = PipelineLayout,
+            .renderPass = RenderPass.Handle,
+            .subpass = 0,
+            .basePipelineHandle = VK_NULL_HANDLE,
+            .basePipelineIndex = -1
+        };
+        VkPipeline pipeline;
+        VK_CHECK(vkCreateGraphicsPipelines(VkCtx.Device, VK_NULL_HANDLE, 1, &create_info, nullptr, &pipeline))
+        
+        for(ClVkShaderModule module : shader_modules)
+        {
+            vkDestroyShaderModule(VkCtx.Device, module.Handle, nullptr);
+        }
+        
+        return pipeline;
     }
 }

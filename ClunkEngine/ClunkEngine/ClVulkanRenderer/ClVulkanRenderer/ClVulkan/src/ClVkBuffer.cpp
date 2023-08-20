@@ -1,6 +1,6 @@
 #include "ClVkBuffer.h"
 
-#include "VkDefines.h"
+
 
 
 namespace Clunk::Vk

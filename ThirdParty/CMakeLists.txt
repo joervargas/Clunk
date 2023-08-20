@@ -12,6 +12,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SDL2)
 
+message("Fetching glslang...")
+FetchContent_Declare(
+    glslang
+    GIT_REPOSITORY https://github.com/KhronosGroup/glslang.git
+    GIT_TAG sdk-1.3.250.1
+)
+FetchContent_MakeAvailable(glslang)
+
 # add_subdirectory(./SDL2)
 # if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     # list(APPEND ${CMAKE_PREFIX_PATH} ${SDL2_BINARY_DIR})
@@ -33,6 +41,15 @@ else()
     Set(VULKAN_GRAPHICS OFF PARENT_SCOPE)
     message("***Vulkan not found***")
 endif()
+
+# find_package(glslang REQUIRED)
+# if(GLSLANG_FOUND)
+#     message("Glslang found!")
+# else()
+#     message("***Glslang not found***")
+# endif()
+
+find_package(Threads REQUIRED)
 
 # add_subdirectory(./ImGui)
 add_subdirectory(./Json)

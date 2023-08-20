@@ -98,6 +98,23 @@ namespace Clunk::Vk
     );
 
     /**
+     * @brief Copies a VkBuffer to a VkImage
+     * 
+     * @param CmdBuffer VkCommandBuffer to execute the operation
+     * @param Buffer VkBuffer to be copied
+     * @param Image VkImage to be copied to
+     * @param Width Image's width
+     * @param Height Image's height
+     * @param LayerCount Number of layers in the image
+     */
+    void copy_vk_cmd_buffer_to_image(
+        VkCommandBuffer CmdBuffer, 
+        VkBuffer Buffer, VkImage Image, 
+        u32 Width, u32 Height, u32 
+        LayerCount = 1
+    );
+
+    /**
      * @brief Finds a supported depth image format. (Uses fn 'find_supported_vk_format' intrinsically.)
      * 
      * @param PhysicalDevice VkPhysicalDevice handle
@@ -120,7 +137,13 @@ namespace Clunk::Vk
         VkImageView View = nullptr;
     };
 
-    
+    /**
+     * @brief Creates and returns a ClVkImage Struct
+     * 
+     * @param VkCtx ClVkContext
+     * @param Filename const char* file name with path
+     * @return ClVkImage 
+     */
     ClVkImage cl_create_vk_image(ClVkContext& VkCtx, const char* Filename);
 
     /**
@@ -139,7 +162,7 @@ namespace Clunk::Vk
      * @param Device VkDevice handle
      * @param pImage* ClVkImage pointer handle to destroy
      */
-    void cl_destroy_vk_depth_image(const VkDevice Device, ClVkImage* pImage);
+    void cl_destroy_vk_image(const VkDevice Device, ClVkImage* pImage);
     
     struct ClVkTexture final
     {
