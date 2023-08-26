@@ -7,6 +7,7 @@ build/
 out/
 CMakePresets.json
 CMakeSettings.json
+CMakeLists.txt.user
 ZERO_CHECK.proj
 ZERO_CHECK.proj.filters
 Clunk.sln
