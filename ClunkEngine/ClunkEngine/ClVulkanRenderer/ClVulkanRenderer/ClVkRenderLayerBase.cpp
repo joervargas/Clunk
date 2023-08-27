@@ -38,8 +38,8 @@ namespace Clunk::Vk
             .offset = { 0, 0 },
             .extent =
             {
-                .width = pVkCtx->Swapchain.Extent.width,
-                .height = pVkCtx->Swapchain.Extent.height,
+                .width = pVkCtx->Swapchain.Width,
+                .height = pVkCtx->Swapchain.Height,
             }
         };
 

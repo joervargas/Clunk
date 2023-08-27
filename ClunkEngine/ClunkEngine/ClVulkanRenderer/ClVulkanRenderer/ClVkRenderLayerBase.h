@@ -17,6 +17,12 @@ namespace Clunk::Vk
         
         ~ClVkRenderLayerBase();
 
+        /*
+        * @brief Returns true or false whether ClVkRenderLayerBase uses a depth buffer.
+        * @return b8
+        */
+        inline b8 UsesDepthBuffer() { return mRenderPass.Info.bUseDepth; }
+
     protected:
 
         void BeginRenderPass(VkCommandBuffer CmdBuf, u32 CurrentImage);
