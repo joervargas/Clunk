@@ -7,6 +7,7 @@
 #include <ClVulkan/ClVkLoader.h>
 #include <ClVulkan/ClVkContext.h>
 #include "ClVk3dLayer.h"
+#include "ClVkModelLayer.h"
 
 #include <vulkan/vulkan.h>
 

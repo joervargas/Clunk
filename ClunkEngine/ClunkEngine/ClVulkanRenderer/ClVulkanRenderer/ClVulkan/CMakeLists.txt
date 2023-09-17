@@ -28,7 +28,7 @@ target_include_directories(${Target}
 target_link_libraries(${Target}
     ClVkExt
     Vulkan::Vulkan
-    # SPIRV-Tools
+    SPIRV
     glslang
     glslang-default-resource-limits
     VkMemAllocator

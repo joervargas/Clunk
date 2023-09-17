@@ -23,6 +23,8 @@ namespace Clunk::Vk
         */
         inline b8 UsesDepthBuffer() { return mRenderPass.Info.bUseDepth; }
 
+        virtual void FillCmdBuffer(VkCommandBuffer& CmdBuffer, size_t CurrentImage) = 0;
+
     protected:
 
         void BeginRenderPass(VkCommandBuffer CmdBuf, u32 CurrentImage);
@@ -30,12 +32,14 @@ namespace Clunk::Vk
 
         ClVkContext* pVkCtx;
 
-        VkDescriptorSetLayout mDescriptorSetLayout = nullptr;
-        VkDescriptorPool mDescriptorPool = nullptr;
-        std::vector<VkDescriptorSet> mDescriptorSets;
+        VkDescriptorSetLayout mDescSetLayout = nullptr;
+        VkDescriptorPool mDescPool = nullptr;
+        std::vector<VkDescriptorSet> mDescSets;
 
+
+        u32 mFrameBufferWidth = 0;
+        u32 mFrameBufferHeight = 0;
         std::vector<VkFramebuffer> mFramebuffers;
-        // VkRenderPass mRenderPass = nullptr;
         ClVkRenderPass mRenderPass;
 
         VkPipelineLayout mPipelineLayout = nullptr;

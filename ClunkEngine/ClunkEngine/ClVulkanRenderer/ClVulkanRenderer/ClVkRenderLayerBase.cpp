@@ -14,13 +14,13 @@ namespace Clunk::Vk
         {
             vkFreeMemory(pVkCtx->Device, mem, nullptr);
         }
-        if(mDescriptorSetLayout != nullptr)
+        if(mDescSetLayout != nullptr)
         {
-            vkDestroyDescriptorSetLayout(pVkCtx->Device, mDescriptorSetLayout, nullptr);
+            vkDestroyDescriptorSetLayout(pVkCtx->Device, mDescSetLayout, nullptr);
         }
-        if(mDescriptorPool != nullptr)
+        if(mDescPool != nullptr)
         {
-            vkDestroyDescriptorPool(pVkCtx->Device, mDescriptorPool, nullptr);
+            vkDestroyDescriptorPool(pVkCtx->Device, mDescPool, nullptr);
         }
         for(VkFramebuffer frame_buffer : mFramebuffers)
         {
@@ -57,7 +57,7 @@ namespace Clunk::Vk
         vkCmdBindDescriptorSets(
             CmdBuf,
             VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelineLayout,
-            0, 1, &mDescriptorSets[CurrentImage],
+            0, 1, &mDescSets[CurrentImage],
             0, nullptr
         );
     }

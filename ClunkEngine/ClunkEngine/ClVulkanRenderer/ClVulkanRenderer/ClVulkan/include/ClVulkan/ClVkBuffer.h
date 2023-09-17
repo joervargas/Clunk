@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
-#include "VkDefines.h"
+#include <PCH/pch.h>
 
 namespace Clunk::Vk
 {

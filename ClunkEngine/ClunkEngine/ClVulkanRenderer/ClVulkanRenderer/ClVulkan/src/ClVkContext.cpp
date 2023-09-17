@@ -280,7 +280,7 @@ namespace Clunk::Vk
             .flags = 0,
             .patchControlPoints = NumPatchControlPoints
         };
-        
+
         const VkGraphicsPipelineCreateInfo create_info =
         {
             .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -294,7 +294,7 @@ namespace Clunk::Vk
             .pMultisampleState = &multi_sample_state_info,
             .pDepthStencilState = &depth_stencil_state_info,
             .pColorBlendState = &color_blend_state_info,
-            .pDynamicState = &bDynamicScissor ? &dynamic_state_info : nullptr,
+            .pDynamicState = bDynamicScissor ? &dynamic_state_info : nullptr,
             .layout = PipelineLayout,
             .renderPass = RenderPass.Handle,
             .subpass = 0,
