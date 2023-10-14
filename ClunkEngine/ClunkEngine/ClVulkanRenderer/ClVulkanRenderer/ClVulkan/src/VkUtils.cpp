@@ -362,7 +362,7 @@ namespace Clunk::Vk
 
     const VkPipelineColorBlendStateCreateInfo create_vk_pipeline_info_color_blend(VkPipelineColorBlendAttachmentState* pColorBlendAttachments, u32 ColorBlendAttachmentsCount)
     {
-        const VkPipelineColorBlendStateCreateInfo color_blend_state_info =
+        return VkPipelineColorBlendStateCreateInfo
         {
             .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
             .logicOpEnable = VK_FALSE,

@@ -1,3 +1,4 @@
+#include "ClVkRenderLayers/ClVkRenderLayerBase.h"
 #include "ClVkRenderLayerBase.h"
 
 
@@ -6,14 +7,6 @@ namespace Clunk::Vk
     
     ClVkRenderLayerBase::~ClVkRenderLayerBase()
     {
-        for(VkBuffer buf: mUniformBuffers)
-        {
-            vkDestroyBuffer(pVkCtx->Device, buf, nullptr);
-        }
-        for(VkDeviceMemory mem: mUniformBuffersDeviceMemory)
-        {
-            vkFreeMemory(pVkCtx->Device, mem, nullptr);
-        }
         if(mDescSetLayout != nullptr)
         {
             vkDestroyDescriptorSetLayout(pVkCtx->Device, mDescSetLayout, nullptr);
@@ -31,7 +24,7 @@ namespace Clunk::Vk
         vkDestroyPipeline(pVkCtx->Device, mPipeline, nullptr);
     }
 
-    void ClVkRenderLayerBase::BeginRenderPass(VkCommandBuffer CmdBuf, u32 CurrentImage)
+    void ClVkRenderLayerBase::BeginRenderPass(VkCommandBuffer CmdBuffer, u32 CurrentImage)
     {
         const VkRect2D screen_rect =
         {
@@ -51,14 +44,19 @@ namespace Clunk::Vk
             .framebuffer = mFramebuffers[CurrentImage],
             .renderArea = screen_rect
         };
-        vkCmdBeginRenderPass(CmdBuf, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBeginRenderPass(CmdBuffer, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdBindPipeline(CmdBuf, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline);
+        vkCmdBindPipeline(CmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline);
         vkCmdBindDescriptorSets(
-            CmdBuf,
+            CmdBuffer,
             VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelineLayout,
             0, 1, &mDescSets[CurrentImage],
             0, nullptr
         );
     }
+}
+
+void Clunk::Vk::ClVkRenderLayerBase::EndRenderPass(VkCommandBuffer CmdBuffer)
+{
+    vkCmdEndRenderPass(CmdBuffer);
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ClVkRenderLayerBase.h"
 #include <ClVulkan/ClVkContext.h>
 #include <ClVulkan/ClVkImg.h>
@@ -14,7 +16,7 @@ namespace Clunk::Vk
 
         ClVkModelLayer(ClVkContext& VkCtx, const char* ModelFile, const char* TextureFile, u32 UniformDataSize);
 
-        virtual void FillCmdBuffer(VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
+        virtual void DrawFrame(VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 
     private:
 

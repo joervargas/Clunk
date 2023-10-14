@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
+#include <VkMemAllocator/vk_mem_alloc.h>
 #include <PCH/pch.h>
 
 namespace Clunk::Vk
@@ -16,21 +17,22 @@ namespace Clunk::Vk
     u32 find_vk_memory_type_index(const VkPhysicalDevice PhysDevice, u32 TypeFilter, VkMemoryPropertyFlags Properties);
 
     /**
-     * @brief Populates VkBuffer and VkDeviceMemory handles
+     * @brief Populates VkBuffer and VmaAllocation handles
      * 
      * @param Device VkDevice handle
-     * @param PhysDevice VkPhysicalDevice handle
-     * @param Usage VkBufferUsageFlags
-     * @param MemProperties VkMemoryProperties
+     * @param VmaAllocator VmaAllocator handle
+     * @param BufferUsage VkBufferUsageFlags
+     * @param AllocatorUsage VmaMemoryUsage
      * @param Size VkDeviceSize ( buffer size )
      * @param pBuffer VkBuffer* handle to populate
-     * @param pMemory VkDeviceMemory* handle to populate
+     * @param pAllocation VmaAllocation* handle to populate
      */
     void create_vk_buffer(
-        const VkDevice Device, const VkPhysicalDevice PhysDevice,
-        VkBufferUsageFlags Usage, VkMemoryPropertyFlags MemProperties, 
+        const VkDevice Device, const VmaAllocator Allocator,
+        VkBufferUsageFlags BufferUsage,
+        VmaAllocationCreateFlags AllocationCreateFlags,
         VkDeviceSize Size,
-        VkBuffer* pBuffer, VkDeviceMemory* pMemory);
+        VkBuffer *pBuffer, VmaAllocation* pAllocation);
 
     /**
      * @brief Copies a source VkBuffer to a destination VkBuffer
