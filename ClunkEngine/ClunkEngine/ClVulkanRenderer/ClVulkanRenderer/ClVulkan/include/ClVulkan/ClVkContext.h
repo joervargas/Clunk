@@ -167,7 +167,7 @@ namespace Clunk::Vk
         VkPipelineLayout PipelineLayout,
         const std::vector<const char *>& ShaderFiles,
         VkPrimitiveTopology Topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-        bool bDynamicScissor = false,
+        // bool bDynamicScissor = false,
         bool bUseBlending = true,
         i32 CustomWidth = -1,
         i32 CustomHeight = -1,

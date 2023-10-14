@@ -150,7 +150,16 @@ namespace Clunk::Vk
         vkFreeCommandBuffers(VkCtx.Device, VkCtx.DrawCmds.Pool, 1, &CmdBuffer);
     }
 
-    VkPipeline cl_create_vk_graphics_pipeline(ClVkContext &VkCtx, ClVkRenderPass RenderPass, VkPipelineLayout PipelineLayout, const std::vector<const char *> &ShaderFiles, VkPrimitiveTopology Topology, bool bDynamicScissor, bool bUseBlending, i32 CustomWidth, i32 CustomHeight, u32 NumPatchControlPoints)
+    VkPipeline cl_create_vk_graphics_pipeline(
+        ClVkContext &VkCtx, 
+        ClVkRenderPass RenderPass, 
+        VkPipelineLayout PipelineLayout, 
+        const std::vector<const char *> &ShaderFiles, 
+        VkPrimitiveTopology Topology, 
+        // bool bDynamicScissor, 
+        bool bUseBlending, 
+        i32 CustomWidth, i32 CustomHeight, 
+        u32 NumPatchControlPoints)
     {
         std::vector<ClVkShaderModule> shader_modules;
         std::vector<VkPipelineShaderStageCreateInfo> shader_stages;
