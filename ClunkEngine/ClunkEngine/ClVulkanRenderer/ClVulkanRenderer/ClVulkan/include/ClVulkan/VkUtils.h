@@ -114,10 +114,11 @@ namespace Clunk::Vk
     /**
      * @brief Allocates VkCommandBuffer(s) from the given VkCommandPool
      * 
-     * @param Device VkDevice handle
-     * @param CommandPool VkCommandPool handle
-     * @param BufferCount u32 count of the command buffers to allocate
-     * @param CommandBuffers std::vector<VkCommandBuffer> to assign to.
+     * @param Device            VkDevice handle
+     * @param CommandPool       VkCommandPool handle
+     * @param BufferCount       u32: Count of the command buffers to allocate.
+     * @param CommandBuffers    std::vector<VkCommandBuffer> to assign to.
+     * 
      * @return VkResult 
      */
     VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, std::vector<VkCommandBuffer>& CommandBuffers);
@@ -127,11 +128,128 @@ namespace Clunk::Vk
      * 
      * @param Device VkDevice handle
      * @param pSemaphore VkSemaphore*. Populates Semaphore with this handle
+     * 
      * @return VkResult 
      */
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore* pSemaphore);
 
-    VkResult create_vk_pipeline_layout(VkDevice Device, u32 DescriptorSetLayoutCount, VkDescriptorSetLayout* pDescriptorSetLayouts, u32 PushConstantRangeCount, VkPushConstantRange* pPushConstantRange, VkPipelineLayout* pPipeLineLayout);
+    /**
+     * @brief Create a VkPipelineLayout
+     * 
+     * @param Device                VkDevice handle
+     * @param DescSetLayoutCount    u32
+     * @param pDescSetLayouts       VkDescriptorSetLayout*
+     * @param PushConstRangeCount   u32
+     * @param pPushConstRange       VkPushConstantRange*
+     * 
+     * @return VkResult
+    */
+    VkResult create_vk_pipeline_layout(VkDevice Device, u32 DescrSetLayoutCount, VkDescriptorSetLayout* pDescSetLayouts, u32 PushConstRangeCount, VkPushConstantRange* pPushConstRange, VkPipelineLayout* pPipeLineLayout);
+
+
+    /**
+     * @brief Creates a VkPipelineVertexInputStateCreateInfo struct.
+     * 
+     * @return VkPipelineVertexInputStateCreateInfo
+     */
+    const VkPipelineVertexInputStateCreateInfo create_info_vk_pipeline_vertex_input();
+
+
+    /**
+     * @brief Creates a VkPipelineInputAssemblyStateCreateInfo struct
+     * @param Topology                      VkPrimitiveTopology: Primitive Topology to draw. examples (Triangles, Lines, Points)
+     * @param bPrimitiveRestartEnabled      VkBool32
+     * 
+     * @return VkPipelineInputAssemblyStateCreateInfo
+     */
+    const VkPipelineInputAssemblyStateCreateInfo create_info_vk_pipeline_assembly(VkPrimitiveTopology Topology, VkBool32 bPrimitiveRestartEnabled = VK_FALSE);
+
+    
+    /**
+     * @brief Creates a VkPipelineViewportStateCreateInfo
+     * @param ViewportCount     u32
+     * @param pViewports        VkViewport*
+     * @param ScissorCount      u32
+     * @param pScissors         VkRect2D*
+     * 
+     * @return VkPipelineViewportStateCreateInfo
+     */
+    const VkPipelineViewportStateCreateInfo create_info_vk_pipeline_viewport(u32 ViewportCount, VkViewport* pViewports, u32 ScissorCount, VkRect2D* pScissors);
+
+
+    /**
+     * @brief Creates a VkPipelineRasterizationStateCreateInfo struct
+     * 
+     * @param PolygonMode   VkPolygonMode
+     * @param CullMode      VkCullModeFlags
+     * @param FrontFace     VkFrontFace
+     * @param LineWidth     f32
+     * 
+     * @return VkPipelineRasterizationStateCreateInfo
+     */
+    const VkPipelineRasterizationStateCreateInfo create_info_vk_pipeline_rasterization(VkPolygonMode PolygonMode, VkCullModeFlags CullMode, VkFrontFace FrontFace, f32 LineWidth);
+
+
+    /**
+     * @brief Creates a VkPipelineMultisampleCreateInfo struct.
+     * 
+     * @param Samples                   VkSampleCountFlagBits
+     * @param bSampleShading            VkBool32
+     * @param MinSampleShading          f32
+     * 
+     * @return VkPipelineMultisampleStateCreateInfo
+     */
+    const VkPipelineMultisampleStateCreateInfo create_info_vk_pipeline_multisample(VkSampleCountFlagBits Samples, VkBool32 bSampleShading, f32 MinSampleShading = 1.0f);
+
+
+    /**
+     * @brief Creates a VkPipelineColorBlendAttachmentState struct
+     * 
+     * @param bUseBlending      b8
+     * 
+     * @return VkPipelineColorBlendAttachmentState
+     */
+    const VkPipelineColorBlendAttachmentState create_info_vk_pipeline_color_blend_attachment(b8 bUseBlending);
+
+
+    /**
+     * @brief Creates a VkPipelineColorBlendStateCreateInfo struct 
+     * 
+     * @param pColorBlendAttachments        VkPipelineColorBlendAttachmentState*
+     * @param ColorBlendAttachmentsCount    u32: Number of Attachments
+     * 
+     * @return 
+     */
+    const VkPipelineColorBlendStateCreateInfo create_info_vk_pipeline_color_blend(VkPipelineColorBlendAttachmentState* pColorBlendAttachments, u32 ColorBlendAttachmentsCount);
+
+
+    /**
+     * @brief Creates a VkPipelineDepthStencilCreateInfo struct
+     * 
+     * @return VkPipelineDepthStencilCreateInfo
+     */
+    const VkPipelineDepthStencilStateCreateInfo create_info_vk_pipeline_depth_stencil();
+
+
+    /**
+     * @brief Creates a VkPipelineDynamicStateCreateInfo struct
+     * 
+     * @param pDynamicStates        VkDynamState*
+     * @param DynamicStateCount     u32: VkDynamicState count
+     * 
+     * @return VkPipelineDynamicStateCreateInfo
+     */
+    const VkPipelineDynamicStateCreateInfo create_info_vk_pipeline_dynamic_state(VkDynamicState* pDynamicStates, u32 DynamicStateCount);
+
+
+    /**
+     * @brief Creates a VkPipelineTessellationStateCreateInfo struct
+     * 
+     * @param NumPatchControlPoints     u32
+     * 
+     * @return VkPipelineTessellationStateCreateInfo
+     */
+    const VkPipelineTessellationStateCreateInfo create_info_vk_pipeline_tessellation(u32 NumPatchControlPoints);
 }
 
 #endif

@@ -5,7 +5,7 @@
 #include <VkMemAllocator/vk_mem_alloc.h>
 
 #include <PCH/pch.h>
-#include "VkDefines.h"
+// #include "VkDefines.h"
 
 #include "ClVkLoader.h"
 #include <vector>

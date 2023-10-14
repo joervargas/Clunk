@@ -209,18 +209,18 @@ namespace Clunk::Vk
         return vkLoader;
     }
 
-    void cl_destroy_vk_loader(ClVkLoader &VkLoader)
+    void cl_destroy_vk_loader(ClVkLoader* VkLoader)
     {
         CLOG_INFO("Destroying VulkanLoader struct...");
 
-        vkDestroySurfaceKHR(VkLoader.Instance, VkLoader.Surface, nullptr);
-        destroy_debug_calbacks(VkLoader.Instance, &VkLoader.Messenger, &VkLoader.ReportCallback);
-        vkDestroyInstance(VkLoader.Instance, nullptr);
+        vkDestroySurfaceKHR(VkLoader->Instance, VkLoader->Surface, nullptr);
+        destroy_debug_calbacks(VkLoader->Instance, &VkLoader->Messenger, &VkLoader->ReportCallback);
+        vkDestroyInstance(VkLoader->Instance, nullptr);
         
-        VkLoader.Surface = nullptr;
-        VkLoader.Messenger = nullptr;
-        VkLoader.ReportCallback = nullptr;
-        VkLoader.Instance = nullptr;
+        VkLoader->Surface = nullptr;
+        VkLoader->Messenger = nullptr;
+        VkLoader->ReportCallback = nullptr;
+        VkLoader->Instance = nullptr;
 
         CLOG_INFO("VulkanLoader destroyed.");
     }

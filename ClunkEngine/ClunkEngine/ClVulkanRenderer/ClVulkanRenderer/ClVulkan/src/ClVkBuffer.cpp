@@ -1,7 +1,7 @@
 #include "ClVkBuffer.h"
+#include "VkDefines.h"
 
-
-
+#include <VkMemAllocator/vk_mem_alloc.h>
 
 namespace Clunk::Vk
 {
@@ -22,10 +22,11 @@ namespace Clunk::Vk
     }
 
     void create_vk_buffer(
-        const VkDevice Device, const VkPhysicalDevice PhysDevice,
-        VkBufferUsageFlags Usage, VkMemoryPropertyFlags MemProperties,
+        const VkDevice Device, const VmaAllocator Allocator,
+        VkBufferUsageFlags BufferUsage,
+        VmaAllocationCreateFlags AllocatonCreateFlags,
         VkDeviceSize Size,
-        VkBuffer *pBuffer, VkDeviceMemory *pMemory)
+        VkBuffer *pBuffer, VmaAllocation* pAllocation)
     {
         const VkBufferCreateInfo buffer_info =
         {
@@ -33,25 +34,19 @@ namespace Clunk::Vk
             .pNext = nullptr,
             .flags = 0,
             .size = Size,
-            .usage = Usage,
+            .usage = BufferUsage,
             .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
             .queueFamilyIndexCount = 0,
             .pQueueFamilyIndices = nullptr,
         };
         VK_CHECK(vkCreateBuffer(Device, &buffer_info, nullptr, pBuffer));
 
-        VkMemoryRequirements mem_requirements;
-        vkGetBufferMemoryRequirements(Device, *pBuffer, &mem_requirements);
-
-        const VkMemoryAllocateInfo alloc_info =
+        const VmaAllocationCreateInfo alloc_info =
         {
-            .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO,
-            .pNext = nullptr,
-            .allocationSize = mem_requirements.size,
-            .memoryTypeIndex = find_vk_memory_type_index(PhysDevice, mem_requirements.memoryTypeBits, MemProperties)
+            .usage = VMA_MEMORY_USAGE_AUTO,
+            .flags = AllocatonCreateFlags
         };
-        VK_CHECK(vkAllocateMemory(Device, &alloc_info, nullptr, pMemory));
-        vkBindBufferMemory(Device, *pBuffer, *pMemory, 0);
+        VK_CHECK( vmaCreateBuffer(Allocator, &buffer_info, &alloc_info, pBuffer, pAllocation, nullptr) );
     }
 
 }

@@ -9,11 +9,11 @@ namespace Clunk::Vk
 {
 
     void create_vk_image(
-            VkDevice Device, VkPhysicalDevice PhysicalDevice, 
+            VkDevice Device, VmaAllocator Allocator, 
             u32 Width, u32 Height, 
             VkFormat Format, VkImageTiling Tiling, 
             VkImageUsageFlags Usage, VkMemoryPropertyFlags Properties, 
-            VkImage* pImage, VkDeviceMemory* pMemory, 
+            VkImage* pImage, VmaAllocation* pAllocation, 
             VkImageCreateFlags Flags, u32 MipLevels
         )
     {
@@ -38,19 +38,24 @@ namespace Clunk::Vk
 
         VK_CHECK(vkCreateImage(Device, &imageInfo, nullptr, pImage));
 
-        VkMemoryRequirements memRequirements;
-        vkGetImageMemoryRequirements(Device, *pImage, &memRequirements);
+        // VkMemoryRequirements memRequirements;
+        // vkGetImageMemoryRequirements(Device, *pImage, &memRequirements);
 
-        const VkMemoryAllocateInfo allocInfo =
+        // const VkMemoryAllocateInfo allocInfo =
+        // {
+        //     .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO,
+        //     .pNext = nullptr,
+        //     .allocationSize = memRequirements.size,
+        //     // .memoryTypeIndex = 
+        // };
+
+        // VK_CHECK(vkAllocateMemory(Device, &allocInfo, nullptr, pMemory));
+        // VK_CHECK(vkBindImageMemory(Device, *pImage, *pMemory, 0));
+        VmaAllocationCreateInfo allocInfo =
         {
-            .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO,
-            .pNext = nullptr,
-            .allocationSize = memRequirements.size,
-            // .memoryTypeIndex = 
+            .usage = VMA_MEMORY_USAGE_AUTO
         };
-
-        VK_CHECK(vkAllocateMemory(Device, &allocInfo, nullptr, pMemory));
-        VK_CHECK(vkBindImageMemory(Device, *pImage, *pMemory, 0));
+        VK_CHECK(vmaCreateImage(Allocator, &imageInfo, &allocInfo, pImage, pAllocation, nullptr));
     }
 
     void create_vk_image_view(
@@ -326,27 +331,28 @@ namespace Clunk::Vk
 
         VkDeviceSize image_size = width * height * 4;
         VkBuffer staging_buffer;
-        VkDeviceMemory staging_memory;
+        // VkDeviceMemory staging_memory;
+        VmaAllocation staging_allocation;
         
-        create_vk_buffer(VkCtx.Device, VkCtx.PhysicalDevice, 
+        create_vk_buffer(VkCtx.Device, VkCtx.MemAllocator, 
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            image_size, &staging_buffer, &staging_memory);
+            VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT,
+            image_size, &staging_buffer, &staging_allocation);
 
         void* p_data;
-        vkMapMemory(VkCtx.Device, staging_memory, 0, image_size, 0, &p_data);
+        vmaMapMemory(VkCtx.MemAllocator, staging_allocation, &p_data);
             memcpy(p_data, pixels, static_cast<size_t>(image_size));
-        vkUnmapMemory(VkCtx.Device, staging_memory);
+        vmaUnmapMemory(VkCtx.MemAllocator, staging_allocation);
 
         ClVkImage img;
         create_vk_image(
-            VkCtx.Device, VkCtx.PhysicalDevice, 
+            VkCtx.Device, VkCtx.MemAllocator, 
             width, height, 
             VK_FORMAT_R8G8B8A8_UNORM,
             VK_IMAGE_TILING_OPTIMAL,
             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-            &img.Handle, &img.Memory);
+            &img.Handle, &img.Allocation);
 
         VkCommandBuffer cmd = cl_begin_single_time_vk_command_buffer(VkCtx);
             
@@ -367,7 +373,7 @@ namespace Clunk::Vk
         cl_end_single_time_vk_command_buffer(VkCtx, cmd);
 
         vkDestroyBuffer(VkCtx.Device, staging_buffer, nullptr);
-        vkFreeMemory(VkCtx.Device, staging_memory, nullptr);
+        vmaFreeMemory(VkCtx.MemAllocator, staging_allocation);
         stbi_image_free(pixels);
 
         create_vk_image_view(VkCtx.Device, img.Handle, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, &img.View);
@@ -381,12 +387,12 @@ namespace Clunk::Vk
         VkFormat depthFormat = find_vk_format_depth_img(VkCtx.PhysicalDevice);
 
         create_vk_image(
-            VkCtx.Device, VkCtx.PhysicalDevice,
+            VkCtx.Device, VkCtx.MemAllocator,
             Width, Height, depthFormat,
             VK_IMAGE_TILING_OPTIMAL,
             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-            &depthImg.Handle, &depthImg.Memory
+            &depthImg.Handle, &depthImg.Allocation
         );
 
         create_vk_image_view(VkCtx.Device, depthImg.Handle, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, &depthImg.View);
@@ -402,14 +408,14 @@ namespace Clunk::Vk
         return depthImg;
     }
 
-    void cl_destroy_vk_image(const VkDevice Device, ClVkImage* pImage)
+    void cl_destroy_vk_image(const VkDevice Device, VmaAllocator Allocator, ClVkImage* pImage)
     {
         vkDestroyImage(Device, pImage->Handle, nullptr);
         vkDestroyImageView(Device, pImage->View, nullptr);
-        vkFreeMemory(Device, pImage->Memory, nullptr);
+        vmaFreeMemory(Allocator, pImage->Allocation);
 
         pImage->Handle = nullptr;
         pImage->View = nullptr;
-        pImage->Memory = nullptr;
+        pImage->Allocation = nullptr;
     }
 }

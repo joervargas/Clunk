@@ -3,6 +3,7 @@
 #include <PCH/pch.h>
 #include "VkDefines.h"
 #include <vulkan/vulkan.h>
+#include <VkMemAllocator/vk_mem_alloc.h>
 
 // Forward Declarations
 struct ClVkContext;
@@ -27,10 +28,11 @@ namespace Clunk::Vk
      * @param MipLevels u32 Mip level count. Default = 0
      */
     void create_vk_image(
-        VkDevice Device, VkPhysicalDevice PhysicalDevice, 
-        u32 Width, u32 Height, VkFormat Format, VkImageTiling Tiling, 
+        VkDevice Device, VmaAllocator Allocator, 
+        u32 Width, u32 Height, 
+        VkFormat Format, VkImageTiling Tiling, 
         VkImageUsageFlags Usage, VkMemoryPropertyFlags Properties, 
-        VkImage* ppImage, VkDeviceMemory* pMemory, 
+        VkImage* pImage, VmaAllocation* pAllocation, 
         VkImageCreateFlags Flags = 0, u32 MipLevels = 1
     );
 
@@ -133,7 +135,7 @@ namespace Clunk::Vk
     struct ClVkImage final
     {
         VkImage Handle = nullptr;
-        VkDeviceMemory Memory= nullptr;
+        VmaAllocation Allocation = nullptr;
         VkImageView View = nullptr;
     };
 

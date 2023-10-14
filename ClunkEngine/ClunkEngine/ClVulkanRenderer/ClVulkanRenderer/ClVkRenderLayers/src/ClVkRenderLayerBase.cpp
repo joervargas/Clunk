@@ -1,3 +1,4 @@
+#include "ClVkRenderLayers/ClVkRenderLayerBase.h"
 #include "ClVkRenderLayerBase.h"
 
 
@@ -6,21 +7,13 @@ namespace Clunk::Vk
     
     ClVkRenderLayerBase::~ClVkRenderLayerBase()
     {
-        for(VkBuffer buf: mUniformBuffers)
+        if(mDescSetLayout != nullptr)
         {
-            vkDestroyBuffer(pVkCtx->Device, buf, nullptr);
+            vkDestroyDescriptorSetLayout(pVkCtx->Device, mDescSetLayout, nullptr);
         }
-        for(VkDeviceMemory mem: mUniformBuffersDeviceMemory)
+        if(mDescPool != nullptr)
         {
-            vkFreeMemory(pVkCtx->Device, mem, nullptr);
-        }
-        if(mDescriptorSetLayout != nullptr)
-        {
-            vkDestroyDescriptorSetLayout(pVkCtx->Device, mDescriptorSetLayout, nullptr);
-        }
-        if(mDescriptorPool != nullptr)
-        {
-            vkDestroyDescriptorPool(pVkCtx->Device, mDescriptorPool, nullptr);
+            vkDestroyDescriptorPool(pVkCtx->Device, mDescPool, nullptr);
         }
         for(VkFramebuffer frame_buffer : mFramebuffers)
         {
@@ -31,15 +24,15 @@ namespace Clunk::Vk
         vkDestroyPipeline(pVkCtx->Device, mPipeline, nullptr);
     }
 
-    void ClVkRenderLayerBase::BeginRenderPass(VkCommandBuffer CmdBuf, u32 CurrentImage)
+    void ClVkRenderLayerBase::BeginRenderPass(VkCommandBuffer CmdBuffer, u32 CurrentImage)
     {
         const VkRect2D screen_rect =
         {
             .offset = { 0, 0 },
             .extent =
             {
-                .width = pVkCtx->Swapchain.Extent.width,
-                .height = pVkCtx->Swapchain.Extent.height,
+                .width = pVkCtx->Swapchain.Width,
+                .height = pVkCtx->Swapchain.Height,
             }
         };
 
@@ -51,14 +44,19 @@ namespace Clunk::Vk
             .framebuffer = mFramebuffers[CurrentImage],
             .renderArea = screen_rect
         };
-        vkCmdBeginRenderPass(CmdBuf, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBeginRenderPass(CmdBuffer, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdBindPipeline(CmdBuf, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline);
+        vkCmdBindPipeline(CmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline);
         vkCmdBindDescriptorSets(
-            CmdBuf,
+            CmdBuffer,
             VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelineLayout,
-            0, 1, &mDescriptorSets[CurrentImage],
+            0, 1, &mDescSets[CurrentImage],
             0, nullptr
         );
     }
+}
+
+void Clunk::Vk::ClVkRenderLayerBase::EndRenderPass(VkCommandBuffer CmdBuffer)
+{
+    vkCmdEndRenderPass(CmdBuffer);
 }

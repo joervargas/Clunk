@@ -2,7 +2,6 @@
 #include "VkDefines.h"
 
 #include <glslang/Public/resource_limits_c.h>
-// #include <glslang/Public/ShaderLang.h>
 
 #include <string.h>
 

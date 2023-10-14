@@ -24,7 +24,8 @@ namespace Clunk::Vk
 
     void ClVkRenderer::Destroy()
     {
-
+        cl_destroy_vk_context(&mVkCtx);
+        cl_destroy_vk_loader(&mVkLoader);
     }
 
     void ClVkRenderer::ResetFrame()

@@ -24,6 +24,7 @@ endif()
 
 # add_subdirectory(${Target}/ClVkLoader)
 add_subdirectory(${Target}/ClVulkan)
+add_subdirectory(${Target}/ClVkRenderLayers)
 # add_subdirectory(${Target}/ClVkImage)
 # add_subdirectory(${Target}/ClVkBuffer)
 # add_subdirectory(${Target}/ClVkDescriptor)
@@ -59,5 +60,6 @@ target_link_libraries(${Target}
     ClMath
     ClVkExt
     ClVulkan
+    ClVkRenderLayers
     ClRenderManager
 )

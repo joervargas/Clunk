@@ -6,7 +6,7 @@
 
 #include <ClVulkan/ClVkLoader.h>
 #include <ClVulkan/ClVkContext.h>
-#include "ClVkRenderLayerBase.h"
+#include <ClVkRenderLayers/ClVkModelLayer.h>
 
 #include <vulkan/vulkan.h>
 
@@ -44,14 +44,17 @@ namespace Clunk::Vk
 
     protected:
 
-    ClVkLoader mVkLoader;
+        ClVkLoader mVkLoader;
 
-    ClVkContext mVkCtx;
+        ClVkContext mVkCtx;
+
+        ClVkImage mDepthImage;
+
+        ClVk3dLayer* p3dLayer = nullptr;
 
     private:
 
         b8 m_bIsResized{false};
-
 
     };
 }

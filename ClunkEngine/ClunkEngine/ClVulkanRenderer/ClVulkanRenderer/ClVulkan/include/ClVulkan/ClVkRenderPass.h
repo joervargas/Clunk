@@ -38,6 +38,7 @@ namespace Clunk::Vk
 
     ClVkRenderPass cl_create_vk_renderpass(const ClVkContext& VkCtx, const ClVkRenderPassInfo& Info = {});
 
+    void cl_destroy_vk_renderpass(const ClVkContext& VkCtx, ClVkRenderPass& RenderPass);
 }
 
 

@@ -66,11 +66,11 @@ namespace Clunk::Vk
     ClVkLoader cl_create_vk_loader(SDL_Window* Window, const char* AppName, u32 AppVersion);
 
     /**
-     * @brief Destoy the contents of the VulkanLoader struct
+     * @brief Destoy the contents of the ClVkLoader struct
      * 
-     * @param ClVkLoader a reference to the struct to be destroyed
+     * @param pVkLoader a pointer to the ClVkLoader struct to be destroyed
      */
-    void cl_destroy_vk_loader(ClVkLoader& VkLoader);
+    void cl_destroy_vk_loader(ClVkLoader* pVkLoader);
 
 }
 

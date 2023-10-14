@@ -155,4 +155,9 @@ namespace Clunk::Vk
 
         return renderpass;
     }
+
+    void cl_destroy_vk_renderpass(const ClVkContext &VkCtx, ClVkRenderPass& RenderPass)
+    {
+        vkDestroyRenderPass(VkCtx.Device, RenderPass.Handle, nullptr);
+    }
 }

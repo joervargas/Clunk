@@ -263,7 +263,6 @@ namespace Clunk::Vk
         return vkAllocateCommandBuffers(Device, &ai, CommandBuffers.data());
     }
 
-
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore *pSemaphore)
     {
         const VkSemaphoreCreateInfo ci =
@@ -288,5 +287,128 @@ namespace Clunk::Vk
         };
         return vkCreatePipelineLayout(Device, &create_info, nullptr, pPipeLineLayout);
     }
-}
 
+    const VkPipelineVertexInputStateCreateInfo create_vk_pipeline_info_vertex_input()
+    {
+        return VkPipelineVertexInputStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO
+        };
+    }
+
+    const VkPipelineInputAssemblyStateCreateInfo create_vk_pipeline_info_assembly(VkPrimitiveTopology Topology, VkBool32 bPrimitiveRestartEnabled)
+    {
+        return VkPipelineInputAssemblyStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+            .topology = Topology,
+            .primitiveRestartEnable = bPrimitiveRestartEnabled
+        };
+    }
+
+    const VkPipelineViewportStateCreateInfo create_vk_pipeline_info_viewport(u32 ViewportCount, VkViewport* pViewports, u32 ScissorCount, VkRect2D* pScissors)
+    {
+        return VkPipelineViewportStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+            .viewportCount = ViewportCount,
+            .pViewports = pViewports,
+            .scissorCount = ScissorCount,
+            .pScissors = pScissors
+        };
+    }
+
+    const VkPipelineRasterizationStateCreateInfo create_vk_pipeline_info_rasterization(VkPolygonMode PolygonMode, VkCullModeFlags CullMode, VkFrontFace FrontFace, f32 LineWidth)
+    {
+        return VkPipelineRasterizationStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+            .polygonMode = PolygonMode,
+            .cullMode = CullMode,
+            .frontFace = FrontFace,
+            .lineWidth = LineWidth
+        };
+    }
+
+    const VkPipelineMultisampleStateCreateInfo create_vk_pipeline_info_multisample(VkSampleCountFlagBits Samples, VkBool32 bSampleShading, f32 MinSampleShading)
+    {
+        return VkPipelineMultisampleStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+            .rasterizationSamples = Samples,
+            .sampleShadingEnable = bSampleShading,
+            .minSampleShading = MinSampleShading
+        };
+    }
+
+    const VkPipelineColorBlendAttachmentState create_vk_pipeline_info_color_blend_attachment(b8 bUseBlending)
+    {
+        return VkPipelineColorBlendAttachmentState
+        {
+            .blendEnable = VK_TRUE,
+            .srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,
+            .dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+            .colorBlendOp = VK_BLEND_OP_ADD,
+            .srcAlphaBlendFactor = bUseBlending ? VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA : VK_BLEND_FACTOR_ONE,
+            .dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO,
+            .alphaBlendOp = VK_BLEND_OP_ADD,
+            .colorWriteMask =
+                VK_COLOR_COMPONENT_R_BIT |
+                VK_COLOR_COMPONENT_G_BIT |
+                VK_COLOR_COMPONENT_B_BIT |
+                VK_COLOR_COMPONENT_A_BIT
+        };
+    }
+
+    const VkPipelineColorBlendStateCreateInfo create_vk_pipeline_info_color_blend(VkPipelineColorBlendAttachmentState* pColorBlendAttachments, u32 ColorBlendAttachmentsCount)
+    {
+        return VkPipelineColorBlendStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+            .logicOpEnable = VK_FALSE,
+            .logicOp = VK_LOGIC_OP_COPY,
+            .attachmentCount = ColorBlendAttachmentsCount,
+            .pAttachments = pColorBlendAttachments,
+            .blendConstants = { 0.f, 0.f, 0.f, 0.f }
+        };
+    }
+
+    const VkPipelineDepthStencilStateCreateInfo create_vk_pipeline_info_depth_stencil()
+    {
+        return VkPipelineDepthStencilStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+            .depthTestEnable = VK_TRUE,
+            .depthWriteEnable = VK_TRUE,
+            .depthCompareOp = VK_COMPARE_OP_LESS,
+            .depthBoundsTestEnable = VK_FALSE,
+            .minDepthBounds = 0.0f,
+            .maxDepthBounds = 1.0f
+        };
+    }
+
+    const VkPipelineDynamicStateCreateInfo create_vk_pipeline_info_dynamic_state(VkDynamicState* pDynamicStates, u32 DynamicStateCount)
+    {
+        return VkPipelineDynamicStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .dynamicStateCount = DynamicStateCount,
+            .pDynamicStates = pDynamicStates
+        };
+    }
+
+    const VkPipelineTessellationStateCreateInfo create_vk_pipeline_info_tessellation(u32 NumPatchControlPoints)
+    {
+        return VkPipelineTessellationStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .patchControlPoints = NumPatchControlPoints
+        };
+    }
+
+
+}
