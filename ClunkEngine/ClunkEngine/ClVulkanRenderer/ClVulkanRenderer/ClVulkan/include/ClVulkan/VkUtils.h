@@ -134,6 +134,15 @@ namespace Clunk::Vk
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore* pSemaphore);
 
     /**
+     * @brief Creates a VkFence
+     * @param VkDevice Device
+     * @param VkFence* pFence
+     * @param b8 bIsSignaled 
+     * @return 
+     */
+    VkResult create_vk_fence(VkDevice Device, VkFence* pFence, b8 bIsSignaled = false);
+
+    /**
      * @brief Create a VkPipelineLayout
      * 
      * @param Device                VkDevice handle

@@ -18,6 +18,7 @@ namespace Clunk::Vk
     {
         std::vector<u32> SPIRV;
         VkShaderModule Handle = nullptr;
+        VkShaderStageFlagBits Stage = VK_SHADER_STAGE_VERTEX_BIT;
     };
 
     glslang_stage_t get_glsl_stage_from_filename(const char* Filename);
@@ -40,14 +41,14 @@ namespace Clunk::Vk
      * @param EntryPoint Shader entry point function name. (default is "main")
      * @return VkPipelineShaderStageCreateInfo 
      */
-    inline VkPipelineShaderStageCreateInfo cl_get_vk_shader_stage_create_info(ClVkShaderModule& ShaderModule, VkShaderStageFlagBits Stage, const char* EntryPoint = "main")
+    inline VkPipelineShaderStageCreateInfo cl_get_vk_pipeline_shader_stage_create_info(ClVkShaderModule& ShaderModule, const char* EntryPoint = "main")
     {
         return VkPipelineShaderStageCreateInfo
         {
             .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
             .pNext = nullptr,
             .flags = 0,
-            .stage = Stage,
+            .stage = ShaderModule.Stage,
             .module = ShaderModule.Handle,
             .pName = EntryPoint,
             .pSpecializationInfo = nullptr

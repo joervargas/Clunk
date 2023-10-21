@@ -50,7 +50,7 @@ namespace Clunk::Vk
 
         ClVkImage mDepthImage;
 
-        ClVk3dLayer* p3dLayer = nullptr;
+        
 
     private:
 

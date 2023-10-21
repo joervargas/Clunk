@@ -12,11 +12,12 @@
 #include <optional>
 
 
-// Forward Declarations
-struct ClVkRenderPass;
 
 namespace Clunk::Vk
 {
+
+    // Forward Declarations
+    struct ClVkRenderPass;
 
     struct ClVkQueue
     {
@@ -98,6 +99,31 @@ namespace Clunk::Vk
         std::vector<VkCommandBuffer> Buffers;
     };
 
+    struct ClVkFrameSync
+    {
+        std::vector<VkSemaphore>    WaitSemaphores = {};
+        std::vector<VkSemaphore>    RenderSemaphores = {};
+        std::vector<VkFence>        InFlightFences = {};
+    
+    private:
+
+        u32                         FramesInFlight{0};
+        u32                         CurrentFrameIndex{0};
+
+    public:
+
+        ClVkFrameSync() {};
+        ClVkFrameSync(VkDevice Device, u32 NumFramesInFlight);
+        void Destroy(VkDevice Device);
+
+        u32 GetNumFramesInFlight() { return FramesInFlight; }
+        u32 GetCurrentIndex() { return CurrentFrameIndex; }
+        void SetNextFrameIndex() { CurrentFrameIndex = (CurrentFrameIndex + 1) % FramesInFlight; }
+        VkSemaphore GetCurrentWaitSemaphore() { return WaitSemaphores[CurrentFrameIndex]; }
+        VkSemaphore GetCurrentRenderSemaphore() { return RenderSemaphores[CurrentFrameIndex]; }
+        VkFence GetCurrentInFlightFence() { return InFlightFences[CurrentFrameIndex]; }
+    };
+
     /**
      * @brief Context handles in Vulkan for the current GPU device
      */
@@ -111,8 +137,9 @@ namespace Clunk::Vk
         ClVkQueues Queues;
         ClVkSwapchain Swapchain;
 
-        VkSemaphore WaitSemaphore;
-        VkSemaphore RenderSemaphore;
+        // VkSemaphore WaitSemaphore;
+        // VkSemaphore RenderSemaphore;
+        ClVkFrameSync FrameSync;
 
         ClVkCommands DrawCmds;
     };
@@ -174,6 +201,11 @@ namespace Clunk::Vk
         u32 NumPatchControlPoints = 0
     );
 
+    std::vector<VkFramebuffer> cl_create_vk_color_depth_framebuffers(ClVkContext& VkCtx, ClVkRenderPass& RenderPass, VkImageView& DepthView);
+
+    std::vector<VkFramebuffer> cl_create_vk_color_only_framebuffers(ClVkContext& VkCtx, ClVkRenderPass& RenderPass);
+
+    void cl_destroy_vk_framebuffers(VkDevice Device, std::vector<VkFramebuffer>& Framebuffers);
 }
 
 

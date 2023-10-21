@@ -273,6 +273,11 @@ namespace Clunk::Vk
         return vkCreateSemaphore(Device, &ci, nullptr, pSemaphore);
     }
 
+    VkResult create_vk_fence(VkDevice Device, VkFence* pFence, b8 bIsSignaled)
+    {
+        
+    }
+
     VkResult create_vk_pipeline_layout(VkDevice Device, u32 DescriptorSetLayoutCount, VkDescriptorSetLayout *pDescriptorSetLayouts, u32 PushConstantRangeCount, VkPushConstantRange *pPushConstantRange, VkPipelineLayout *pPipeLineLayout)
     {
         const VkPipelineLayoutCreateInfo create_info =

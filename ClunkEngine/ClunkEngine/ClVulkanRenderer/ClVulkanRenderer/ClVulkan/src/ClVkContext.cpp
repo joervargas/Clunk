@@ -63,6 +63,41 @@ namespace Clunk::Vk
         pSwapchain->Handle = nullptr;
     }
 
+    ClVkFrameSync::ClVkFrameSync(VkDevice Device, u32 NumFramesInFlight)
+    {
+        FramesInFlight = NumFramesInFlight;
+        CurrentFrameIndex = 0;
+        for(u32 i = 0; i < FramesInFlight; i++)
+        {
+            VkSemaphore wait_semaphore;
+            VK_CHECK(create_vk_semaphore(Device, &wait_semaphore));
+            WaitSemaphores.push_back(wait_semaphore);
+
+            VkSemaphore render_semaphore;
+            VK_CHECK(create_vk_semaphore(Device, &render_semaphore));
+            RenderSemaphores.push_back(render_semaphore);
+
+            VkFence in_flight_fence;
+            VK_CHECK(create_vk_fence(Device, &in_flight_fence, true));
+            InFlightFences.push_back(in_flight_fence);
+        }
+    }
+
+    void ClVkFrameSync::Destroy(VkDevice Device)
+    {
+        for(u32 i = 0; i < FramesInFlight; i++)
+        {
+            vkDestroySemaphore(Device, WaitSemaphores[i], nullptr);
+            vkDestroySemaphore(Device, RenderSemaphores[i], nullptr);
+            vkDestroyFence(Device, InFlightFences[i], nullptr);
+        }
+        FramesInFlight = 0;
+        CurrentFrameIndex = 0;
+        WaitSemaphores.clear();
+        RenderSemaphores.clear();
+        InFlightFences.clear();
+    }
+
     ClVkContext cl_create_vk_context(const ClVkLoader &Loader, u32 Width, u32 Height)
     {
         ClVkContext ctx;
@@ -79,8 +114,9 @@ namespace Clunk::Vk
 
         ctx.Swapchain = cl_create_vk_swapchain(ctx.Device, ctx.PhysicalDevice, Loader.Surface, queue_indices, Width, Height);
         
-        VK_CHECK(create_vk_semaphore(ctx.Device, &ctx.RenderSemaphore));
-        VK_CHECK(create_vk_semaphore(ctx.Device, &ctx.WaitSemaphore));
+        // VK_CHECK(create_vk_semaphore(ctx.Device, &ctx.RenderSemaphore));
+        // VK_CHECK(create_vk_semaphore(ctx.Device, &ctx.WaitSemaphore));
+        ctx.FrameSync = ClVkFrameSync(ctx.Device, 2);
 
         VK_CHECK( create_vk_command_pool(ctx.Device, ctx.Queues.Graphics.index.value(), &ctx.DrawCmds.Pool));
         VK_CHECK( allocate_vk_command_buffers(ctx.Device, ctx.DrawCmds.Pool, static_cast<u32>( ctx.Swapchain.Images.size()), ctx.DrawCmds.Buffers) );
@@ -94,9 +130,10 @@ namespace Clunk::Vk
         cl_destroy_vk_swapchain(VkCtx->Device, &VkCtx->Swapchain);
         vkDestroyCommandPool(VkCtx->Device, VkCtx->DrawCmds.Pool, nullptr);
 
-        vkDestroySemaphore(VkCtx->Device, VkCtx->RenderSemaphore, nullptr);
-        vkDestroySemaphore(VkCtx->Device, VkCtx->WaitSemaphore, nullptr);
-    
+        // vkDestroySemaphore(VkCtx->Device, VkCtx->RenderSemaphore, nullptr);
+        // vkDestroySemaphore(VkCtx->Device, VkCtx->WaitSemaphore, nullptr);
+        VkCtx->FrameSync.Destroy(VkCtx->Device);
+           
         vmaDestroyAllocator(VkCtx->MemAllocator);
         vkDestroyDevice(VkCtx->Device, nullptr);
     }
@@ -311,4 +348,75 @@ namespace Clunk::Vk
         
         return pipeline;
     }
+
+    std::vector<VkFramebuffer> cl_create_vk_color_depth_framebuffers(ClVkContext &VkCtx, ClVkRenderPass &RenderPass, VkImageView &DepthView)
+    {
+        std::vector<VkFramebuffer> framebuffers;
+
+        for(size_t i = 0; i < VkCtx.Swapchain.ImageViews.size(); i++)
+        {
+            std::array<VkImageView, 2> attachments = {
+                VkCtx.Swapchain.ImageViews[i],
+                DepthView
+            };
+
+            VkFramebufferCreateInfo create_info =
+            {
+                .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+                .pNext = nullptr,
+                .flags = 0,
+                .renderPass = RenderPass.Handle,
+                .attachmentCount = static_cast<u32>(attachments.size()),
+                .pAttachments = attachments.data(),
+                .width = VkCtx.Swapchain.Width,
+                .height = VkCtx.Swapchain.Height,
+                .layers = 1
+            };
+
+            VkFramebuffer framebuffer;
+            VK_CHECK(vkCreateFramebuffer(VkCtx.Device, &create_info, nullptr, &framebuffer));
+            framebuffers.push_back(framebuffer);
+        }
+        return framebuffers;
+    }
+
+    std::vector<VkFramebuffer> cl_create_vk_color_only_framebuffers(ClVkContext &VkCtx, ClVkRenderPass &RenderPass)
+    {
+        std::vector<VkFramebuffer> framebuffers;
+
+        for(size_t i = 0; i < VkCtx.Swapchain.ImageViews.size(); i++)
+        {
+            std::array<VkImageView, 1> attachments = {
+                VkCtx.Swapchain.ImageViews[i]
+            };
+
+            VkFramebufferCreateInfo create_info =
+            {
+                .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+                .pNext = nullptr,
+                .flags = 0,
+                .renderPass = RenderPass.Handle,
+                .attachmentCount = static_cast<u32>(attachments.size()),
+                .pAttachments = attachments.data(),
+                .width = VkCtx.Swapchain.Width,
+                .height = VkCtx.Swapchain.Height,
+                .layers = 1
+            };
+
+            VkFramebuffer framebuffer;
+            VK_CHECK(vkCreateFramebuffer(VkCtx.Device, &create_info, nullptr, &framebuffer));
+            framebuffers.push_back(framebuffer);
+        }
+        return framebuffers;
+    }
+
+    void cl_destroy_vk_framebuffers(VkDevice Device, std::vector<VkFramebuffer>& Framebuffers)
+    {
+        for(size_t i = 0; i < Framebuffers.size(); i++)
+        {
+            vkDestroyFramebuffer(Device, Framebuffers[i], nullptr);
+        }
+        Framebuffers.clear();
+    }
+    
 }

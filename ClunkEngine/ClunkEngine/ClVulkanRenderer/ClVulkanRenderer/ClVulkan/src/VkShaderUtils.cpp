@@ -182,6 +182,7 @@ namespace Clunk::Vk
         if(!source.empty())
         {
             glslang_stage_t stage = get_glsl_stage_from_filename(Filename);
+            Module->Stage = get_vk_shader_stage_from_glsl_stage(stage);
             return compile_glsl_shader(stage, source.c_str(), Module);
         }
         return 0;

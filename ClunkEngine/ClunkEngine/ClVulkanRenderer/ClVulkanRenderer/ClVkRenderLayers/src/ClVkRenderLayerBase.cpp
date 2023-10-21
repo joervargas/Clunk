@@ -54,9 +54,11 @@ namespace Clunk::Vk
             0, nullptr
         );
     }
+
+    void ClVkRenderLayerBase::EndRenderPass(VkCommandBuffer CmdBuffer)
+    {
+        vkCmdEndRenderPass(CmdBuffer);
+    }
+
 }
 
-void Clunk::Vk::ClVkRenderLayerBase::EndRenderPass(VkCommandBuffer CmdBuffer)
-{
-    vkCmdEndRenderPass(CmdBuffer);
-}

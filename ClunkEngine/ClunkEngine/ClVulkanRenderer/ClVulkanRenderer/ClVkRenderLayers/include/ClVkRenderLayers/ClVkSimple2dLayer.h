@@ -20,7 +20,7 @@ namespace Clunk::Vk
 
     private:
 
-        VkPipeline CreatePipeline(std::vector<ClVkShaderModule> ShaderModules, ClVkRenderPass RenderPass, VkPipelineLayout Layout, VkExtent2D CustomExtent = VkExtent2D{ .width = 0, .height = 0 });
+        void CreatePipeline(std::vector<ClVkShaderModule> ShaderModules, ClVkRenderPass RenderPass, VkPipelineLayout Layout, VkExtent2D CustomExtent = VkExtent2D{ .width = 0, .height = 0 });
 
         void Draw(VkCommandBuffer CmdBuffer);
         
