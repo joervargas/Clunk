@@ -17,7 +17,7 @@ typedef struct DelegateButtonListener
 {
     void* Obj;
     void (*fire_callback)(void* Obj, const EButtonState& State);
-};
+} DelegateButtonListener;
 
 typedef struct ButtonEvent
 {
@@ -26,7 +26,7 @@ typedef struct ButtonEvent
     // {
     //     this->Listener->fire_callback(this->Listener->Obj, State);
     // }
-};
+} ButtonEvent;
 
 
 // Mouse Events
@@ -38,13 +38,13 @@ typedef struct MouseMotionData
     i32 Y;
     i32 X_Delta;
     i32 Y_Delta;
-};
+} MouseMotionData;
 
 typedef struct DelegateMouseMotionListener
 {
     void* Obj;
     void (*fire_callback)(void* Obj, const MouseMotionData& Data);
-};
+} DelegateMouseMotionListener;
 
 typedef struct MouseMotionEvent
 {
@@ -53,7 +53,7 @@ typedef struct MouseMotionEvent
     // {
     //     this->Listener->fire_callback(this->Listener->Obj, State);
     // }
-};
+} MouseMotionEvent;
 
 // Window Events
 
@@ -80,13 +80,13 @@ typedef struct WindowData
 {
     u32 windowID;
     // EWindowState state;
-};
+} WindowData;
 
 typedef struct DelegateWindowListener
 {
     void* Obj;
     void (*fire_callback)(void* Obj, const WindowData& Data);
-};
+} DelegateWindowListener;
 
 typedef struct WindowEvent
 {
@@ -95,4 +95,4 @@ typedef struct WindowEvent
     // {
     //     this->Listener->fire_callback(this->Listener->Obj, State);
     // }
-};
+} WindowEvent;

@@ -12,15 +12,15 @@ namespace Clunk::Vk
 
         ClVkSimple2dLayer(ClVkContext* pVkCtx);
 
-        ~ClVkSimple2dLayer();
+        virtual ~ClVkSimple2dLayer();
 
         virtual void Update(u32 CurrentIndex, f32 DeltaTime) override;
 
-        virtual void DrawFrame(VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
+        virtual void DrawFrame(const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 
     private:
 
-        void CreatePipeline(std::vector<ClVkShaderModule> ShaderModules, ClVkRenderPass RenderPass, VkPipelineLayout Layout, VkExtent2D CustomExtent = VkExtent2D{ .width = 0, .height = 0 });
+        void CreatePipeline(std::vector<ClVkShaderModule>& ShaderModules, ClVkRenderPass& RenderPass, VkPipelineLayout& Layout, VkExtent2D CustomExtent = VkExtent2D{ .width = 0, .height = 0 });
 
         void Draw(VkCommandBuffer CmdBuffer);
         

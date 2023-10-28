@@ -33,6 +33,8 @@ namespace Clunk::Vk
 
     ClVkShaderModule cl_create_vk_shader_module(const VkDevice Device, const char* Filename);
 
+    void cl_destroy_vk_shader_module(const VkDevice& Device, ClVkShaderModule& ShaderModule);
+
     /*
      * @brief Returns a populated VkPipelineShaderStageCreateInfo struct
      * 

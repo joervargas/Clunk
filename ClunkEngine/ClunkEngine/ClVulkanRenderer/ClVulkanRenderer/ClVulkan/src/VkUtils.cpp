@@ -275,7 +275,16 @@ namespace Clunk::Vk
 
     VkResult create_vk_fence(VkDevice Device, VkFence* pFence, b8 bIsSignaled)
     {
-        
+        VkFenceCreateInfo ci =
+        {
+            .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+        };
+        if(bIsSignaled)
+        {
+            ci.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+        }
+
+        return vkCreateFence(Device, &ci, nullptr, pFence);
     }
 
     VkResult create_vk_pipeline_layout(VkDevice Device, u32 DescriptorSetLayoutCount, VkDescriptorSetLayout *pDescriptorSetLayouts, u32 PushConstantRangeCount, VkPushConstantRange *pPushConstantRange, VkPipelineLayout *pPipeLineLayout)
@@ -293,7 +302,7 @@ namespace Clunk::Vk
         return vkCreatePipelineLayout(Device, &create_info, nullptr, pPipeLineLayout);
     }
 
-    const VkPipelineVertexInputStateCreateInfo create_vk_pipeline_info_vertex_input()
+    const VkPipelineVertexInputStateCreateInfo create_info_vk_pipeline_vertex_input()
     {
         return VkPipelineVertexInputStateCreateInfo
         {
@@ -301,7 +310,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineInputAssemblyStateCreateInfo create_vk_pipeline_info_assembly(VkPrimitiveTopology Topology, VkBool32 bPrimitiveRestartEnabled)
+    const VkPipelineInputAssemblyStateCreateInfo create_info_vk_pipeline_assembly(VkPrimitiveTopology Topology, VkBool32 bPrimitiveRestartEnabled)
     {
         return VkPipelineInputAssemblyStateCreateInfo
         {
@@ -311,7 +320,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineViewportStateCreateInfo create_vk_pipeline_info_viewport(u32 ViewportCount, VkViewport* pViewports, u32 ScissorCount, VkRect2D* pScissors)
+    const VkPipelineViewportStateCreateInfo create_info_vk_pipeline_viewport(u32 ViewportCount, VkViewport *pViewports, u32 ScissorCount, VkRect2D *pScissors)
     {
         return VkPipelineViewportStateCreateInfo
         {
@@ -323,7 +332,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineRasterizationStateCreateInfo create_vk_pipeline_info_rasterization(VkPolygonMode PolygonMode, VkCullModeFlags CullMode, VkFrontFace FrontFace, f32 LineWidth)
+    const VkPipelineRasterizationStateCreateInfo create_info_vk_pipeline_rasterization(VkPolygonMode PolygonMode, VkCullModeFlags CullMode, VkFrontFace FrontFace, f32 LineWidth)
     {
         return VkPipelineRasterizationStateCreateInfo
         {
@@ -335,7 +344,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineMultisampleStateCreateInfo create_vk_pipeline_info_multisample(VkSampleCountFlagBits Samples, VkBool32 bSampleShading, f32 MinSampleShading)
+    const VkPipelineMultisampleStateCreateInfo create_info_vk_pipeline_multisample(VkSampleCountFlagBits Samples, VkBool32 bSampleShading, f32 MinSampleShading)
     {
         return VkPipelineMultisampleStateCreateInfo
         {
@@ -346,7 +355,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineColorBlendAttachmentState create_vk_pipeline_info_color_blend_attachment(b8 bUseBlending)
+    const VkPipelineColorBlendAttachmentState create_info_vk_pipeline_color_blend_attachment(b8 bUseBlending)
     {
         return VkPipelineColorBlendAttachmentState
         {
@@ -365,7 +374,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineColorBlendStateCreateInfo create_vk_pipeline_info_color_blend(VkPipelineColorBlendAttachmentState* pColorBlendAttachments, u32 ColorBlendAttachmentsCount)
+    const VkPipelineColorBlendStateCreateInfo create_info_vk_pipeline_color_blend(VkPipelineColorBlendAttachmentState* pColorBlendAttachments, u32 ColorBlendAttachmentsCount)
     {
         return VkPipelineColorBlendStateCreateInfo
         {
@@ -378,7 +387,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineDepthStencilStateCreateInfo create_vk_pipeline_info_depth_stencil()
+    const VkPipelineDepthStencilStateCreateInfo create_info_vk_pipeline_depth_stencil()
     {
         return VkPipelineDepthStencilStateCreateInfo
         {
@@ -392,7 +401,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineDynamicStateCreateInfo create_vk_pipeline_info_dynamic_state(VkDynamicState* pDynamicStates, u32 DynamicStateCount)
+    const VkPipelineDynamicStateCreateInfo create_info_vk_pipeline_dynamic_state(VkDynamicState* pDynamicStates, u32 DynamicStateCount)
     {
         return VkPipelineDynamicStateCreateInfo
         {
@@ -404,7 +413,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineTessellationStateCreateInfo create_vk_pipeline_info_tessellation(u32 NumPatchControlPoints)
+    const VkPipelineTessellationStateCreateInfo create_info_vk_pipeline_tessellation(u32 NumPatchControlPoints)
     {
         return VkPipelineTessellationStateCreateInfo
         {

@@ -12,10 +12,10 @@ include_directories(${Engine_DIR})
 
 if(${VULKAN_GRAPHICS})
     # add_compile_definitions(VK_NO_PROTOTYPES)
-    message("Vulkan found in ${Target}!")
+    message("Vulkan found in ClunkyEditor!")
     message("vulkan libraries: ${Vulkan_LIBRARY}")
 else()
-    message("***Vulkan not found in ${Target}***")
+    message("***Vulkan not found in ClunkyEditor***")
 endif()
 
 

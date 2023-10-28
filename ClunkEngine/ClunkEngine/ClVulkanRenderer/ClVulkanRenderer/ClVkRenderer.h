@@ -4,9 +4,7 @@
 #include <PCH/pch.h>
 #include <ClPlatforms/ClPlatform.h>
 
-#include <ClVulkan/ClVkLoader.h>
-#include <ClVulkan/ClVkContext.h>
-#include <ClVkRenderLayers/ClVkModelLayer.h>
+#include <ClVkRenderLayers/ClVkRenderLayers.h>
 
 #include <vulkan/vulkan.h>
 
@@ -28,19 +26,17 @@ namespace Clunk::Vk
         ClVkRenderer() {};
         ClVkRenderer(const char* AppName, const u32 AppVersion);
 
-        ~ClVkRenderer() {};
+        virtual ~ClVkRenderer() {};
 
         virtual void SetIsResized(b8 bIsResized) override { m_bIsResized = bIsResized; }
         
         virtual void Init() override;
         virtual void Destroy() override;
 
-        virtual void ResetFrame();
-
-        virtual void Update() override;
+        virtual void Update(f32 DeltaTime) override;
         virtual void Render() override;
 
-        void RecordDrawCmdBuffer(const VkCommandBuffer& DrawBuffer, const u32& ImageIndex);
+        void DrawFrame(const VkCommandBuffer& DrawBuffer, const u32& ImageIndex);
 
     protected:
 
@@ -50,7 +46,16 @@ namespace Clunk::Vk
 
         ClVkImage mDepthImage;
 
-        
+        ClVkBeginLayer mBeginLayer;
+
+        ClVkEndLayer mEndLayer;
+
+        ClVk2dLayerList mLayers2d;
+
+        ClVk3dLayerList mLayers3d;
+
+        void CleanupSwapchain();
+        void RecreateSwapchain();
 
     private:
 

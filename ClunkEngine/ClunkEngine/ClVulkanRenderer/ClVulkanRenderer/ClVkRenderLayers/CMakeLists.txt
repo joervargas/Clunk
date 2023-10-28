@@ -13,9 +13,10 @@ add_library(${Target}
 )
 
 # add_subdirectory(ClVkExt)
-# include_directories(../Constants/include)
 include_directories(../ClVulkan/include)
 # include_directories(../../libs/VkMemAllocator/include)
+
+link_directories(../ClVulkan)
 
 target_include_directories(${Target}
     PUBLIC
@@ -28,11 +29,11 @@ target_include_directories(${Target}
 target_link_libraries(${Target}
     # ClVkExt
     # Vulkan::Vulkan
+    PCH
     ClVulkan
     # SPIRV
     # glslang
     # glslang-default-resource-limits
     # VkMemAllocator
-    PCH
     Core
 )

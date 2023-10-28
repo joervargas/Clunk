@@ -202,4 +202,10 @@ namespace Clunk::Vk
 
         return shader_module;
     }
+
+    void cl_destroy_vk_shader_module(const VkDevice& Device, ClVkShaderModule &ShaderModule)
+    {
+        vkDestroyShaderModule(Device, ShaderModule.Handle, nullptr);
+        ShaderModule.SPIRV.clear();
+    }
 }

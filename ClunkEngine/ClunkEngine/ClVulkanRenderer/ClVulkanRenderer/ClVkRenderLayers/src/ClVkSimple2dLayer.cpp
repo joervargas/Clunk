@@ -19,6 +19,7 @@ namespace Clunk::Vk
             .Samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT
         };
         mRenderPass = cl_create_vk_renderpass(*pVkCtx, renderpass_info);
+        // cl_create_vk_renderpass(*pVkCtx, renderpass_info, &mRenderPass);
         mFramebuffers = cl_create_vk_color_only_framebuffers(*pVkCtx, mRenderPass);
 
         VK_CHECK(create_vk_pipeline_layout(pVkCtx->Device, 0, nullptr, 0, nullptr, &mPipelineLayout));
@@ -27,21 +28,30 @@ namespace Clunk::Vk
             cl_create_vk_shader_module(pVkCtx->Device, "./Shaders/GLSL/Simple2dLayer.vert"),
             cl_create_vk_shader_module(pVkCtx->Device, "./Shaders/GLSL/Simple2dLayer.frag")
         };
+        CreatePipeline(shader_modules, mRenderPass, mPipelineLayout);
 
+        for(ClVkShaderModule shader : shader_modules)
+        {
+            cl_destroy_vk_shader_module(pVkCtx->Device, shader);
+        }
     }
 
     ClVkSimple2dLayer::~ClVkSimple2dLayer()
     {
     }
 
-    void ClVkSimple2dLayer::DrawFrame(VkCommandBuffer &CmdBuffer, size_t CurrentImage)
+    void ClVkSimple2dLayer::Update(u32 CurrentIndex, f32 DeltaTime)
+    {
+    }
+
+    void ClVkSimple2dLayer::DrawFrame(const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
     {
         BeginRenderPass(CmdBuffer, CurrentImage);
         Draw(CmdBuffer);
         EndRenderPass(CmdBuffer);
     }
 
-    void ClVkSimple2dLayer::CreatePipeline(std::vector<ClVkShaderModule> ShaderModules, ClVkRenderPass RenderPass, VkPipelineLayout Layout, VkExtent2D CustomExtent)
+    void ClVkSimple2dLayer::CreatePipeline(std::vector<ClVkShaderModule>& ShaderModules, ClVkRenderPass& RenderPass, VkPipelineLayout& Layout, VkExtent2D CustomExtent)
     {
         CLOG_INFO("Creating VkSimple2dLayer pipeline...");
 
@@ -112,13 +122,13 @@ namespace Clunk::Vk
             .pStages = shader_stage_infos.data(),
             .pVertexInputState = &vert_input_info,
             .pInputAssemblyState = &input_assembly_info,
+            .pTessellationState = &tessellation_info,
             .pViewportState = &viewport_info,
             .pRasterizationState = &rasterizer_info,
             .pMultisampleState = &multisample_info,
-            .pColorBlendState = &color_blend_info,
             .pDepthStencilState = nullptr,
+            .pColorBlendState = &color_blend_info,
             .pDynamicState = &dynamic_info,
-            .pTessellationState = &tessellation_info,
             .layout = mPipelineLayout,
             .renderPass = RenderPass.Handle,
             .subpass = 0,
