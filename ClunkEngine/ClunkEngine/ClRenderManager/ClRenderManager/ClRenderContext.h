@@ -44,9 +44,9 @@ namespace Clunk
 
         ClIRenderer* m_renderer;
 
-        // #ifdef VK_GFX
-        //     Vk::ClVkRenderer VkRenderer;
-        // #endif
+        #ifdef VK_GFX
+            Vk::ClVkRenderer mVkRenderer;
+        #endif
 
     };
 }

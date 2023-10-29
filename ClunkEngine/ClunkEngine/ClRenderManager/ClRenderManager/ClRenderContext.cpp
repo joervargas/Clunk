@@ -12,13 +12,15 @@ namespace Clunk
 {
     ClRenderContext::~ClRenderContext()
     {
-        CLUNK_DELETE(m_renderer);
+        // CLUNK_DELETE(m_renderer);
     }
 
     void ClRenderContext::Init()
     {
         #ifdef VK_GFX
-            m_renderer = new Vk::ClVkRenderer("Clunk", VK_MAKE_API_VERSION(0, 0, 0, 1));
+            mVkRenderer = Vk::ClVkRenderer("Clunk", VK_MAKE_API_VERSION(0, 0, 0, 1));
+            m_renderer = &mVkRenderer;
+            // m_renderer = new Vk::ClVkRenderer("Clunk", VK_MAKE_API_VERSION(0, 0, 0, 1));
             CLOG_INFO("Vulkan Render Strategy");
         #endif
 
