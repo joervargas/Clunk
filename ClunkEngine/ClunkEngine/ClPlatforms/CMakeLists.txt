@@ -54,6 +54,7 @@ target_include_directories(${Target}
 target_link_libraries(${Target}
     SDL2::SDL2
     SDL2::SDL2main
+    PCH
     Events
     Core
 )

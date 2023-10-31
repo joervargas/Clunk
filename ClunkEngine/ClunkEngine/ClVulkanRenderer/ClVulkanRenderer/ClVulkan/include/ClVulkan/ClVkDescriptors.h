@@ -16,11 +16,10 @@ namespace Clunk::Vk
 
     typedef struct ClVkDescriptor
     {
-        std::vector<VkDescriptorSetLayout>      layouts;
-        VkDescriptorPool                        pool;
-        std::vector<VkDescriptorPool>           Sets;
+        std::vector<VkDescriptorSetLayout>      Layouts;
+        VkDescriptorPool                        Pool;
+        std::vector<VkDescriptorSet>            Sets;
     } ClVkDescriptor;
-
 
     void cl_destroy_vk_descriptor(ClVkContext& VkCtx, ClVkDescriptor& Descriptor);
 }

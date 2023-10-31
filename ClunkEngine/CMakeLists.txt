@@ -51,6 +51,7 @@ target_link_libraries(${PROJECT_NAME}
     SDL2::SDL2main
     TinyXML2
     TinyObjLoader
+    PCH
     ClMath
     ClPlatforms
     ClRenderManager
@@ -63,6 +64,7 @@ target_link_libraries(${PROJECT_NAME}
 if(${VULKAN_GRAPHICS})
     target_link_libraries(${PROJECT_NAME}
         # vulkan
+        ClVulkan
         ClVulkanRenderer
     )
 endif()

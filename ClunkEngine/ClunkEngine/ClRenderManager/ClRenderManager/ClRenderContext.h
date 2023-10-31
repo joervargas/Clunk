@@ -21,7 +21,7 @@ namespace Clunk
     public:
 
         ClRenderContext() {};
-        ~ClRenderContext() {};
+        virtual ~ClRenderContext();
 
         void SetIsResized(b8 bIsResized) { m_renderer->SetIsResized(bIsResized); }
         // static ClRenderContext* GetRenderContext();
@@ -45,7 +45,7 @@ namespace Clunk
         ClIRenderer* m_renderer;
 
         #ifdef VK_GFX
-            Vk::ClVkRenderer VkRenderer;
+            Vk::ClVkRenderer mVkRenderer;
         #endif
 
     };

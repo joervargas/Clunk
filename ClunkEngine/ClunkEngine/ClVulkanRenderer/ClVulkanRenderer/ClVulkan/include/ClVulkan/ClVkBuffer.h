@@ -4,6 +4,8 @@
 #include <VkMemAllocator/vk_mem_alloc.h>
 #include <PCH/pch.h>
 
+class ClVkContext;
+
 namespace Clunk::Vk
 {
     /**
@@ -22,7 +24,7 @@ namespace Clunk::Vk
      * @param Device VkDevice handle
      * @param VmaAllocator VmaAllocator handle
      * @param BufferUsage VkBufferUsageFlags
-     * @param AllocatorUsage VmaMemoryUsage
+     * @param AllocationCreateFlags VmaAllocationCreateFlags
      * @param Size VkDeviceSize ( buffer size )
      * @param pBuffer VkBuffer* handle to populate
      * @param pAllocation VmaAllocation* handle to populate
@@ -48,4 +50,25 @@ namespace Clunk::Vk
         VkBuffer SrcBuffer, VkBuffer DstBuffer, 
         VkDeviceSize Size);
 
+
+    void map_vk_allocation_data(
+        VmaAllocator Allocator, VmaAllocation Allocation, 
+        void* SrcData, size_t SrcDataSize);
+
+
+    struct ClVkBuffer
+    {
+        VkBuffer        Handle;
+        VmaAllocation   Allocation;
+        VkDeviceSize    Size;
+    };
+
+    ClVkBuffer cl_create_vk_buffer(ClVkContext& VkCtx, VkBufferUsageFlags Usage, VmaAllocationCreateFlags VmaAllocationCreateFlags, VkDeviceSize Size);
+
+    std::vector<ClVkBuffer> cl_create_vk_buffers(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, VmaAllocationCreateFlags AllocationCreateFlags, VkDeviceSize Size, size_t Count);
+
+    void cl_destroy_vk_buffer(ClVkContext& VkCtx, ClVkBuffer& Buffer);
+
+    void cl_destroy_vk_buffers(ClVkContext& VkCtx, std::vector<ClVkBuffer> Buffers);
 }
+

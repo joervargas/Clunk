@@ -182,6 +182,7 @@ namespace Clunk::Vk
         if(!source.empty())
         {
             glslang_stage_t stage = get_glsl_stage_from_filename(Filename);
+            Module->Stage = get_vk_shader_stage_from_glsl_stage(stage);
             return compile_glsl_shader(stage, source.c_str(), Module);
         }
         return 0;
@@ -200,5 +201,11 @@ namespace Clunk::Vk
         VK_CHECK(vkCreateShaderModule(Device, &create_info, nullptr, &shader_module.Handle));
 
         return shader_module;
+    }
+
+    void cl_destroy_vk_shader_module(const VkDevice& Device, ClVkShaderModule &ShaderModule)
+    {
+        vkDestroyShaderModule(Device, ShaderModule.Handle, nullptr);
+        ShaderModule.SPIRV.clear();
     }
 }

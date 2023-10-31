@@ -12,11 +12,12 @@
 #include <optional>
 
 
-// Forward Declarations
-struct ClVkRenderPass;
 
 namespace Clunk::Vk
 {
+
+    // Forward Declarations
+    struct ClVkRenderPass;
 
     struct ClVkQueue
     {
@@ -73,7 +74,7 @@ namespace Clunk::Vk
      * @param Device VkDevice handle
      * @param PhysicalDevice VkPhysicalDevice Handle
      * @param Surface VkSurfaceKHR handle
-     * @param QueueFamilyIndices u32 Queue family indices
+     * @param QueueFamilyIndices std::vector<u32> Queue family indices
      * @param Width Frame Width
      * @param Height Frame Height
      * @return VulkanSwapchain stores VkSwapchain handle, swapchain images and imageViews
@@ -98,6 +99,31 @@ namespace Clunk::Vk
         std::vector<VkCommandBuffer> Buffers;
     };
 
+    struct ClVkFrameSync
+    {
+        std::vector<VkSemaphore>    WaitSemaphores = {};
+        std::vector<VkSemaphore>    RenderSemaphores = {};
+        std::vector<VkFence>        InFlightFences = {};
+    
+    private:
+
+        u32     FramesInFlight{0};
+        u32     CurrentFrameIndex{0};
+
+    public:
+
+        ClVkFrameSync() {};
+        ClVkFrameSync(VkDevice Device, u32 NumFramesInFlight);
+        void Destroy(VkDevice Device);
+
+        u32 GetNumFramesInFlight() { return FramesInFlight; }
+        u32 GetCurrentIndex() { return CurrentFrameIndex; }
+        void SetNextFrameIndex() { CurrentFrameIndex = (CurrentFrameIndex + 1) % FramesInFlight; }
+        VkSemaphore& GetCurrentWaitSemaphore() { return WaitSemaphores[CurrentFrameIndex]; }
+        VkSemaphore& GetCurrentRenderSemaphore() { return RenderSemaphores[CurrentFrameIndex]; }
+        VkFence& GetCurrentInFlightFence() { return InFlightFences[CurrentFrameIndex]; }
+    };
+
     /**
      * @brief Context handles in Vulkan for the current GPU device
      */
@@ -111,8 +137,9 @@ namespace Clunk::Vk
         ClVkQueues Queues;
         ClVkSwapchain Swapchain;
 
-        VkSemaphore WaitSemaphore;
-        VkSemaphore RenderSemaphore;
+        // VkSemaphore WaitSemaphore;
+        // VkSemaphore RenderSemaphore;
+        ClVkFrameSync FrameSync;
 
         ClVkCommands DrawCmds;
     };
@@ -148,32 +175,37 @@ namespace Clunk::Vk
      */
     void cl_end_single_time_vk_command_buffer(ClVkContext& VkCtx, VkCommandBuffer CmdBuffer);
 
-    /**
-     * @brief Creates a graphics capable VkPipeline handle
-     * @param VkCtx 
-     * @param RenderPass 
-     * @param PipelineLayout 
-     * @param ShaderFiles 
-     * @param bDynamicScissor 
-     * @param bUseBlending 
-     * @param CustomWidth 
-     * @param CustomHeight 
-     * @param NumPatchControlPoints 
-     * @return VkPipeline 
-     */
-    VkPipeline cl_create_vk_graphics_pipeline(
-        ClVkContext& VkCtx,
-        ClVkRenderPass RenderPass,
-        VkPipelineLayout PipelineLayout,
-        const std::vector<const char *>& ShaderFiles,
-        VkPrimitiveTopology Topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-        // bool bDynamicScissor = false,
-        bool bUseBlending = true,
-        i32 CustomWidth = -1,
-        i32 CustomHeight = -1,
-        u32 NumPatchControlPoints = 0
-    );
+    // /**
+    //  * @brief Creates a graphics capable VkPipeline handle
+    //  * @param VkCtx 
+    //  * @param RenderPass 
+    //  * @param PipelineLayout 
+    //  * @param ShaderFiles 
+    //  * @param bDynamicScissor 
+    //  * @param bUseBlending 
+    //  * @param CustomWidth 
+    //  * @param CustomHeight 
+    //  * @param NumPatchControlPoints 
+    //  * @return VkPipeline 
+    //  */
+    // VkPipeline cl_create_vk_graphics_pipeline(
+    //     ClVkContext& VkCtx,
+    //     ClVkRenderPass RenderPass,
+    //     VkPipelineLayout PipelineLayout,
+    //     const std::vector<const char *>& ShaderFiles,
+    //     VkPrimitiveTopology Topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+    //     bool bDynamicScissor = false,
+    //     bool bUseBlending = true,
+    //     i32 CustomWidth = -1,
+    //     i32 CustomHeight = -1,
+    //     u32 NumPatchControlPoints = 0
+    // );
 
+    std::vector<VkFramebuffer> cl_create_vk_color_depth_framebuffers(ClVkContext& VkCtx, const ClVkRenderPass& RenderPass, const VkImageView& DepthView);
+
+    std::vector<VkFramebuffer> cl_create_vk_color_only_framebuffers(ClVkContext& VkCtx, const ClVkRenderPass& RenderPass);
+
+    void cl_destroy_vk_framebuffers(VkDevice Device, std::vector<VkFramebuffer>& Framebuffers);
 }
 
 

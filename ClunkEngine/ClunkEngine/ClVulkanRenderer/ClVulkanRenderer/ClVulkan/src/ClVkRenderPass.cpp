@@ -3,13 +3,13 @@
 
 namespace Clunk::Vk
 {
-    ClVkRenderPass cl_create_vk_renderpass(const ClVkContext &VkCtx, const ClVkRenderPassInfo &Info)
+    ClVkRenderPass cl_create_vk_renderpass(ClVkContext &VkCtx, ClVkRenderPassInfo& Info)
     {
         if(!Info.bUseColor && !Info.bUseDepth) { return ClVkRenderPass{}; }
 
-        const bool offscreen_internal = Info.flags & ERenderPassBit::ERPB_OFFSCREEN_INTERNAL;
-        const bool first = Info.flags & ERenderPassBit::ERPB_FIRST;
-        const bool last = Info.flags & ERenderPassBit::ERPB_LAST;
+        const bool offscreen_internal = Info.Flags & ERenderPassBit::ERPB_OFFSCREEN_INTERNAL;
+        const bool first = Info.Flags & ERenderPassBit::ERPB_FIRST;
+        const bool last = Info.Flags & ERenderPassBit::ERPB_LAST;
 
         std::vector<VkAttachmentDescription> attachments;
 
@@ -30,7 +30,7 @@ namespace Clunk::Vk
                 .finalLayout = last ? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR : VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
             };
 
-            if(Info.flags & ERenderPassBit::ERPB_OFFSCREEN)
+            if(Info.Flags & ERenderPassBit::ERPB_OFFSCREEN)
             {
                 if(Info.bClearColor)
                 {
@@ -64,7 +64,7 @@ namespace Clunk::Vk
                 .finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
             };
 
-            if(Info.flags & ERenderPassBit::ERPB_OFFSCREEN)
+            if(Info.Flags & ERenderPassBit::ERPB_OFFSCREEN)
             {
                 if(Info.bUseDepth)
                 {
@@ -95,7 +95,7 @@ namespace Clunk::Vk
             }
         };
 
-        if(Info.flags & ERenderPassBit::ERPB_OFFSCREEN)
+        if(Info.Flags & ERenderPassBit::ERPB_OFFSCREEN)
         {
             dependencies.resize(2);
             dependencies[0] =
@@ -146,12 +146,14 @@ namespace Clunk::Vk
             .pDependencies = dependencies.data()
         };
 
+        VkRenderPass render_pass;
+        VK_CHECK(vkCreateRenderPass(VkCtx.Device, &create_info, nullptr, &render_pass));
+
         ClVkRenderPass renderpass =
         {
             .Info = Info,
+            .Handle = render_pass,
         };
-
-        VK_CHECK(vkCreateRenderPass(VkCtx.Device, &create_info, nullptr, &renderpass.Handle));
 
         return renderpass;
     }

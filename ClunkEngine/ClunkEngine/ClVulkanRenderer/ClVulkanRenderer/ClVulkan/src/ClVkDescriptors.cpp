@@ -1,5 +1,6 @@
 #include "ClVkDescriptors.h"
 
+#include "VkUtils.h"
 
 namespace Clunk::Vk
 {
@@ -26,8 +27,8 @@ namespace Clunk::Vk
             .dstArrayElement = 0,
             .descriptorCount = 1,
             .descriptorType = DescType,
-            .pBufferInfo = &BufferInfo,
             .pImageInfo = nullptr,
+            .pBufferInfo = &BufferInfo,
             .pTexelBufferView = nullptr
         };
     }
@@ -43,18 +44,69 @@ namespace Clunk::Vk
             .dstArrayElement = 0,
             .descriptorCount = 1,
             .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-            .pBufferInfo = nullptr,
             .pImageInfo = &ImageInfo,
+            .pBufferInfo = nullptr,
             .pTexelBufferView = nullptr
         };
     }
 
-    VkDescriptorPool cl_create_vk_desc_pool(ClVkContext &VkContext, u32 UniformCount, u32 StorageCount, u32 ImgSampleCount)
+    VkDescriptorPool cl_create_vk_desc_pool(ClVkContext &VkCtx, u32 UniformCount, u32 StorageCount, u32 ImgSampleCount)
     {
-        return VkDescriptorPool();
+        u32 img_count = VkCtx.FrameSync.GetNumFramesInFlight();
+        std::vector<VkDescriptorPoolSize> pool_sizes;
+
+        if(UniformCount > 0)
+        {
+            pool_sizes.push_back(
+                VkDescriptorPoolSize
+                {
+                    .type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                    .descriptorCount = img_count * UniformCount
+                }
+            );
+        }
+
+        if(StorageCount > 0)
+        {
+            pool_sizes.push_back(
+                VkDescriptorPoolSize
+                {
+                    .type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+                    .descriptorCount = img_count * StorageCount
+                }
+            );
+        }
+
+        if (ImgSampleCount > 0)
+        {
+            pool_sizes.push_back(
+                VkDescriptorPoolSize
+                {
+                    .type = VkDescriptorType::VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,
+                    .descriptorCount = img_count * ImgSampleCount
+                }
+            );
+        }
+        
+        VkDescriptorPoolCreateInfo create_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .maxSets = img_count,
+            .poolSizeCount = static_cast<u32>(pool_sizes.size()),
+            .pPoolSizes = pool_sizes.data()
+        };
+
+        VkDescriptorPool desc_pool;
+        VK_CHECK(vkCreateDescriptorPool(VkCtx.Device, &create_info, nullptr, &desc_pool));
+
+        return desc_pool;
     }
 
     void cl_destroy_vk_descriptor(ClVkContext &VkCtx, ClVkDescriptor &Descriptor)
     {
+        vkDestroyDescriptorSetLayout(VkCtx.Device, Descriptor.Layouts.front(), nullptr);
+        vkDestroyDescriptorPool(VkCtx.Device, Descriptor.Pool, nullptr);
     }
 }

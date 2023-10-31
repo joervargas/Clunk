@@ -96,10 +96,11 @@ namespace Clunk::Vk
      * 
      * @param Device Device Handle
      * @param Swapchain VkSwapchain Handle
+     * @param Format VkFormat
      * @param SwapchainImages VkImages to populate
      * @param SwapchainImageViews VkImageViews to populate
      */
-    void create_vk_swapchain_images(const VkDevice Device, const VkSwapchainKHR Swapchain, std::vector<VkImage>& SwapchainImages, std::vector<VkImageView>& SwapchainImageViews);
+    void create_vk_swapchain_images(const VkDevice Device, const VkSwapchainKHR Swapchain, const VkFormat Format, std::vector<VkImage>& SwapchainImages, std::vector<VkImageView>& SwapchainImageViews);
 
     /**
      * @brief Create a VkCommandPool handle
@@ -117,11 +118,11 @@ namespace Clunk::Vk
      * @param Device            VkDevice handle
      * @param CommandPool       VkCommandPool handle
      * @param BufferCount       u32: Count of the command buffers to allocate.
-     * @param CommandBuffers    std::vector<VkCommandBuffer> to assign to.
+     * @param pCommandBuffers   VkCommandBuffer* to assign to
      * 
      * @return VkResult 
      */
-    VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, std::vector<VkCommandBuffer>& CommandBuffers);
+    VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, VkCommandBuffer* pCommandBuffers);
 
     /**
      * @brief Creates a VkSemaphore
@@ -132,6 +133,15 @@ namespace Clunk::Vk
      * @return VkResult 
      */
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore* pSemaphore);
+
+    /**
+     * @brief Creates a VkFence
+     * @param VkDevice Device
+     * @param VkFence* pFence
+     * @param b8 bIsSignaled 
+     * @return 
+     */
+    VkResult create_vk_fence(VkDevice Device, VkFence* pFence, b8 bIsSignaled = false);
 
     /**
      * @brief Create a VkPipelineLayout

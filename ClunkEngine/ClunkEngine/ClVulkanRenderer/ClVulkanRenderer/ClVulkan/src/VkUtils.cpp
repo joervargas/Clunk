@@ -69,7 +69,12 @@ namespace Clunk::Vk
         std::optional<u32> result = std::nullopt;
         for(u32 i = 0; i != families.size(); i++)
         {
-            if(families[i].queueCount && families[i].queueFlags & DesiredQueueFlags)
+            // if(families[i].queueCount && families[i].queueFlags & DesiredQueueFlags)
+            // {
+            //     result = i;
+            //     return result;
+            // }
+            if(families[i].queueFlags & DesiredQueueFlags)
             {
                 result = i;
                 return result;
@@ -96,7 +101,7 @@ namespace Clunk::Vk
                 .queueCount = 1,
                 .pQueuePriorities = &queuePriority,
             };
-            queueCreateInfos.push_back(queueCI);
+            queueCreateInfos[i] = queueCI;
         }
 
         const std::vector<const char*> device_exts =
@@ -222,7 +227,7 @@ namespace Clunk::Vk
         CLOG_INFO("VkSwapchain created");
     }
 
-    void create_vk_swapchain_images(const VkDevice Device, const VkSwapchainKHR Swapchain, std::vector<VkImage> &SwapchainImages, std::vector<VkImageView> &SwapchainImageViews)
+    void create_vk_swapchain_images(const VkDevice Device, const VkSwapchainKHR Swapchain, const VkFormat Format, std::vector<VkImage> &SwapchainImages, std::vector<VkImageView> &SwapchainImageViews)
     {
         u32 imageCount = 0;
         VK_CHECK(vkGetSwapchainImagesKHR(Device, Swapchain, &imageCount, nullptr));
@@ -234,7 +239,7 @@ namespace Clunk::Vk
 
         for(u32 i = 0; i < imageCount; i++)
         {
-            create_vk_image_view(Device, SwapchainImages[i], VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, &SwapchainImageViews[i]);
+            create_vk_image_view(Device, SwapchainImages[i], Format, VK_IMAGE_ASPECT_COLOR_BIT, &SwapchainImageViews[i]);
         }
     }
 
@@ -244,13 +249,14 @@ namespace Clunk::Vk
         {
             .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
             .pNext = nullptr,
+            .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
             .queueFamilyIndex = QueueFamilyIndex
         };
 
         return vkCreateCommandPool(Device, &ci, nullptr, pCommandPool);
     }
 
-    VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, std::vector<VkCommandBuffer> &CommandBuffers)
+    VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, VkCommandBuffer* pCommandBuffers)
     {
         const VkCommandBufferAllocateInfo ai =
         {
@@ -260,7 +266,7 @@ namespace Clunk::Vk
             .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
             .commandBufferCount = BufferCount
         };
-        return vkAllocateCommandBuffers(Device, &ai, CommandBuffers.data());
+        return vkAllocateCommandBuffers(Device, &ai, pCommandBuffers);
     }
 
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore *pSemaphore)
@@ -271,6 +277,20 @@ namespace Clunk::Vk
         };
 
         return vkCreateSemaphore(Device, &ci, nullptr, pSemaphore);
+    }
+
+    VkResult create_vk_fence(VkDevice Device, VkFence* pFence, b8 bIsSignaled)
+    {
+        VkFenceCreateInfo ci =
+        {
+            .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+        };
+        if(bIsSignaled)
+        {
+            ci.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+        }
+
+        return vkCreateFence(Device, &ci, nullptr, pFence);
     }
 
     VkResult create_vk_pipeline_layout(VkDevice Device, u32 DescriptorSetLayoutCount, VkDescriptorSetLayout *pDescriptorSetLayouts, u32 PushConstantRangeCount, VkPushConstantRange *pPushConstantRange, VkPipelineLayout *pPipeLineLayout)
@@ -288,7 +308,7 @@ namespace Clunk::Vk
         return vkCreatePipelineLayout(Device, &create_info, nullptr, pPipeLineLayout);
     }
 
-    const VkPipelineVertexInputStateCreateInfo create_vk_pipeline_info_vertex_input()
+    const VkPipelineVertexInputStateCreateInfo create_info_vk_pipeline_vertex_input()
     {
         return VkPipelineVertexInputStateCreateInfo
         {
@@ -296,7 +316,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineInputAssemblyStateCreateInfo create_vk_pipeline_info_assembly(VkPrimitiveTopology Topology, VkBool32 bPrimitiveRestartEnabled)
+    const VkPipelineInputAssemblyStateCreateInfo create_info_vk_pipeline_assembly(VkPrimitiveTopology Topology, VkBool32 bPrimitiveRestartEnabled)
     {
         return VkPipelineInputAssemblyStateCreateInfo
         {
@@ -306,7 +326,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineViewportStateCreateInfo create_vk_pipeline_info_viewport(u32 ViewportCount, VkViewport* pViewports, u32 ScissorCount, VkRect2D* pScissors)
+    const VkPipelineViewportStateCreateInfo create_info_vk_pipeline_viewport(u32 ViewportCount, VkViewport *pViewports, u32 ScissorCount, VkRect2D *pScissors)
     {
         return VkPipelineViewportStateCreateInfo
         {
@@ -318,7 +338,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineRasterizationStateCreateInfo create_vk_pipeline_info_rasterization(VkPolygonMode PolygonMode, VkCullModeFlags CullMode, VkFrontFace FrontFace, f32 LineWidth)
+    const VkPipelineRasterizationStateCreateInfo create_info_vk_pipeline_rasterization(VkPolygonMode PolygonMode, VkCullModeFlags CullMode, VkFrontFace FrontFace, f32 LineWidth)
     {
         return VkPipelineRasterizationStateCreateInfo
         {
@@ -330,7 +350,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineMultisampleStateCreateInfo create_vk_pipeline_info_multisample(VkSampleCountFlagBits Samples, VkBool32 bSampleShading, f32 MinSampleShading)
+    const VkPipelineMultisampleStateCreateInfo create_info_vk_pipeline_multisample(VkSampleCountFlagBits Samples, VkBool32 bSampleShading, f32 MinSampleShading)
     {
         return VkPipelineMultisampleStateCreateInfo
         {
@@ -341,7 +361,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineColorBlendAttachmentState create_vk_pipeline_info_color_blend_attachment(b8 bUseBlending)
+    const VkPipelineColorBlendAttachmentState create_info_vk_pipeline_color_blend_attachment(b8 bUseBlending)
     {
         return VkPipelineColorBlendAttachmentState
         {
@@ -360,7 +380,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineColorBlendStateCreateInfo create_vk_pipeline_info_color_blend(VkPipelineColorBlendAttachmentState* pColorBlendAttachments, u32 ColorBlendAttachmentsCount)
+    const VkPipelineColorBlendStateCreateInfo create_info_vk_pipeline_color_blend(VkPipelineColorBlendAttachmentState* pColorBlendAttachments, u32 ColorBlendAttachmentsCount)
     {
         return VkPipelineColorBlendStateCreateInfo
         {
@@ -373,7 +393,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineDepthStencilStateCreateInfo create_vk_pipeline_info_depth_stencil()
+    const VkPipelineDepthStencilStateCreateInfo create_info_vk_pipeline_depth_stencil()
     {
         return VkPipelineDepthStencilStateCreateInfo
         {
@@ -387,7 +407,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineDynamicStateCreateInfo create_vk_pipeline_info_dynamic_state(VkDynamicState* pDynamicStates, u32 DynamicStateCount)
+    const VkPipelineDynamicStateCreateInfo create_info_vk_pipeline_dynamic_state(VkDynamicState* pDynamicStates, u32 DynamicStateCount)
     {
         return VkPipelineDynamicStateCreateInfo
         {
@@ -399,7 +419,7 @@ namespace Clunk::Vk
         };
     }
 
-    const VkPipelineTessellationStateCreateInfo create_vk_pipeline_info_tessellation(u32 NumPatchControlPoints)
+    const VkPipelineTessellationStateCreateInfo create_info_vk_pipeline_tessellation(u32 NumPatchControlPoints)
     {
         return VkPipelineTessellationStateCreateInfo
         {

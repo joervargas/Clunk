@@ -48,6 +48,7 @@ target_link_libraries(${Target}
 if(${VULKAN_GRAPHICS})
     target_link_libraries(${Target}
        # vulkan
+        ClVulkan
         ClVulkanRenderer
     )
 endif()
