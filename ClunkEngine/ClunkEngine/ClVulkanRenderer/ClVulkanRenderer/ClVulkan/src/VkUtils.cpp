@@ -69,7 +69,12 @@ namespace Clunk::Vk
         std::optional<u32> result = std::nullopt;
         for(u32 i = 0; i != families.size(); i++)
         {
-            if(families[i].queueCount && families[i].queueFlags & DesiredQueueFlags)
+            // if(families[i].queueCount && families[i].queueFlags & DesiredQueueFlags)
+            // {
+            //     result = i;
+            //     return result;
+            // }
+            if(families[i].queueFlags & DesiredQueueFlags)
             {
                 result = i;
                 return result;
@@ -96,7 +101,7 @@ namespace Clunk::Vk
                 .queueCount = 1,
                 .pQueuePriorities = &queuePriority,
             };
-            queueCreateInfos.push_back(queueCI);
+            queueCreateInfos[i] = queueCI;
         }
 
         const std::vector<const char*> device_exts =
@@ -222,7 +227,7 @@ namespace Clunk::Vk
         CLOG_INFO("VkSwapchain created");
     }
 
-    void create_vk_swapchain_images(const VkDevice Device, const VkSwapchainKHR Swapchain, std::vector<VkImage> &SwapchainImages, std::vector<VkImageView> &SwapchainImageViews)
+    void create_vk_swapchain_images(const VkDevice Device, const VkSwapchainKHR Swapchain, const VkFormat Format, std::vector<VkImage> &SwapchainImages, std::vector<VkImageView> &SwapchainImageViews)
     {
         u32 imageCount = 0;
         VK_CHECK(vkGetSwapchainImagesKHR(Device, Swapchain, &imageCount, nullptr));
@@ -234,7 +239,7 @@ namespace Clunk::Vk
 
         for(u32 i = 0; i < imageCount; i++)
         {
-            create_vk_image_view(Device, SwapchainImages[i], VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, &SwapchainImageViews[i]);
+            create_vk_image_view(Device, SwapchainImages[i], Format, VK_IMAGE_ASPECT_COLOR_BIT, &SwapchainImageViews[i]);
         }
     }
 
@@ -244,13 +249,14 @@ namespace Clunk::Vk
         {
             .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
             .pNext = nullptr,
+            .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
             .queueFamilyIndex = QueueFamilyIndex
         };
 
         return vkCreateCommandPool(Device, &ci, nullptr, pCommandPool);
     }
 
-    VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, std::vector<VkCommandBuffer> &CommandBuffers)
+    VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, VkCommandBuffer* pCommandBuffers)
     {
         const VkCommandBufferAllocateInfo ai =
         {
@@ -260,7 +266,7 @@ namespace Clunk::Vk
             .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
             .commandBufferCount = BufferCount
         };
-        return vkAllocateCommandBuffers(Device, &ai, CommandBuffers.data());
+        return vkAllocateCommandBuffers(Device, &ai, pCommandBuffers);
     }
 
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore *pSemaphore)

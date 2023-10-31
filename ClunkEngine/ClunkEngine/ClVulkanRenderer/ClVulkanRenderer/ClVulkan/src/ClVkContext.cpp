@@ -10,14 +10,14 @@ namespace Clunk::Vk
 
     void cl_query_vk_queues_indices(const VkPhysicalDevice PhysicalDevice, ClVkQueues *Queues)
     {
-        if (!Queues) { THROW_EXCEPTION("VulkanQueus* must not be nullptr!"); }
+        if (!Queues) { THROW_EXCEPTION("VulkanQueues* must not be nullptr!"); }
 
         Queues->Graphics.index = find_vk_queue_family_index(PhysicalDevice, VK_QUEUE_GRAPHICS_BIT);
     }
 
     void cl_query_vk_queues_handles(const VkDevice Device, ClVkQueues *Queues)
     {
-        if (!Queues) { THROW_EXCEPTION("VulkanQueus* must not be nullptr!"); }
+        if (!Queues) { THROW_EXCEPTION("VulkanQueues* must not be nullptr!"); }
 
         if(Queues->Graphics.index.has_value())
         {
@@ -48,7 +48,7 @@ namespace Clunk::Vk
         vkSwapchain.Width = Width;
         vkSwapchain.Height = Height;
         create_vk_swapchain(Device, Surface, QueueFamilyIndices, details.Capabilities, format, presentMode, vkSwapchain.Width, vkSwapchain.Height, &vkSwapchain.Handle);
-        create_vk_swapchain_images(Device, vkSwapchain.Handle, vkSwapchain.Images, vkSwapchain.ImageViews);
+        create_vk_swapchain_images(Device, vkSwapchain.Handle, format.format, vkSwapchain.Images, vkSwapchain.ImageViews);
         
         return vkSwapchain;
     }
@@ -118,8 +118,9 @@ namespace Clunk::Vk
         // VK_CHECK(create_vk_semaphore(ctx.Device, &ctx.WaitSemaphore));
         ctx.FrameSync = ClVkFrameSync(ctx.Device, 2);
 
+        ctx.DrawCmds.Buffers.resize(ctx.FrameSync.GetNumFramesInFlight());
         VK_CHECK( create_vk_command_pool(ctx.Device, ctx.Queues.Graphics.index.value(), &ctx.DrawCmds.Pool));
-        VK_CHECK( allocate_vk_command_buffers(ctx.Device, ctx.DrawCmds.Pool, static_cast<u32>( ctx.Swapchain.Images.size()), ctx.DrawCmds.Buffers) );
+        VK_CHECK( allocate_vk_command_buffers(ctx.Device, ctx.DrawCmds.Pool, ctx.FrameSync.GetNumFramesInFlight(), ctx.DrawCmds.Buffers.data()) );
 
         return ctx;
     }

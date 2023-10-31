@@ -81,7 +81,10 @@ namespace Clunk::Vk
             .pClearValues = clear_values.data()
         };
         vkCmdBeginRenderPass(CmdBuffer, &render_begin_info, VK_SUBPASS_CONTENTS_INLINE);
-        vkCmdBindPipeline(CmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline);
+        if(mPipeline != VK_NULL_HANDLE)
+        {
+            vkCmdBindPipeline(CmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline);
+        }
 
         VkViewport viewport =
         {
@@ -113,7 +116,7 @@ namespace Clunk::Vk
 
     void ClVk2dLayerList::Destroy()
     {
-        for(ClVk2dLayer* layer : mList)
+        for(auto& layer : mList)
         {
             layer->Destroy();
         }
@@ -121,15 +124,19 @@ namespace Clunk::Vk
 
     void ClVk2dLayerList::Update(u32 CurrentIndex, f32 DeltaTime)
     {
-        for(ClVk2dLayer* layer : mList)
+        for(auto& layer : mList)
         {
             layer->Update(CurrentIndex, DeltaTime);
         }
+        // for(u32 i = 0; i < mList.size(); i++)
+        // {
+        //     mList[i]->Update(CurrentIndex, DeltaTime);
+        // }
     }
 
     void ClVk2dLayerList::DrawFrame(const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
     {
-        for(ClVk2dLayer* layer : mList)
+        for(auto& layer : mList)
         {
             layer->DrawFrame(CmdBuffer, CurrentImage);
         }

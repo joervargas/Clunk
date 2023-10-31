@@ -3,10 +3,14 @@
 #include <ClVulkan/ClVkLoader.h>
 #include <ClVulkan/ClVkContext.h>
 
+#include <glslang/Include/glslang_c_interface.h>
+
 namespace Clunk::Vk
 {
     ClVkRenderer::ClVkRenderer(const char* AppName, const u32 AppVersion)
     {
+        glslang_initialize_process();
+
         ClPlatform* platform = ClPlatform::Get();
         mVkLoader = cl_create_vk_loader(platform->GetWindow(), AppName, AppVersion);
         i32 width, height;
@@ -19,7 +23,8 @@ namespace Clunk::Vk
         mLayers3d = ClVk3dLayerList(&mVkCtx);
 
         mLayers2d = ClVk2dLayerList(&mVkCtx);
-        mLayers2d.Push(new ClVkSimple2dLayer(&mVkCtx) );
+        mLayers2d.Push( new ClVkSimple2dLayer(&mVkCtx) );
+        // mLayers2d.push_back(new ClVkSimple2dLayer(&mVkCtx) );
     }
 
     void ClVkRenderer::Init()
@@ -31,6 +36,10 @@ namespace Clunk::Vk
     {
         // mLayers3d.Update(mVkCtx.FrameSync.GetCurrentIndex(), )
         mLayers2d.Update(mVkCtx.FrameSync.GetCurrentIndex(), DeltaTime);
+        // for(auto layer : mLayers2d)
+        // {
+        //     layer->Update(mVkCtx.FrameSync.GetCurrentIndex(), DeltaTime);
+        // }
     }
 
     void ClVkRenderer::Destroy()
@@ -38,10 +47,17 @@ namespace Clunk::Vk
         mBeginLayer.Destroy();
         mLayers3d.Destroy();
         mLayers2d.Destroy();
+        // for(auto layer: mLayers2d)
+        // {
+        //     CLUNK_DELETE(layer);
+        // }
+
         mEndLayer.Destroy();
 
         cl_destroy_vk_context(&mVkCtx);
         cl_destroy_vk_loader(&mVkLoader);
+
+        glslang_finalize_process();
     }
 
     void ClVkRenderer::Render()
@@ -116,8 +132,12 @@ namespace Clunk::Vk
         VK_CHECK(vkBeginCommandBuffer(DrawBuffer, &begin_info));
 
         mBeginLayer.DrawFrame(DrawBuffer, ImageIndex);
-        mLayers3d.DrawFrame(DrawBuffer, ImageIndex);
+        // mLayers3d.DrawFrame(DrawBuffer, ImageIndex);
         mLayers2d.DrawFrame(DrawBuffer, ImageIndex);
+        // for(auto layer : mLayers2d)
+        // {
+        //     layer->DrawFrame(DrawBuffer, ImageIndex);
+        // }
         mEndLayer.DrawFrame(DrawBuffer, ImageIndex);
 
         VK_CHECK(vkEndCommandBuffer(DrawBuffer));
@@ -130,6 +150,10 @@ namespace Clunk::Vk
         mBeginLayer.CleanupFramebuffers();
         mLayers3d.CleanupFramebuffers();
         mLayers2d.CleanupFramebuffers();
+        // for(auto layer : mLayers2d)
+        // {
+        //     layer->CleanupFramebuffers();
+        // }
         mEndLayer.CleanupFramebuffers();
         cl_destroy_vk_swapchain(mVkCtx.Device, &mVkCtx.Swapchain);
 
@@ -154,6 +178,10 @@ namespace Clunk::Vk
         mBeginLayer.RecreateFramebuffers(&mDepthImage);
         mLayers3d.RecreateFramebuffers(&mDepthImage);
         mLayers2d.RecreateFramebuffers(nullptr);
+        // for(auto& layer : mLayers2d)
+        // {
+        //     layer->RecreateFramebuffers(nullptr);
+        // }
         mEndLayer.RecreateFramebuffers(&mDepthImage);
 
         CLOG_INFO("VkSwapchain and VkFramebuffers recreated.");

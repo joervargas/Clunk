@@ -12,9 +12,10 @@ namespace Clunk::Vk
         {
             .bUseColor = true,
             .bClearColor = false,
-            .bUseDepth = true,
+            .bUseDepth = false,
             .bClearDepth = false,
-            .ColorFormat = VkFormat::VK_FORMAT_B8G8R8A8_UNORM,
+            // .ColorFormat = VkFormat::VK_FORMAT_B8G8R8A8_UNORM,
+            .ColorFormat = pVkCtx->Swapchain.Format,
             .Flags = ERenderPassBit::ERPB_NONE,
             .Samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT
         };
@@ -42,6 +43,7 @@ namespace Clunk::Vk
 
     void ClVkSimple2dLayer::Update(u32 CurrentIndex, f32 DeltaTime)
     {
+        CLOG_WARN("Simple2dLayer updates");
     }
 
     void ClVkSimple2dLayer::DrawFrame(const VkCommandBuffer &CmdBuffer, size_t CurrentImage)

@@ -6,6 +6,7 @@
 #include <ClVulkan/ClVkContext.h>
 #include <ClVulkan/ClVkRenderPass.h>
 
+#include <utility>
 
 namespace Clunk::Vk
 {
@@ -16,7 +17,60 @@ namespace Clunk::Vk
 
         explicit ClVkRenderLayerBase(ClVkContext* pVkContex) : pVkCtx(pVkContex) {};
         
+        ClVkRenderLayerBase(const ClVkRenderLayerBase& Other) : 
+            pVkCtx(Other.pVkCtx),
+            mDescSetLayout(Other.mDescSetLayout), mDescPool(Other.mDescPool), mDescSets(Other.mDescSets),
+            mFramebuffers(Other.mFramebuffers), mFrameBufferWidth(Other.mFrameBufferWidth), mFrameBufferHeight(Other.mFrameBufferHeight),
+            mRenderPass(Other.mRenderPass), mPipelineLayout(Other.mPipelineLayout), mPipeline(Other.mPipeline)
+        {}
+
+        ClVkRenderLayerBase(ClVkRenderLayerBase&& Other) :
+            pVkCtx(std::exchange(Other.pVkCtx, nullptr))
+        {
+            mDescSetLayout = std::move(Other.mDescSetLayout);
+            mDescPool = std::move(Other.mDescPool);
+            mDescSets = std::move(Other.mDescSets);
+            mFramebuffers = std::move(Other.mFramebuffers);
+            mFrameBufferWidth = std::exchange(Other.mFrameBufferWidth, 0);
+            mFrameBufferHeight = std::exchange(Other.mFrameBufferHeight, 0);
+            mRenderPass = std::move(Other.mRenderPass);
+            mPipelineLayout = std::move(Other.mPipelineLayout);
+            mPipeline = std::move(Other.mPipeline);
+        }
+
         virtual ~ClVkRenderLayerBase();
+
+        ClVkRenderLayerBase& operator=(const ClVkRenderLayerBase& Other)
+        {
+            this->pVkCtx = Other.pVkCtx;
+            this->mDescSetLayout = Other.mDescSetLayout;
+            this->mDescPool = Other.mDescPool;
+            this->mDescSets = Other.mDescSets;
+            this->mFramebuffers = Other.mFramebuffers;
+            this->mFrameBufferWidth = Other.mFrameBufferWidth;
+            this->mFrameBufferHeight = Other.mFrameBufferHeight;
+            this->mRenderPass = Other.mRenderPass;
+            this->mPipelineLayout = Other.mPipelineLayout;
+            this->mPipeline = Other.mPipeline;
+
+            return *this;
+        }
+
+        ClVkRenderLayerBase& operator=(ClVkRenderLayerBase&& Other)
+        {
+            this->pVkCtx = std::exchange(Other.pVkCtx, nullptr);
+            this->mDescSetLayout = std::move(Other.mDescSetLayout);
+            this->mDescPool = std::move(Other.mDescPool);
+            this->mDescSets = std::move(Other.mDescSets);
+            this->mFramebuffers = std::move(Other.mFramebuffers);
+            this->mFrameBufferWidth = std::exchange(Other.mFrameBufferWidth, 0);
+            this->mFrameBufferHeight = std::exchange(Other.mFrameBufferHeight, 0);
+            this->mRenderPass = std::move(Other.mRenderPass);
+            this->mPipelineLayout = std::move(Other.mPipelineLayout);
+            this->mPipeline = std::move(Other.mPipeline);
+
+            return *this;
+        }
 
         virtual void Destroy();
 
@@ -86,7 +140,7 @@ namespace Clunk::Vk
 
         virtual void Destroy() override;
 
-        void Push(ClVk2dLayer* Layer) { mList.push_back(Layer); }
+        void Push(ClVk2dLayer*& Layer) { mList.push_back(Layer); }
 
         ClVk2dLayer* Pop()
         {

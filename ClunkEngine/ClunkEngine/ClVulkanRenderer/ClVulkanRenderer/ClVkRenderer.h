@@ -51,6 +51,7 @@ namespace Clunk::Vk
         ClVkEndLayer mEndLayer;
 
         ClVk2dLayerList mLayers2d;
+        // std::vector<ClVk2dLayer*> mLayers2d;
 
         ClVk3dLayerList mLayers3d;
 

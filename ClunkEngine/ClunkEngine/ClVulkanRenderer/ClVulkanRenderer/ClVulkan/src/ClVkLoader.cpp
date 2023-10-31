@@ -30,6 +30,7 @@ namespace Clunk::Vk
             #endif
             #if defined(__linux__)
                 "VK_KHR_xcb_surface",
+                "VK_KHR_xlib_surface",
             #endif
             VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
             VK_EXT_DEBUG_REPORT_EXTENSION_NAME,
