@@ -93,7 +93,8 @@ namespace Clunk
     void ClPlatform::GetDrawableSize(i32 *Width, i32 *Height)
     {
         if(!Width || !Height) { THROW_EXCEPTION("Platform::GetDrawableSize Width and Height must not be null."); }
-        SDL_Vulkan_GetDrawableSize(m_Window, Width, Height);
+        // SDL_Vulkan_GetDrawableSize(m_Window, Width, Height);
+        SDL_GetWindowSize(m_Window, Width, Height);
     }
 
     void ClPlatform::Wait()
@@ -103,17 +104,18 @@ namespace Clunk
 
     void ClPlatform::ProcessWindowEvents(const SDL_WindowEvent &WindowEvent)
     {
-        using namespace Events;
+        // using namespace Events;
 
-        const WindowData data = { .windowID = WindowEvent.windowID };
+        // const WindowData data = { .windowID = WindowEvent.windowID };
         switch (WindowEvent.event)
         {
             // case SDL_WINDOWEVENT_SHOWN:
             //     SDL_Log("~ SDL Window %d shown \n", windowEvent.windowID);
             //     break;
             case SDL_WINDOWEVENT_RESIZED:
+                Events::Window::Resize.Notify(EWindowState::WS_RESIZED);
                 // WindowEvents::WE_Resize.Set(WindowEvent);
-                Window::Resize.Listener->fire_callback(Window::Resize.Listener->Obj, data);
+                // Window::Resize.Listener->fire_callback(Window::Resize.Listener->Obj, data);
                 // SDL_Log(
                 //     "~ SDL Window %d size changed to %d x %d \n",
                 //     windowEvent.windowID,
@@ -122,14 +124,17 @@ namespace Clunk
                 // );
                 break;
             case SDL_WINDOWEVENT_MINIMIZED:
+                Events::Window::Minimize.Notify(EWindowState::WS_MINIMIZED);
                 // WindowEvents::WE_Minimize.Set(WindowEvent);
                 // SDL_Log("~ SDL Window %d minimized", windowEvent.windowID);
                 break;
             case SDL_WINDOWEVENT_MAXIMIZED:
+                Events::Window::Maximize.Notify(EWindowState::WS_MAXIMIZED);
                 // WindowEvents::WE_Maximize.Set(WindowEvent);
                 // SDL_Log("~ SDL Window %d maximized", windowEvent.windowID);
                 break;
             case SDL_WINDOWEVENT_CLOSE:
+                Events::Window::Close.Notify(EWindowState::WS_CLOSE);
                 // WindowEvents::WE_Close.Set(WindowEvent);
                 // SDL_Log("~ SDL Window %d closed \n", windowEvent.windowID);
                 break;
@@ -145,8 +150,9 @@ namespace Clunk
             case SDL_KEYDOWN:
                 if(KeyboardEvent.keysym.sym == SDLK_ESCAPE)
                 {
+                    Events::Key::ESC_Key.Notify(EButtonState::BS_PRESSED);
                     // KeyEvents::KE_ESC.Set(KeyboardEvent);
-                    Events::Key::ESC_Key.Listener->fire_callback(Events::Key::ESC_Key.Listener->Obj, EButtonState::BS_PRESSED);
+                    // Events::Key::ESC_Key.Listener->fire_callback(Events::Key::ESC_Key.Listener->Obj, EButtonState::BS_PRESSED);
                 }
                 break;
             case SDL_KEYUP:

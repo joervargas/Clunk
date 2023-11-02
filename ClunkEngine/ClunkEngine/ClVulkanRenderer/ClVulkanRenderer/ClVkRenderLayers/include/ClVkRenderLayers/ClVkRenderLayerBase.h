@@ -112,6 +112,20 @@ namespace Clunk::Vk
     public:
 
         ClVk2dLayer(ClVkContext* pVkCtx) : ClVkRenderLayerBase(pVkCtx) {}
+        ClVk2dLayer(const ClVk2dLayer& Other) : ClVkRenderLayerBase(Other) {}
+        ClVk2dLayer(ClVk2dLayer&& Other) : ClVkRenderLayerBase(Other) {}
+
+        ClVk2dLayer& operator=(const ClVk2dLayer& Other)
+        {
+            ClVkRenderLayerBase::operator=(Other);
+            return *this;
+        }
+
+        ClVk2dLayer& operator=(ClVk2dLayer&& Other)
+        {
+            ClVkRenderLayerBase::operator=(Other);
+            return *this;
+        }
 
         virtual ~ClVk2dLayer() {};
 
@@ -129,6 +143,27 @@ namespace Clunk::Vk
 
         ClVk2dLayerList() : ClVk2dLayer(nullptr) {}
         ClVk2dLayerList(ClVkContext* pVkCtx) : ClVk2dLayer(pVkCtx) {}
+        ClVk2dLayerList(const ClVk2dLayerList& Other) : ClVk2dLayer(Other)
+        {
+            mList = Other.mList;
+        }
+        ClVk2dLayerList(ClVk2dLayerList&& Other) : ClVk2dLayer(Other)
+        {
+            mList = std::move(Other.mList);
+        }
+
+        ClVk2dLayerList& operator=(const ClVk2dLayerList& Other)
+        {
+            ClVk2dLayer::operator=(Other);
+            mList = Other.mList;
+            return *this;
+        }
+        ClVk2dLayerList& operator=(ClVk2dLayerList&& Other)
+        {
+            ClVk2dLayer::operator=(Other);
+            mList = std::move(Other.mList);
+            return *this;
+        }
 
         virtual ~ClVk2dLayerList()
         {
@@ -140,7 +175,7 @@ namespace Clunk::Vk
 
         virtual void Destroy() override;
 
-        void Push(ClVk2dLayer*& Layer) { mList.push_back(Layer); }
+        void Push(ClVk2dLayer* Layer) { mList.push_back(Layer); }
 
         ClVk2dLayer* Pop()
         {

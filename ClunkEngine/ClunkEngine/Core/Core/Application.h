@@ -5,11 +5,13 @@
 
 // #include <WindowContext/WindowContext.h>
 #include <ClPlatforms/ClPlatform.h>
-#include <Events/WindowEvents.h>
-#include <Events/WindowListener.h>
-#include <Events/KeyEvents.h>
-#include <Events/KeyListener.h>
-#include <Events/EventDataTypes.h>
+#include <ClPlatforms/ClPlatform_ButtonEvent.h>
+#include <ClPlatforms/ClPlatform_WindowEvent.h>
+// #include <Events/WindowEvents.h>
+// #include <Events/WindowListener.h>
+// #include <Events/KeyEvents.h>
+// #include <Events/KeyListener.h>
+// #include <Events/EventDataTypes.h>
 
 #include <ClRenderManager/ClRenderContext.h>
 
@@ -49,10 +51,10 @@ namespace Clunk
          */
         b8 Render(f32 DeltaTime);
 
-        void Close(const WindowData& Data);
-        void Resize(const WindowData& Data);
+        void Close(const EWindowState& State);
+        // void Resize(const WindowData& Data);
         
-        void Escape(const KeyData& Data);
+        // void Escape(const KeyData& Data);
 
         void Quit() { bIsRunning = false; }
 
@@ -64,9 +66,9 @@ namespace Clunk
         ClRenderContext RenderCtx;
 
         WindowListener<Application>* OnClose;
-        WindowListener<Application>* OnResize;
-        WindowListener<Application>* OnMaximize;
-        WindowListener<Application>* OnMinimize;
+        // WindowListener<Application>* OnResize;
+        // WindowListener<Application>* OnMaximize;
+        // WindowListener<Application>* OnMinimize;
     };
 
     Application* CreateApplication();

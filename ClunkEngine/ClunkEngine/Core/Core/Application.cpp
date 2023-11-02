@@ -1,5 +1,6 @@
 #include "Application.h"
 
+#include <ClPlatforms/ClPlatform_EventStatics.h>
 
 namespace Clunk
 {
@@ -12,8 +13,8 @@ namespace Clunk
 
     Application::~Application()
     {
-        delete(OnClose);
-        delete(OnResize);
+        CLUNK_DELETE(OnClose);
+        // delete(OnResize);
         // delete(OnMaximize);
         // delete(OnMinimize);
     }
@@ -27,8 +28,8 @@ namespace Clunk
         RenderCtx.Init();
 
         // Set events
-        OnClose = new WindowListener<Application>(&WindowEvents::WE_Close, this, &Application::Close);
-        OnResize = new WindowListener<Application>(&WindowEvents::WE_Resize, this, &Application::Resize);
+        OnClose = new WindowListener<Application>(&Events::Window::Close, this, &Application::Close);
+        // OnResize = new WindowListener<Application>(&WindowEvents::WE_Resize, this, &Application::Resize);
 
         return true;
     }
@@ -41,29 +42,28 @@ namespace Clunk
 
             RenderCtx.RenderFrame();
         }
-
-        // RenderManager.Destroy();
+        
         RenderCtx.Destroy();
         return true;
     }
 
-    void Application::Close(const WindowData& Data) 
+    void Application::Close(const EWindowState& State) 
     {
         CLOG_INFO("Close command executed!");
         Quit();
     }
 
-    void Application::Resize(const WindowData &Data)
-    {
-        CLOG_WARN("Window Resized!");
-        // RenderManager.bIsResized = true;
-        RenderCtx.SetIsResized(true);
-    }
+    // void Application::Resize(const WindowData &Data)
+    // {
+    //     CLOG_WARN("Window Resized!");
+    //     // RenderManager.bIsResized = true;
+    //     RenderCtx.SetIsResized(true);
+    // }
 
-    void Application::Escape(const KeyData& Data)
-    {
-        CLOG_INFO("Close command executed!");
-        Quit();
-    }
+    // void Application::Escape(const KeyData& Data)
+    // {
+    //     CLOG_INFO("Close command executed!");
+    //     Quit();
+    // }
     
 }

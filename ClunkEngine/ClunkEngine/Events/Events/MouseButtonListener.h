@@ -38,7 +38,7 @@ public:
         (m_target->*m_callBack)(data);
     }
 
-        void AddToList()
+    void AddToList()
     {
         if(m_event)
         {
