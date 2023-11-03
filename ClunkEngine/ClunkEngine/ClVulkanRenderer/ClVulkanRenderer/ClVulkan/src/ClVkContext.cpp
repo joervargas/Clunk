@@ -350,7 +350,7 @@ namespace Clunk::Vk
     //     return pipeline;
     // }
 
-    std::vector<VkFramebuffer> cl_create_vk_color_depth_framebuffers(ClVkContext &VkCtx, const ClVkRenderPass &RenderPass, const VkImageView &DepthView)
+    std::vector<VkFramebuffer> cl_create_vk_color_depth_framebuffers(const ClVkContext &VkCtx, const ClVkRenderPass &RenderPass, const VkImageView &DepthView)
     {
         std::vector<VkFramebuffer> framebuffers;
 
@@ -381,7 +381,7 @@ namespace Clunk::Vk
         return framebuffers;
     }
 
-    std::vector<VkFramebuffer> cl_create_vk_color_only_framebuffers(ClVkContext &VkCtx, const ClVkRenderPass &RenderPass)
+    std::vector<VkFramebuffer> cl_create_vk_color_only_framebuffers(const ClVkContext &VkCtx, const ClVkRenderPass &RenderPass)
     {
         std::vector<VkFramebuffer> framebuffers;
 
@@ -411,7 +411,7 @@ namespace Clunk::Vk
         return framebuffers;
     }
 
-    void cl_destroy_vk_framebuffers(VkDevice Device, std::vector<VkFramebuffer>& Framebuffers)
+    void cl_destroy_vk_framebuffers(const VkDevice& Device, std::vector<VkFramebuffer>& Framebuffers)
     {
         for(size_t i = 0; i < Framebuffers.size(); i++)
         {

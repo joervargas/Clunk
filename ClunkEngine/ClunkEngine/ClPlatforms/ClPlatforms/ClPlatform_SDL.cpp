@@ -93,8 +93,8 @@ namespace Clunk
     void ClPlatform::GetDrawableSize(i32 *Width, i32 *Height)
     {
         if(!Width || !Height) { THROW_EXCEPTION("Platform::GetDrawableSize Width and Height must not be null."); }
-        // SDL_Vulkan_GetDrawableSize(m_Window, Width, Height);
-        SDL_GetWindowSize(m_Window, Width, Height);
+        SDL_Vulkan_GetDrawableSize(m_Window, Width, Height);
+        // SDL_GetWindowSize(m_Window, Width, Height);
     }
 
     void ClPlatform::Wait()

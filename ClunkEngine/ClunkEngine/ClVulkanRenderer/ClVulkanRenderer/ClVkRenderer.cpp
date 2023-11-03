@@ -17,14 +17,14 @@ namespace Clunk::Vk
         platform->GetDrawableSize(&width, &height);
         mVkCtx = cl_create_vk_context(mVkLoader, width, height);
 
-        mBeginLayer = ClVkBeginLayer(&mVkCtx, nullptr);
-        mEndLayer = ClVkEndLayer(&mVkCtx, nullptr);
+        mBeginLayer = ClVkBeginLayer(mVkCtx, nullptr);
+        mEndLayer = ClVkEndLayer(mVkCtx, nullptr);
 
         // mLayers3d = ClVk3dLayerList(&mVkCtx);
 
         // mLayers2d = ClVk2dLayerList(&mVkCtx);
         // mLayers2d.Push( new ClVkSimple2dLayer(&mVkCtx) );
-        mLayers2d.push_back(new ClVkSimple2dLayer(&mVkCtx) );
+        mLayers2d.push_back(new ClVkSimple2dLayer(mVkCtx) );
     }
 
     void ClVkRenderer::Init()
@@ -44,16 +44,16 @@ namespace Clunk::Vk
 
     void ClVkRenderer::Destroy()
     {
-        mBeginLayer.Destroy();
+        mBeginLayer.Destroy(mVkCtx);
         // mLayers3d.Destroy();
         // mLayers2d.Destroy();
         for(auto layer: mLayers2d)
         {
-            layer->Destroy();
+            layer->Destroy(mVkCtx);
             CLUNK_DELETE(layer);
         }
 
-        mEndLayer.Destroy();
+        mEndLayer.Destroy(mVkCtx);
 
         cl_destroy_vk_context(&mVkCtx);
         cl_destroy_vk_loader(&mVkLoader);
@@ -132,14 +132,14 @@ namespace Clunk::Vk
 
         VK_CHECK(vkBeginCommandBuffer(DrawBuffer, &begin_info));
 
-        mBeginLayer.DrawFrame(DrawBuffer, ImageIndex);
+        mBeginLayer.DrawFrame(mVkCtx, DrawBuffer, ImageIndex);
         // mLayers3d.DrawFrame(DrawBuffer, ImageIndex);
         // mLayers2d.DrawFrame(DrawBuffer, ImageIndex);
         for(auto layer : mLayers2d)
         {
-            layer->DrawFrame(DrawBuffer, ImageIndex);
+            layer->DrawFrame(mVkCtx, DrawBuffer, ImageIndex);
         }
-        mEndLayer.DrawFrame(DrawBuffer, ImageIndex);
+        mEndLayer.DrawFrame(mVkCtx, DrawBuffer, ImageIndex);
 
         VK_CHECK(vkEndCommandBuffer(DrawBuffer));
     }
@@ -148,14 +148,14 @@ namespace Clunk::Vk
     {
         CLOG_INFO("Cleaning VkSwapchain and VkFramebuffers...");
 
-        mBeginLayer.CleanupFramebuffers();
+        mBeginLayer.CleanupFramebuffers(mVkCtx);
         // mLayers3d.CleanupFramebuffers();
         // mLayers2d.CleanupFramebuffers();
         for(auto layer : mLayers2d)
         {
-            layer->CleanupFramebuffers();
+            layer->CleanupFramebuffers(mVkCtx);
         }
-        mEndLayer.CleanupFramebuffers();
+        mEndLayer.CleanupFramebuffers(mVkCtx);
         cl_destroy_vk_swapchain(mVkCtx.Device, &mVkCtx.Swapchain);
 
         CLOG_INFO("VkSwapchain and VkFramebuffers cleaned.");
@@ -176,14 +176,15 @@ namespace Clunk::Vk
             mVkCtx.Device, mVkCtx.PhysicalDevice, 
             mVkLoader.Surface, cl_get_vk_queues_indices_list(&mVkCtx.Queues), 
             width, height);
-        mBeginLayer.RecreateFramebuffers(&mDepthImage);
+            
+        mBeginLayer.RecreateFramebuffers(mVkCtx, &mDepthImage);
         // mLayers3d.RecreateFramebuffers(&mDepthImage);
         // mLayers2d.RecreateFramebuffers(nullptr);
         for(auto& layer : mLayers2d)
         {
-            layer->RecreateFramebuffers(nullptr);
+            layer->RecreateFramebuffers(mVkCtx, nullptr);
         }
-        mEndLayer.RecreateFramebuffers(&mDepthImage);
+        mEndLayer.RecreateFramebuffers(mVkCtx, &mDepthImage);
 
         CLOG_INFO("VkSwapchain and VkFramebuffers recreated.");
     }

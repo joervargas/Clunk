@@ -5,8 +5,7 @@
 namespace Clunk::Vk
 {
 
-    ClVkEndLayer::ClVkEndLayer(ClVkContext *pVkCtx, ClVkImage* pDepthImage) :
-        ClVkRenderLayerBase(pVkCtx)
+    ClVkEndLayer::ClVkEndLayer(const ClVkContext& VkCtx, ClVkImage* pDepthImage)
     {
         ClVkRenderPassInfo renderpass_info =
         {
@@ -15,27 +14,27 @@ namespace Clunk::Vk
             .bUseDepth = false,
             .bClearDepth = false,
             // .ColorFormat = VkFormat::VK_FORMAT_B8G8R8A8_UNORM,
-            .ColorFormat = pVkCtx->Swapchain.Format,
+            .ColorFormat = VkCtx.Swapchain.Format,
             .Flags = ERenderPassBit::ERPB_NONE,
             .Samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT
         };
-        mRenderPass = cl_create_vk_renderpass(*pVkCtx, renderpass_info);
+        mRenderPass = cl_create_vk_renderpass(VkCtx, renderpass_info);
         // cl_create_vk_renderpass(*pVkCtx, renderpass_info, &mRenderPass);
         
         if (pDepthImage)
         {
-            mFramebuffers = cl_create_vk_color_depth_framebuffers(*pVkCtx, mRenderPass, pDepthImage->View);
+            mFramebuffers = cl_create_vk_color_depth_framebuffers(VkCtx, mRenderPass, pDepthImage->View);
         } else {
-            mFramebuffers = cl_create_vk_color_only_framebuffers(*pVkCtx, mRenderPass);
+            mFramebuffers = cl_create_vk_color_only_framebuffers(VkCtx, mRenderPass);
         }
     }
 
     ClVkEndLayer::~ClVkEndLayer()
     {}
 
-    void ClVkEndLayer::DrawFrame(const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
+    void ClVkEndLayer::DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
     {
-        BeginRenderPass(CmdBuffer, CurrentImage);
+        BeginRenderPass(VkCtx, CmdBuffer, CurrentImage);
         EndRenderPass(CmdBuffer);
     }
 }

@@ -15,17 +15,15 @@ namespace Clunk::Vk
     {
     public:
 
-        explicit ClVkRenderLayerBase(ClVkContext* pVkContex) : pVkCtx(pVkContex) {};
+        explicit ClVkRenderLayerBase() {};
         
         ClVkRenderLayerBase(const ClVkRenderLayerBase& Other) : 
-            pVkCtx(Other.pVkCtx),
             mDescSetLayout(Other.mDescSetLayout), mDescPool(Other.mDescPool), mDescSets(Other.mDescSets),
             mFramebuffers(Other.mFramebuffers), mFrameBufferWidth(Other.mFrameBufferWidth), mFrameBufferHeight(Other.mFrameBufferHeight),
             mRenderPass(Other.mRenderPass), mPipelineLayout(Other.mPipelineLayout), mPipeline(Other.mPipeline)
         {}
 
-        ClVkRenderLayerBase(ClVkRenderLayerBase&& Other) :
-            pVkCtx(std::exchange(Other.pVkCtx, nullptr))
+        ClVkRenderLayerBase(ClVkRenderLayerBase&& Other)
         {
             mDescSetLayout = std::move(Other.mDescSetLayout);
             mDescPool = std::move(Other.mDescPool);
@@ -42,7 +40,6 @@ namespace Clunk::Vk
 
         ClVkRenderLayerBase& operator=(const ClVkRenderLayerBase& Other)
         {
-            this->pVkCtx = Other.pVkCtx;
             this->mDescSetLayout = Other.mDescSetLayout;
             this->mDescPool = Other.mDescPool;
             this->mDescSets = Other.mDescSets;
@@ -58,7 +55,6 @@ namespace Clunk::Vk
 
         ClVkRenderLayerBase& operator=(ClVkRenderLayerBase&& Other)
         {
-            this->pVkCtx = std::exchange(Other.pVkCtx, nullptr);
             this->mDescSetLayout = std::move(Other.mDescSetLayout);
             this->mDescPool = std::move(Other.mDescPool);
             this->mDescSets = std::move(Other.mDescSets);
@@ -72,26 +68,24 @@ namespace Clunk::Vk
             return *this;
         }
 
-        virtual void Destroy();
+        virtual void Destroy(const ClVkContext& VkCtx);
 
-        virtual void DrawFrame(const VkCommandBuffer& CmdBuffer, size_t CurrentImage) = 0;
+        virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) = 0;
 
-        virtual void CleanupFramebuffers() { cl_destroy_vk_framebuffers(pVkCtx->Device, mFramebuffers); }
+        virtual void CleanupFramebuffers(const ClVkContext& VkCtx) { cl_destroy_vk_framebuffers(VkCtx.Device, mFramebuffers); }
 
-        virtual void RecreateFramebuffers(const ClVkImage* pDepthImage)
+        virtual void RecreateFramebuffers(const ClVkContext& VkCtx, const ClVkImage* pDepthImage)
         {
             if(pDepthImage) 
-            { cl_create_vk_color_depth_framebuffers(*pVkCtx, mRenderPass, pDepthImage->View); }
+            { cl_create_vk_color_depth_framebuffers(VkCtx, mRenderPass, pDepthImage->View); }
             else 
-            { cl_create_vk_color_only_framebuffers(*pVkCtx, mRenderPass); }
+            { cl_create_vk_color_only_framebuffers(VkCtx, mRenderPass); }
         }
 
     protected:
 
-        void BeginRenderPass(const VkCommandBuffer& CmdBuffer, u32 CurrentImage);
+        void BeginRenderPass(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, u32 CurrentImage);
         void EndRenderPass(const VkCommandBuffer& CmdBuffer);
-
-        ClVkContext* pVkCtx;
 
         VkDescriptorSetLayout mDescSetLayout = nullptr;
         VkDescriptorPool mDescPool = nullptr;
@@ -111,7 +105,7 @@ namespace Clunk::Vk
     {
     public:
 
-        ClVk2dLayer(ClVkContext* pVkCtx) : ClVkRenderLayerBase(pVkCtx) {}
+        ClVk2dLayer() : ClVkRenderLayerBase() {}
         ClVk2dLayer(const ClVk2dLayer& Other) : ClVkRenderLayerBase(Other) {}
         ClVk2dLayer(ClVk2dLayer&& Other) : ClVkRenderLayerBase(Other) {}
 
@@ -131,7 +125,7 @@ namespace Clunk::Vk
 
         virtual void Update(u32 CurrentIndex, f32 DeltaTime) = 0;
 
-        virtual void DrawFrame(const VkCommandBuffer& CmdBuffer, size_t CurrentImage) = 0;
+        virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) = 0;
 
     protected:
 
@@ -141,16 +135,10 @@ namespace Clunk::Vk
     {
     public:
 
-        ClVk2dLayerList() : ClVk2dLayer(nullptr) {}
-        ClVk2dLayerList(ClVkContext* pVkCtx) : ClVk2dLayer(pVkCtx) {}
-        ClVk2dLayerList(const ClVk2dLayerList& Other) : ClVk2dLayer(Other)
-        {
-            mList = Other.mList;
-        }
-        ClVk2dLayerList(ClVk2dLayerList&& Other) : ClVk2dLayer(Other)
-        {
-            mList = std::move(Other.mList);
-        }
+        ClVk2dLayerList() : ClVk2dLayer() {}
+        ClVk2dLayerList(const ClVk2dLayerList& Other) : ClVk2dLayer(Other) { mList = Other.mList; }
+        ClVk2dLayerList(ClVk2dLayerList&& Other) : ClVk2dLayer(Other) { mList = std::move(Other.mList); }
+
 
         ClVk2dLayerList& operator=(const ClVk2dLayerList& Other)
         {
@@ -173,7 +161,7 @@ namespace Clunk::Vk
             }
         };
 
-        virtual void Destroy() override;
+        virtual void Destroy(const ClVkContext& VkCtx) override;
 
         void Push(ClVk2dLayer* Layer) { mList.push_back(Layer); }
 
@@ -190,21 +178,21 @@ namespace Clunk::Vk
 
         virtual void Update(u32 CurrentIndex, f32 DeltaTime) override;
 
-        virtual void DrawFrame(const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
+        virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 
-        virtual void CleanupFramebuffers() override 
+        virtual void CleanupFramebuffers(const ClVkContext& VkCtx) override 
         { 
             for(ClVk2dLayer* layer : mList)
             {
-                layer->CleanupFramebuffers();
+                layer->CleanupFramebuffers(VkCtx);
             }
         }
 
-        virtual void RecreateFramebuffers(const ClVkImage* pDepthImage) override
+        virtual void RecreateFramebuffers(const ClVkContext& VkCtx, const ClVkImage* pDepthImage) override
         {
             for(ClVk2dLayer* layer : mList)
             {
-                layer->RecreateFramebuffers(pDepthImage);
+                layer->RecreateFramebuffers(VkCtx, pDepthImage);
             }
         }
 
@@ -218,7 +206,7 @@ namespace Clunk::Vk
     {
     public:
 
-        ClVk3dLayer(ClVkContext* pVkCtx) : ClVkRenderLayerBase(pVkCtx) {}
+        ClVk3dLayer() : ClVkRenderLayerBase() {}
 
         virtual ~ClVk3dLayer() {};
 
@@ -234,8 +222,7 @@ namespace Clunk::Vk
     {
     public:
 
-        ClVk3dLayerList() : ClVk3dLayer(nullptr) {}
-        ClVk3dLayerList(ClVkContext* pVkCtx) : ClVk3dLayer(pVkCtx) {}
+        ClVk3dLayerList() : ClVk3dLayer() {}
 
         virtual ~ClVk3dLayerList()
         {
@@ -244,7 +231,7 @@ namespace Clunk::Vk
                 CLUNK_DELETE(Layer);
             }
         }
-        virtual void Destroy() override;
+        virtual void Destroy(const ClVkContext& VkCtx) override;
 
         void Push(ClVk3dLayer* Layer) { mList.push_back(Layer); }
 
@@ -263,16 +250,16 @@ namespace Clunk::Vk
 
         virtual void DrawFrame(const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 
-        virtual void CleanupFramebuffers() override 
+        virtual void CleanupFramebuffers(const ClVkContext& VkCtx) override 
         { 
             for(ClVk3dLayer* layer : mList)
-            { layer->CleanupFramebuffers(); }
+            { layer->CleanupFramebuffers(VkCtx); }
         }
 
-        virtual void RecreateFramebuffers(const ClVkImage* pDepthImage) override
+        virtual void RecreateFramebuffers(const ClVkContext& VkCtx, const ClVkImage* pDepthImage) override
         {
             for(ClVk3dLayer* layer : mList)
-            { layer->RecreateFramebuffers(pDepthImage); }
+            { layer->RecreateFramebuffers(VkCtx, pDepthImage); }
         }
 
     protected:

@@ -4,42 +4,40 @@
 
 namespace Clunk::Vk
 {
-    void ClVkRenderLayerBase::Destroy()
+    void ClVkRenderLayerBase::Destroy(const ClVkContext& VkCtx)
     {
         if(mDescSetLayout != nullptr)
         {
-            vkDestroyDescriptorSetLayout(pVkCtx->Device, mDescSetLayout, nullptr);
+            vkDestroyDescriptorSetLayout(VkCtx.Device, mDescSetLayout, nullptr);
         }
         if(mDescPool != nullptr)
         {
-            vkDestroyDescriptorPool(pVkCtx->Device, mDescPool, nullptr);
+            vkDestroyDescriptorPool(VkCtx.Device, mDescPool, nullptr);
         }
         for(VkFramebuffer frame_buffer : mFramebuffers)
         {
             if(frame_buffer != nullptr)
             {
-                vkDestroyFramebuffer(pVkCtx->Device, frame_buffer, nullptr);
+                vkDestroyFramebuffer(VkCtx.Device, frame_buffer, nullptr);
             }
         }
         if(mRenderPass.Handle != nullptr)
         {
-            vkDestroyRenderPass(pVkCtx->Device, mRenderPass.Handle, nullptr);
+            vkDestroyRenderPass(VkCtx.Device, mRenderPass.Handle, nullptr);
         }
         if(mPipelineLayout != nullptr)
         {
-            vkDestroyPipelineLayout(pVkCtx->Device, mPipelineLayout, nullptr);
+            vkDestroyPipelineLayout(VkCtx.Device, mPipelineLayout, nullptr);
         }
-        if(mPipeline != nullptr)
+        if (mPipeline != nullptr)
         {
-            vkDestroyPipeline(pVkCtx->Device, mPipeline, nullptr);
+            vkDestroyPipeline(VkCtx.Device, mPipeline, nullptr);
         }
     }
 
-    ClVkRenderLayerBase::~ClVkRenderLayerBase()
-    {
-    }
+    ClVkRenderLayerBase::~ClVkRenderLayerBase() {}
 
-    void ClVkRenderLayerBase::BeginRenderPass(const VkCommandBuffer& CmdBuffer, u32 CurrentImage)
+    void ClVkRenderLayerBase::BeginRenderPass(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, u32 CurrentImage)
     {
         std::vector<VkClearValue> clear_values;
         if (mRenderPass.Info.bClearColor) 
@@ -65,8 +63,8 @@ namespace Clunk::Vk
         {
             .offset = VkOffset2D{ .x = 0, .y = 0 },
             .extent = VkExtent2D{
-                .width = pVkCtx->Swapchain.Width,
-                .height = pVkCtx->Swapchain.Height
+                .width = VkCtx.Swapchain.Width,
+                .height = VkCtx.Swapchain.Height
             }
         };
 
@@ -90,8 +88,8 @@ namespace Clunk::Vk
         {
             .x = 0.0f, 
             .y = 0.0f,
-            .width = static_cast<f32>(pVkCtx->Swapchain.Width),
-            .height = static_cast<f32>(pVkCtx->Swapchain.Height),
+            .width = static_cast<f32>(VkCtx.Swapchain.Width),
+            .height = static_cast<f32>(VkCtx.Swapchain.Height),
             .minDepth = 0.0f,
             .maxDepth = 1.0f,
         };
@@ -100,8 +98,8 @@ namespace Clunk::Vk
         {
             .offset = VkOffset2D{ .x = 0, .y = 0},
             .extent = VkExtent2D {
-                .width = pVkCtx->Swapchain.Width,
-                .height = pVkCtx->Swapchain.Height
+                .width = VkCtx.Swapchain.Width,
+                .height = VkCtx.Swapchain.Height
             }
         };
 
@@ -114,11 +112,11 @@ namespace Clunk::Vk
         vkCmdEndRenderPass(CmdBuffer);
     }
 
-    void ClVk2dLayerList::Destroy()
+    void ClVk2dLayerList::Destroy(const ClVkContext& VkCtx)
     {
         for(auto& layer : mList)
         {
-            layer->Destroy();
+            layer->Destroy(VkCtx);
         }
     }
 
@@ -134,19 +132,19 @@ namespace Clunk::Vk
         // }
     }
 
-    void ClVk2dLayerList::DrawFrame(const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
+    void ClVk2dLayerList::DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
     {
         for(auto& layer : mList)
         {
-            layer->DrawFrame(CmdBuffer, CurrentImage);
+            layer->DrawFrame(VkCtx, CmdBuffer, CurrentImage);
         }
     }
 
-    void ClVk3dLayerList::Destroy()
+    void ClVk3dLayerList::Destroy(const ClVkContext& VkCtx)
     {
         for(ClVk3dLayer* layer : mList)
         {
-            layer->Destroy();
+            layer->Destroy(VkCtx);
         }
     }
 

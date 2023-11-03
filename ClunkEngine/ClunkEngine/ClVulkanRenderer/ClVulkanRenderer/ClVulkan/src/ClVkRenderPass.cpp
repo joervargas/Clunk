@@ -3,7 +3,7 @@
 
 namespace Clunk::Vk
 {
-    ClVkRenderPass cl_create_vk_renderpass(ClVkContext &VkCtx, ClVkRenderPassInfo& Info)
+    ClVkRenderPass cl_create_vk_renderpass(const ClVkContext &VkCtx, ClVkRenderPassInfo& Info)
     {
         if(!Info.bUseColor && !Info.bUseDepth) { return ClVkRenderPass{}; }
 

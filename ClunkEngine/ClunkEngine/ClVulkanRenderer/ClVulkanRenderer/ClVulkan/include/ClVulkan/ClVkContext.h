@@ -201,11 +201,11 @@ namespace Clunk::Vk
     //     u32 NumPatchControlPoints = 0
     // );
 
-    std::vector<VkFramebuffer> cl_create_vk_color_depth_framebuffers(ClVkContext& VkCtx, const ClVkRenderPass& RenderPass, const VkImageView& DepthView);
+    std::vector<VkFramebuffer> cl_create_vk_color_depth_framebuffers(const ClVkContext& VkCtx, const ClVkRenderPass& RenderPass, const VkImageView& DepthView);
 
-    std::vector<VkFramebuffer> cl_create_vk_color_only_framebuffers(ClVkContext& VkCtx, const ClVkRenderPass& RenderPass);
+    std::vector<VkFramebuffer> cl_create_vk_color_only_framebuffers(const ClVkContext& VkCtx, const ClVkRenderPass& RenderPass);
 
-    void cl_destroy_vk_framebuffers(VkDevice Device, std::vector<VkFramebuffer>& Framebuffers);
+    void cl_destroy_vk_framebuffers(const VkDevice& Device, std::vector<VkFramebuffer>& Framebuffers);
 }
 
 

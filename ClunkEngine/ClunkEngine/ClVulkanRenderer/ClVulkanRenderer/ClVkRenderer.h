@@ -25,6 +25,53 @@ namespace Clunk::Vk
 
         ClVkRenderer() {};
         ClVkRenderer(const char* AppName, const u32 AppVersion);
+        
+        ClVkRenderer(const ClVkRenderer& Other) :
+            mVkLoader(Other.mVkLoader), mVkCtx(Other.mVkCtx),
+            mDepthImage(Other.mDepthImage),
+            mBeginLayer(Other.mBeginLayer), mEndLayer(Other.mEndLayer),
+            mLayers2d(Other.mLayers2d),
+            m_bIsResized(Other.m_bIsResized)
+        {}
+
+        ClVkRenderer(ClVkRenderer&& Other) 
+        {
+            mVkLoader = std::move(Other.mVkLoader);
+            mVkCtx = std::move(Other.mVkCtx);
+            mDepthImage = std::move(Other.mDepthImage);
+            mBeginLayer = std::move(Other.mBeginLayer);
+            mEndLayer = std::move(Other.mEndLayer);
+            mLayers2d = std::move(Other.mLayers2d);
+            m_bIsResized = std::move(Other.m_bIsResized);
+        }
+
+        ClVkRenderer& operator=(const ClVkRenderer& Other)
+        {
+            // return *this = ClVkRenderer(Other);
+            mVkLoader = Other.mVkLoader;
+            mVkCtx = Other.mVkCtx;
+            mDepthImage = Other.mDepthImage;
+            mBeginLayer = Other.mBeginLayer;
+            mEndLayer = Other.mEndLayer;
+            mLayers2d = Other.mLayers2d;
+            m_bIsResized = Other.m_bIsResized;
+
+            return *this;
+        }
+
+        ClVkRenderer& operator=(ClVkRenderer&& Other)
+        {
+            // return *this = std::move(ClVkRenderer(Other));
+            mVkLoader = std::move(Other.mVkLoader);
+            mVkCtx = std::move(Other.mVkCtx);
+            mDepthImage = std::move(Other.mDepthImage);
+            mBeginLayer = std::move(Other.mBeginLayer);
+            mEndLayer = std::move(Other.mEndLayer);
+            mLayers2d = std::move(Other.mLayers2d);
+            m_bIsResized = std::move(Other.m_bIsResized);
+
+            return *this;
+        }
 
         virtual ~ClVkRenderer() {};
 

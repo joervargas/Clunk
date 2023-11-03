@@ -14,9 +14,9 @@ namespace Clunk::Vk
     {
     public:
 
-        ClVkModelLayer(ClVkContext& VkCtx, const char* ModelFile, const char* TextureFile, u32 UniformDataSize);
+        ClVkModelLayer(const ClVkContext& VkCtx, const char* ModelFile, const char* TextureFile, u32 UniformDataSize);
 
-        virtual void DrawFrame(const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
+        virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 
     private:
 

@@ -10,12 +10,12 @@ namespace Clunk::Vk
     {
     public:
 
-        ClVkEndLayer() : ClVkRenderLayerBase(nullptr) {}
-        ClVkEndLayer(ClVkContext* pVkCtx, ClVkImage* pDepthImage);
+        ClVkEndLayer() {}
+        ClVkEndLayer(const ClVkContext& VkCtx, ClVkImage* pDepthImage);
         
         virtual ~ClVkEndLayer();
 
-        virtual void DrawFrame(const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
+        virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 
     protected:
 

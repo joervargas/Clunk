@@ -5,8 +5,7 @@
 
 namespace Clunk::Vk
 {
-    ClVkSimple2dLayer::ClVkSimple2dLayer(ClVkContext *pVkCtx) :
-        ClVk2dLayer(pVkCtx)
+    ClVkSimple2dLayer::ClVkSimple2dLayer(const ClVkContext& VkCtx)
     {
         ClVkRenderPassInfo renderpass_info =
         {
@@ -15,25 +14,25 @@ namespace Clunk::Vk
             .bUseDepth = false,
             .bClearDepth = false,
             // .ColorFormat = VkFormat::VK_FORMAT_B8G8R8A8_UNORM,
-            .ColorFormat = pVkCtx->Swapchain.Format,
+            .ColorFormat = VkCtx.Swapchain.Format,
             .Flags = ERenderPassBit::ERPB_NONE,
             .Samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT
         };
-        mRenderPass = cl_create_vk_renderpass(*pVkCtx, renderpass_info);
+        mRenderPass = cl_create_vk_renderpass(VkCtx, renderpass_info);
         // cl_create_vk_renderpass(*pVkCtx, renderpass_info, &mRenderPass);
-        mFramebuffers = cl_create_vk_color_only_framebuffers(*pVkCtx, mRenderPass);
+        mFramebuffers = cl_create_vk_color_only_framebuffers(VkCtx, mRenderPass);
 
-        VK_CHECK(create_vk_pipeline_layout(pVkCtx->Device, 0, nullptr, 0, nullptr, &mPipelineLayout));
+        VK_CHECK(create_vk_pipeline_layout(VkCtx.Device, 0, nullptr, 0, nullptr, &mPipelineLayout));
 
         std::vector<ClVkShaderModule> shader_modules = {
-            cl_create_vk_shader_module(pVkCtx->Device, "./Shaders/GLSL/Simple2dLayer.vert"),
-            cl_create_vk_shader_module(pVkCtx->Device, "./Shaders/GLSL/Simple2dLayer.frag")
+            cl_create_vk_shader_module(VkCtx.Device, "./Shaders/GLSL/Simple2dLayer.vert"),
+            cl_create_vk_shader_module(VkCtx.Device, "./Shaders/GLSL/Simple2dLayer.frag")
         };
-        CreatePipeline(shader_modules, mRenderPass, mPipelineLayout);
+        CreatePipeline(VkCtx, shader_modules, mRenderPass, mPipelineLayout);
 
         for(ClVkShaderModule shader : shader_modules)
         {
-            cl_destroy_vk_shader_module(pVkCtx->Device, shader);
+            cl_destroy_vk_shader_module(VkCtx.Device, shader);
         }
     }
 
@@ -46,14 +45,14 @@ namespace Clunk::Vk
         CLOG_WARN("Simple2dLayer updates");
     }
 
-    void ClVkSimple2dLayer::DrawFrame(const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
+    void ClVkSimple2dLayer::DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
     {
-        BeginRenderPass(CmdBuffer, CurrentImage);
-        Draw(CmdBuffer);
+        BeginRenderPass(VkCtx, CmdBuffer, CurrentImage);
+        Draw(VkCtx, CmdBuffer);
         EndRenderPass(CmdBuffer);
     }
 
-    void ClVkSimple2dLayer::CreatePipeline(std::vector<ClVkShaderModule>& ShaderModules, ClVkRenderPass& RenderPass, VkPipelineLayout& Layout, VkExtent2D CustomExtent)
+    void ClVkSimple2dLayer::CreatePipeline(const ClVkContext& VkCtx, std::vector<ClVkShaderModule>& ShaderModules, ClVkRenderPass& RenderPass, VkPipelineLayout& Layout, VkExtent2D CustomExtent)
     {
         CLOG_INFO("Creating VkSimple2dLayer pipeline...");
 
@@ -72,8 +71,8 @@ namespace Clunk::Vk
             {
                 .x = 0.0f,
                 .y = 0.0f,
-                .width = CustomExtent.width > 0 ? static_cast<f32>(CustomExtent.width) : static_cast<f32>(pVkCtx->Swapchain.Width),
-                .height = CustomExtent.height > 0 ? static_cast<f32>(CustomExtent.height) : static_cast<f32>(pVkCtx->Swapchain.Height),
+                .width = CustomExtent.width > 0 ? static_cast<f32>(CustomExtent.width) : static_cast<f32>(VkCtx.Swapchain.Width),
+                .height = CustomExtent.height > 0 ? static_cast<f32>(CustomExtent.height) : static_cast<f32>(VkCtx.Swapchain.Height),
                 .minDepth = 0.0f,
                 .maxDepth = 1.0f
             }
@@ -83,8 +82,8 @@ namespace Clunk::Vk
             {
                 .offset = VkOffset2D{ .x = 0, .y = 0 },
                 .extent = VkExtent2D {
-                    .width = CustomExtent.width > 0 ? CustomExtent.width : pVkCtx->Swapchain.Width,
-                    .height = CustomExtent.height > 0 ? CustomExtent.height : pVkCtx->Swapchain.Height
+                    .width = CustomExtent.width > 0 ? CustomExtent.width : VkCtx.Swapchain.Width,
+                    .height = CustomExtent.height > 0 ? CustomExtent.height : VkCtx.Swapchain.Height
                 }
             }
         };
@@ -138,10 +137,10 @@ namespace Clunk::Vk
             .basePipelineIndex = -1
         };
 
-        VK_CHECK(vkCreateGraphicsPipelines(pVkCtx->Device, nullptr, 1, &create_info, nullptr, &mPipeline));
+        VK_CHECK(vkCreateGraphicsPipelines(VkCtx.Device, nullptr, 1, &create_info, nullptr, &mPipeline));
     }
 
-    void ClVkSimple2dLayer::Draw(VkCommandBuffer CmdBuffer)
+    void ClVkSimple2dLayer::Draw(const ClVkContext& VkCtx, VkCommandBuffer CmdBuffer)
     {
         vkCmdDraw(CmdBuffer, 3, 1, 0, 0);
     }
