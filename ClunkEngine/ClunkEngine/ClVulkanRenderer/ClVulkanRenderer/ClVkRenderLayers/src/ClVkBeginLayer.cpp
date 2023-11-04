@@ -14,7 +14,7 @@ namespace Clunk::Vk
             .bClearDepth = pDepthImage != nullptr ? true : false,
             // .ColorFormat = VkFormat::VK_FORMAT_B8G8R8A8_UNORM,
             .ColorFormat = VkCtx.Swapchain.Format,
-            .Flags = ERenderPassBit::ERPB_NONE,
+            .Flags = ERenderPassBit::ERPB_FIRST,
             .Samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT
         };
         mRenderPass = Clunk::Vk::cl_create_vk_renderpass(VkCtx, renderpass_info);

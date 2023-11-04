@@ -5,6 +5,12 @@
 #include <PCH/pch.h>
 #include <SDL.h>
 
+#ifndef NDEBUG
+    const bool VALIDATION = true;
+#else
+    const bool VALIDATION = false;
+#endif
+
 namespace Clunk::Vk
 {
 

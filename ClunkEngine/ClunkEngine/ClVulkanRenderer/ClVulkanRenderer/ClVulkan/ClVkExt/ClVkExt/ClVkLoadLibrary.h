@@ -1,7 +1,6 @@
 #pragma once
 
 #include <PCH/pch.h>
-#include <Core/Exception.h>
 #include <Core/Logger.h>
 
 

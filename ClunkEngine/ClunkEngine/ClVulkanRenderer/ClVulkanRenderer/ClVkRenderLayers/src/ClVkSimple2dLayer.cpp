@@ -42,7 +42,6 @@ namespace Clunk::Vk
 
     void ClVkSimple2dLayer::Update(u32 CurrentIndex, f32 DeltaTime)
     {
-        CLOG_WARN("Simple2dLayer updates");
     }
 
     void ClVkSimple2dLayer::DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)

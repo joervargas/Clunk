@@ -122,7 +122,7 @@ namespace Clunk::Vk
 
     void ClVk2dLayerList::Update(u32 CurrentIndex, f32 DeltaTime)
     {
-        for(auto layer : mList)
+        for(auto& layer : mList)
         {
             layer->Update(CurrentIndex, DeltaTime);
         }
