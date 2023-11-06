@@ -77,9 +77,9 @@ namespace Clunk::Vk
         virtual void RecreateFramebuffers(const ClVkContext& VkCtx, const ClVkImage* pDepthImage)
         {
             if(pDepthImage) 
-            { cl_create_vk_color_depth_framebuffers(VkCtx, mRenderPass, pDepthImage->View); }
+            { mFramebuffers = cl_create_vk_color_depth_framebuffers(VkCtx, mRenderPass, pDepthImage->View); }
             else 
-            { cl_create_vk_color_only_framebuffers(VkCtx, mRenderPass); }
+            { mFramebuffers = cl_create_vk_color_only_framebuffers(VkCtx, mRenderPass); }
         }
 
     protected:

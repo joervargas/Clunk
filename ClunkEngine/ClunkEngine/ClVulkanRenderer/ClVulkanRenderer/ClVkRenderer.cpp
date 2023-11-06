@@ -4,6 +4,7 @@
 #include <ClVulkan/ClVkContext.h>
 
 #include <glslang/Include/glslang_c_interface.h>
+#include <vulkan/vk_enum_string_helper.h>
 
 namespace Clunk::Vk
 {
@@ -61,9 +62,9 @@ namespace Clunk::Vk
         if(result != VK_SUCCESS)
         {
             if(result == VK_ERROR_OUT_OF_DATE_KHR) 
-            { /*reset swapchain*/ }
-            else
-            { CLOG_ERROR("Failed to acquire Image in VkSwapchian: %s", result); }
+            { RecreateSwapchain(); return; }
+            else if ( result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+            { CLOG_ERROR("Failed to acquire Image in VkSwapchian: %s", string_VkResult(result)); }
         }
 
         VK_CHECK(vkResetFences(mVkCtx.Device, 1, &mVkCtx.FrameSync.GetCurrentInFlightFence()));
@@ -99,12 +100,12 @@ namespace Clunk::Vk
             .pImageIndices = &img_index
         };
         result = vkQueuePresentKHR(mVkCtx.Queues.Graphics.Handle, &present_info);
-        if(result != VK_SUCCESS)
+        if(result != VK_SUCCESS || m_bIsResized)
         {
-            if(result == VK_ERROR_OUT_OF_DATE_KHR)
-            { /*recreate swapchain*/ }
+            if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_bIsResized)
+            { RecreateSwapchain(); m_bIsResized = false; }
             else
-            { CLOG_ERROR("Failed to present frame for render: %s", result); }
+            { CLOG_ERROR("Failed to present frame for render: %s", string_VkResult(result)); }
         }
 
         VK_CHECK(vkDeviceWaitIdle(mVkCtx.Device));
@@ -157,16 +158,17 @@ namespace Clunk::Vk
         i32 width, height;
         platform->GetDrawableSize(&width, &height);
 
-        cl_create_vk_swapchain(
+        mVkCtx.Swapchain = cl_create_vk_swapchain(
             mVkCtx.Device, mVkCtx.PhysicalDevice, 
             mVkLoader.Surface, cl_get_vk_queues_indices_list(&mVkCtx.Queues), 
-            width, height);
+            width, height
+        );
             
-        mBeginLayer.RecreateFramebuffers(mVkCtx, &mDepthImage);
+        mBeginLayer.RecreateFramebuffers(mVkCtx, nullptr);
         // mLayers3d.RecreateFramebuffers(&mDepthImage);
         mLayers2d.RecreateFramebuffers(mVkCtx, nullptr);
 
-        mEndLayer.RecreateFramebuffers(mVkCtx, &mDepthImage);
+        mEndLayer.RecreateFramebuffers(mVkCtx, nullptr);
 
         CLOG_INFO("VkSwapchain and VkFramebuffers recreated.");
     }

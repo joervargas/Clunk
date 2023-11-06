@@ -14,7 +14,7 @@ namespace Clunk
     Application::~Application()
     {
         CLUNK_DELETE(OnClose);
-        // delete(OnResize);
+        CLUNK_DELETE(OnResize);
         // delete(OnMaximize);
         // delete(OnMinimize);
     }
@@ -29,7 +29,7 @@ namespace Clunk
 
         // Set events
         OnClose = new WindowListener<Application>(&Events::Window::Close, this, &Application::Close);
-        // OnResize = new WindowListener<Application>(&WindowEvents::WE_Resize, this, &Application::Resize);
+        OnResize = new WindowListener<Application>(&Events::Window::Resize, this, &Application::Resize);
 
         return true;
     }
@@ -53,12 +53,12 @@ namespace Clunk
         Quit();
     }
 
-    // void Application::Resize(const WindowData &Data)
-    // {
-    //     CLOG_WARN("Window Resized!");
-    //     // RenderManager.bIsResized = true;
-    //     RenderCtx.SetIsResized(true);
-    // }
+    void Application::Resize(const EWindowState &State)
+    {
+        CLOG_WARN("Window Resized!");
+        // RenderManager.bIsResized = true;
+        RenderCtx.SetIsResized(true);
+    }
 
     // void Application::Escape(const KeyData& Data)
     // {
