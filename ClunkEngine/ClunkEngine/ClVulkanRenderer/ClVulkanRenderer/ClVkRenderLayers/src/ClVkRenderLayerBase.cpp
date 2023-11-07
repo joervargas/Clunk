@@ -4,16 +4,18 @@
 
 namespace Clunk::Vk
 {
-    void ClVkRenderLayerBase::Destroy(const ClVkContext& VkCtx)
+    void ClVkRenderLayerBase::Destroy(ClVkContext& VkCtx)
     {
-        if(mDescSetLayout != nullptr)
-        {
-            vkDestroyDescriptorSetLayout(VkCtx.Device, mDescSetLayout, nullptr);
-        }
-        if(mDescPool != nullptr)
-        {
-            vkDestroyDescriptorPool(VkCtx.Device, mDescPool, nullptr);
-        }
+        // if(mDescSetLayout != nullptr)
+        // {
+        //     vkDestroyDescriptorSetLayout(VkCtx.Device, mDescSetLayout, nullptr);
+        // }
+        // if(mDescPool != nullptr)
+        // {
+        //     vkDestroyDescriptorPool(VkCtx.Device, mDescPool, nullptr);
+        // }
+        cl_destroy_vk_descriptor(VkCtx, mDescriptor);
+        
         for(VkFramebuffer frame_buffer : mFramebuffers)
         {
             if(frame_buffer != nullptr)
@@ -112,7 +114,7 @@ namespace Clunk::Vk
         vkCmdEndRenderPass(CmdBuffer);
     }
 
-    void ClVk2dLayerList::Destroy(const ClVkContext& VkCtx)
+    void ClVk2dLayerList::Destroy(ClVkContext& VkCtx)
     {
         for(auto& layer : mList)
         {
@@ -140,7 +142,7 @@ namespace Clunk::Vk
         }
     }
 
-    void ClVk3dLayerList::Destroy(const ClVkContext& VkCtx)
+    void ClVk3dLayerList::Destroy(ClVkContext& VkCtx)
     {
         for(ClVk3dLayer* layer : mList)
         {

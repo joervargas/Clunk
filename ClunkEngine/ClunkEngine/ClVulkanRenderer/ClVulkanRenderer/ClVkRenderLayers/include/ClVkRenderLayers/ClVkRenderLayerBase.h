@@ -5,6 +5,7 @@
 #include <ClVulkan/ClVkImg.h>
 #include <ClVulkan/ClVkContext.h>
 #include <ClVulkan/ClVkRenderPass.h>
+#include <ClVulkan/ClVkDescriptors.h>
 
 #include <utility>
 
@@ -18,16 +19,18 @@ namespace Clunk::Vk
         explicit ClVkRenderLayerBase() {};
         
         ClVkRenderLayerBase(const ClVkRenderLayerBase& Other) : 
-            mDescSetLayout(Other.mDescSetLayout), mDescPool(Other.mDescPool), mDescSets(Other.mDescSets),
+            // mDescSetLayout(Other.mDescSetLayout), mDescPool(Other.mDescPool), mDescSets(Other.mDescSets),
+            mDescriptor(Other.mDescriptor),
             mFramebuffers(Other.mFramebuffers), mFrameBufferWidth(Other.mFrameBufferWidth), mFrameBufferHeight(Other.mFrameBufferHeight),
             mRenderPass(Other.mRenderPass), mPipelineLayout(Other.mPipelineLayout), mPipeline(Other.mPipeline)
         {}
 
         ClVkRenderLayerBase(ClVkRenderLayerBase&& Other)
         {
-            mDescSetLayout = std::move(Other.mDescSetLayout);
-            mDescPool = std::move(Other.mDescPool);
-            mDescSets = std::move(Other.mDescSets);
+            // mDescSetLayout = std::move(Other.mDescSetLayout);
+            // mDescPool = std::move(Other.mDescPool);
+            // mDescSets = std::move(Other.mDescSets);
+            mDescriptor = std::move(Other.mDescriptor);
             mFramebuffers = std::move(Other.mFramebuffers);
             mFrameBufferWidth = std::exchange(Other.mFrameBufferWidth, 0);
             mFrameBufferHeight = std::exchange(Other.mFrameBufferHeight, 0);
@@ -40,9 +43,10 @@ namespace Clunk::Vk
 
         ClVkRenderLayerBase& operator=(const ClVkRenderLayerBase& Other)
         {
-            this->mDescSetLayout = Other.mDescSetLayout;
-            this->mDescPool = Other.mDescPool;
-            this->mDescSets = Other.mDescSets;
+            // this->mDescSetLayout = Other.mDescSetLayout;
+            // this->mDescPool = Other.mDescPool;
+            // this->mDescSets = Other.mDescSets;
+            this->mDescriptor = Other.mDescriptor;
             this->mFramebuffers = Other.mFramebuffers;
             this->mFrameBufferWidth = Other.mFrameBufferWidth;
             this->mFrameBufferHeight = Other.mFrameBufferHeight;
@@ -55,9 +59,10 @@ namespace Clunk::Vk
 
         ClVkRenderLayerBase& operator=(ClVkRenderLayerBase&& Other)
         {
-            this->mDescSetLayout = std::move(Other.mDescSetLayout);
-            this->mDescPool = std::move(Other.mDescPool);
-            this->mDescSets = std::move(Other.mDescSets);
+            // this->mDescSetLayout = std::move(Other.mDescSetLayout);
+            // this->mDescPool = std::move(Other.mDescPool);
+            // this->mDescSets = std::move(Other.mDescSets);
+            this->mDescriptor = std::move(Other.mDescriptor);
             this->mFramebuffers = std::move(Other.mFramebuffers);
             this->mFrameBufferWidth = std::exchange(Other.mFrameBufferWidth, 0);
             this->mFrameBufferHeight = std::exchange(Other.mFrameBufferHeight, 0);
@@ -68,7 +73,7 @@ namespace Clunk::Vk
             return *this;
         }
 
-        virtual void Destroy(const ClVkContext& VkCtx);
+        virtual void Destroy(ClVkContext& VkCtx);
 
         virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) = 0;
 
@@ -87,9 +92,11 @@ namespace Clunk::Vk
         void BeginRenderPass(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, u32 CurrentImage);
         void EndRenderPass(const VkCommandBuffer& CmdBuffer);
 
-        VkDescriptorSetLayout mDescSetLayout = nullptr;
-        VkDescriptorPool mDescPool = nullptr;
-        std::vector<VkDescriptorSet> mDescSets;
+        // VkDescriptorSetLayout mDescSetLayout = nullptr;
+        // VkDescriptorPool mDescPool = nullptr;
+        // std::vector<VkDescriptorSet> mDescSets;
+        
+        ClVkDescriptor mDescriptor;
 
         u32 mFrameBufferWidth = 0;
         u32 mFrameBufferHeight = 0;
@@ -161,7 +168,7 @@ namespace Clunk::Vk
             }
         };
 
-        virtual void Destroy(const ClVkContext& VkCtx) override;
+        virtual void Destroy(ClVkContext& VkCtx) override;
 
         void Push(ClVk2dLayer* Layer) { mList.push_back(Layer); }
 
@@ -231,7 +238,7 @@ namespace Clunk::Vk
                 CLUNK_DELETE(Layer);
             }
         }
-        virtual void Destroy(const ClVkContext& VkCtx) override;
+        virtual void Destroy(ClVkContext& VkCtx) override;
 
         void Push(ClVk3dLayer* Layer) { mList.push_back(Layer); }
 

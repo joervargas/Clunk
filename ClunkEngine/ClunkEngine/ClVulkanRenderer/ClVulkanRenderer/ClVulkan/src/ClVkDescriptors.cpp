@@ -104,9 +104,17 @@ namespace Clunk::Vk
         return desc_pool;
     }
 
-    void cl_destroy_vk_descriptor(ClVkContext &VkCtx, ClVkDescriptor &Descriptor)
+    void cl_destroy_vk_descriptor(const ClVkContext &VkCtx, ClVkDescriptor &Descriptor)
     {
-        vkDestroyDescriptorSetLayout(VkCtx.Device, Descriptor.Layouts.front(), nullptr);
-        vkDestroyDescriptorPool(VkCtx.Device, Descriptor.Pool, nullptr);
+        if(!Descriptor.Layouts.empty() && Descriptor.Layouts[0] != nullptr)
+        {
+            vkDestroyDescriptorSetLayout(VkCtx.Device, Descriptor.Layouts.front(), nullptr);
+            Descriptor.Layouts.clear();
+        }
+        if(Descriptor.Pool != nullptr)
+        {
+            vkDestroyDescriptorPool(VkCtx.Device, Descriptor.Pool, nullptr);
+            Descriptor.Sets.clear();
+        }
     }
 }

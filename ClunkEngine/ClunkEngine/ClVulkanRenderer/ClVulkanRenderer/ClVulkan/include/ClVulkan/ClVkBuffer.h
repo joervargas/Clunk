@@ -4,10 +4,12 @@
 #include <VkMemAllocator/vk_mem_alloc.h>
 #include <PCH/pch.h>
 
-class ClVkContext;
 
 namespace Clunk::Vk
 {
+
+    class ClVkContext;
+
     /**
      * @brief Finds the memory type index given the memory type bits and memory properties.
      * 
@@ -46,9 +48,9 @@ namespace Clunk::Vk
      * @param Size VkDeviceSize of the Buffer being copied
      */
     void copy_vk_buffer(
-        const VkDevice Device, VkCommandBuffer CmdBuffer, 
-        VkBuffer SrcBuffer, VkBuffer DstBuffer, 
-        VkDeviceSize Size);
+        const VkDevice& Device, const VkCommandBuffer& CmdBuffer, 
+        VkBuffer& SrcBuffer, VkBuffer& DstBuffer, 
+        const VkDeviceSize Size);
 
 
     void map_vk_allocation_data(
@@ -63,7 +65,7 @@ namespace Clunk::Vk
         VkDeviceSize    Size;
     };
 
-    ClVkBuffer cl_create_vk_buffer(ClVkContext& VkCtx, VkBufferUsageFlags Usage, VmaAllocationCreateFlags VmaAllocationCreateFlags, VkDeviceSize Size);
+    ClVkBuffer cl_create_vk_buffer(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, VmaAllocationCreateFlags AllocationCreateFlags, VkDeviceSize Size);
 
     std::vector<ClVkBuffer> cl_create_vk_buffers(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, VmaAllocationCreateFlags AllocationCreateFlags, VkDeviceSize Size, size_t Count);
 

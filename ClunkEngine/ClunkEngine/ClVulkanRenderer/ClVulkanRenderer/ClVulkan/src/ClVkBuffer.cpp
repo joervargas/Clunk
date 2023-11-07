@@ -41,7 +41,6 @@ namespace Clunk::Vk
             .queueFamilyIndexCount = 0,
             .pQueueFamilyIndices = nullptr,
         };
-        VK_CHECK(vkCreateBuffer(Device, &buffer_info, nullptr, pBuffer));
 
         const VmaAllocationCreateInfo alloc_info =
         {
@@ -51,7 +50,17 @@ namespace Clunk::Vk
         VK_CHECK( vmaCreateBuffer(Allocator, &buffer_info, &alloc_info, pBuffer, pAllocation, nullptr) );
     }
 
-    void map_vk_allocation_data(VmaAllocator Allocator, VmaAllocation Allocation, void* SrcData, size_t SrcDataSize)
+    void copy_vk_buffer(const VkDevice &Device, const VkCommandBuffer& CmdBuffer, VkBuffer& SrcBuffer, VkBuffer& DstBuffer, const VkDeviceSize Size)
+    {
+        VkBufferCopy region = {
+            .srcOffset = 0,
+            .dstOffset = 0,
+            .size = Size
+        };
+        vkCmdCopyBuffer(CmdBuffer, SrcBuffer, DstBuffer, 1, &region);
+    }
+
+    void map_vk_allocation_data(VmaAllocator Allocator, VmaAllocation Allocation, void *SrcData, size_t SrcDataSize)
     {
         void* pData;
         VK_CHECK(vmaMapMemory(Allocator, Allocation, &pData));
@@ -59,11 +68,11 @@ namespace Clunk::Vk
         vmaUnmapMemory(Allocator, Allocation);
     }
 
-    ClVkBuffer cl_create_vk_buffer(ClVkContext& VkCtx, VkBufferUsageFlags Usage, VmaAllocationCreateFlags AllocationCreateFlags, VkDeviceSize Size)
+    ClVkBuffer cl_create_vk_buffer(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, VmaAllocationCreateFlags AllocationCreateFlags, VkDeviceSize Size)
     {
-        VkBuffer Handle;
-        VmaAllocation Allocation;
-        create_vk_buffer(VkCtx.Device, VkCtx.MemAllocator, Usage, AllocationCreateFlags, Size, &Handle, &Allocation);
+        VkBuffer Handle = nullptr;
+        VmaAllocation Allocation = nullptr;
+        create_vk_buffer(VkCtx.Device, VkCtx.MemAllocator, UsageFlags, AllocationCreateFlags, Size, &Handle, &Allocation);
 
         return ClVkBuffer{ Handle, Allocation, Size };
     }

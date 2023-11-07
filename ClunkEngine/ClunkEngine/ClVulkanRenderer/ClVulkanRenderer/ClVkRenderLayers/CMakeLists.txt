@@ -35,5 +35,6 @@ target_link_libraries(${Target}
     # glslang
     # glslang-default-resource-limits
     # VkMemAllocator
+    ClMath
     Core
 )

@@ -36,21 +36,6 @@ namespace Clunk::Vk
             .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED
         };
 
-        VK_CHECK(vkCreateImage(Device, &imageInfo, nullptr, pImage));
-
-        // VkMemoryRequirements memRequirements;
-        // vkGetImageMemoryRequirements(Device, *pImage, &memRequirements);
-
-        // const VkMemoryAllocateInfo allocInfo =
-        // {
-        //     .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO,
-        //     .pNext = nullptr,
-        //     .allocationSize = memRequirements.size,
-        //     // .memoryTypeIndex = 
-        // };
-
-        // VK_CHECK(vkAllocateMemory(Device, &allocInfo, nullptr, pMemory));
-        // VK_CHECK(vkBindImageMemory(Device, *pImage, *pMemory, 0));
         VmaAllocationCreateInfo allocInfo =
         {
             .usage = VMA_MEMORY_USAGE_AUTO
