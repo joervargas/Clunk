@@ -329,11 +329,12 @@ namespace Clunk::Vk
             memcpy(p_data, pixels, static_cast<size_t>(image_size));
         vmaUnmapMemory(VkCtx.MemAllocator, staging_allocation);
 
+        VkFormat img_format = VK_FORMAT_R8G8B8A8_SRGB;
         ClVkImage img;
         create_vk_image(
             VkCtx.Device, VkCtx.MemAllocator, 
             width, height, 
-            VK_FORMAT_R8G8B8A8_UNORM,
+            img_format,
             VK_IMAGE_TILING_OPTIMAL,
             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -343,7 +344,7 @@ namespace Clunk::Vk
             
             transition_vk_image_layout(
                 cmd, img.Handle, 
-                VK_FORMAT_R8G8B8A8_UNORM, 
+                img_format, 
                 VK_IMAGE_LAYOUT_UNDEFINED, 
                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
@@ -351,7 +352,7 @@ namespace Clunk::Vk
 
             transition_vk_image_layout(
                 cmd, img.Handle, 
-                VK_FORMAT_R8G8B8A8_UNORM, 
+                img_format, 
                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             
@@ -361,7 +362,7 @@ namespace Clunk::Vk
         vmaFreeMemory(VkCtx.MemAllocator, staging_allocation);
         stbi_image_free(pixels);
 
-        create_vk_image_view(VkCtx.Device, img.Handle, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, &img.View);
+        create_vk_image_view(VkCtx.Device, img.Handle, img_format, VK_IMAGE_ASPECT_COLOR_BIT, &img.View);
 
         return img;
     }
@@ -393,11 +394,11 @@ namespace Clunk::Vk
         return depthImg;
     }
 
-    void cl_destroy_vk_image(const VkDevice Device, VmaAllocator Allocator, ClVkImage* pImage)
+    void cl_destroy_vk_image(ClVkContext& VkCtx, ClVkImage* pImage)
     {
-        vkDestroyImage(Device, pImage->Handle, nullptr);
-        vkDestroyImageView(Device, pImage->View, nullptr);
-        vmaFreeMemory(Allocator, pImage->Allocation);
+        vkDestroyImage(VkCtx.Device, pImage->Handle, nullptr);
+        vkDestroyImageView(VkCtx.Device, pImage->View, nullptr);
+        vmaFreeMemory(VkCtx.MemAllocator, pImage->Allocation);
 
         pImage->Handle = nullptr;
         pImage->View = nullptr;

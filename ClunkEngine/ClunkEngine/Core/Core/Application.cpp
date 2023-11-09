@@ -55,8 +55,6 @@ namespace Clunk
 
     void Application::Resize(const EWindowState &State)
     {
-        CLOG_WARN("Window Resized!");
-        // RenderManager.bIsResized = true;
         RenderCtx.SetIsResized(true);
     }
 

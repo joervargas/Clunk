@@ -116,8 +116,8 @@ namespace Clunk::Vk
         ClVkFrameSync(VkDevice Device, u32 NumFramesInFlight);
         void Destroy(VkDevice Device);
 
-        u32 GetNumFramesInFlight() { return FramesInFlight; }
-        u32 GetCurrentIndex() { return CurrentFrameIndex; }
+        u32 GetNumFramesInFlight() const { return FramesInFlight; }
+        u32 GetCurrentIndex() const { return CurrentFrameIndex; }
         void SetNextFrameIndex() { CurrentFrameIndex = (CurrentFrameIndex + 1) % FramesInFlight; }
         VkSemaphore& GetCurrentWaitSemaphore() { return WaitSemaphores[CurrentFrameIndex]; }
         VkSemaphore& GetCurrentRenderSemaphore() { return RenderSemaphores[CurrentFrameIndex]; }

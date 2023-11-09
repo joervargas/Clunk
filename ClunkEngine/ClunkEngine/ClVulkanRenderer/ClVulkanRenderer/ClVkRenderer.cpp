@@ -23,7 +23,7 @@ namespace Clunk::Vk
 
         // mLayers3d = ClVk3dLayerList(&mVkCtx);
 
-        mLayers2d.Push( new ClVkSimple2dLayer(mVkCtx) );
+        mLayers2d.Push( new ClVkSimple2dLayer(mVkCtx, "./Assets/Images/statue.jpg") );
 
     }
 

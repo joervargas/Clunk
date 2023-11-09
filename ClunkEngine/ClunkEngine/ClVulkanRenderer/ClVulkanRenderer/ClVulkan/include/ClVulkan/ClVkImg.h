@@ -161,10 +161,10 @@ namespace Clunk::Vk
     /**
      * @brief Destroys ClVkImage and all its resources
      * 
-     * @param Device VkDevice handle
+     * @param VkCtx ClVkContext struct reference
      * @param pImage* ClVkImage pointer handle to destroy
      */
-    void cl_destroy_vk_image(const VkDevice Device, ClVkImage* pImage);
+    void cl_destroy_vk_image(ClVkContext& VkCtx, ClVkImage* pImage);
     
     struct ClVkTexture final
     {
