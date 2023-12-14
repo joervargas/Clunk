@@ -4,11 +4,10 @@
 #include <VkMemAllocator/vk_mem_alloc.h>
 #include <PCH/pch.h>
 
+#include <ClVulkan/ClVkContext.h>
 
 namespace Clunk::Vk
 {
-
-    class ClVkContext;
 
     /**
      * @brief Finds the memory type index given the memory type bits and memory properties.
@@ -72,5 +71,26 @@ namespace Clunk::Vk
     void cl_destroy_vk_buffer(ClVkContext& VkCtx, ClVkBuffer& Buffer);
 
     void cl_destroy_vk_buffers(ClVkContext& VkCtx, std::vector<ClVkBuffer> Buffers);
+
+    template<typename T>
+    ClVkBuffer cl_create_vk_gpu_buffer(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, const std::vector<T>& Data, VkDeviceSize Size)
+    {
+        ClVkBuffer staging = cl_create_vk_buffer(VkCtx, UsageFlags | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT, Size);
+
+        void* data_ptr = nullptr;
+        vmaMapMemory(VkCtx.MemAllocator, staging.Allocation, &data_ptr);
+            memcpy(data_ptr, Data.data(), (size_t)Size);
+        vmaUnmapMemory(VkCtx.MemAllocator, staging.Allocation);
+
+        ClVkBuffer buffer = cl_create_vk_buffer(VkCtx, UsageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 0, Size);
+        VkCommandBuffer cmd_buffer = cl_begin_single_time_vk_command_buffer(VkCtx);
+            copy_vk_buffer(VkCtx.Device, cmd_buffer, staging.Handle, buffer.Handle, Size);
+        cl_end_single_time_vk_command_buffer(VkCtx, cmd_buffer);
+
+        cl_destroy_vk_buffer(VkCtx, staging);
+
+        return buffer;
+    }
+
 }
 

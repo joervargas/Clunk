@@ -9,7 +9,7 @@
 
 extern Clunk::Application* Clunk::CreateApplication();
 
-int main(int argc, char* argv[])
+int main(void)
 {
     auto app = Clunk::CreateApplication();
     
