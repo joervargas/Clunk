@@ -26,7 +26,7 @@ target_include_directories(${Target}
 )
 
 target_link_libraries(${Target}
-    ClMath
+    # ClMath
 )
 
 if(${VULKAN_GRAPHICS})
