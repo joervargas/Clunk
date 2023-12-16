@@ -12,8 +12,9 @@ public:
 
 private:
 
-    KeyListener<Sandbox>* OnEscPressed;
-
+    // KeyListener<Sandbox>* OnEscPressed;
+    // DelegateButtonListener EscKeyListener;
+    
 };
 
 

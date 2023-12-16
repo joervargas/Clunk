@@ -39,6 +39,6 @@ target_link_libraries(${Target}
     TinyXML2
     PCH
     ClPlatforms
-    Events
+    # Events
     ClRenderManager
 )

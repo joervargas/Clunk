@@ -10,7 +10,7 @@ file(GLOB HDR_FILES
 
 include_directories(../)
 include_directories(../Core)
-include_directories(../Events)
+# include_directories(../Events)
 include_directories(../PCH)
 include_directories(../Defines)
 
@@ -54,7 +54,8 @@ target_include_directories(${Target}
 target_link_libraries(${Target}
     SDL2::SDL2
     SDL2::SDL2main
-    Events
+    PCH
+    # Events
     Core
 )
 

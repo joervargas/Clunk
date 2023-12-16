@@ -5,6 +5,12 @@
 #include <PCH/pch.h>
 #include <SDL.h>
 
+#ifndef NDEBUG
+    const bool VALIDATION = true;
+#else
+    const bool VALIDATION = false;
+#endif
+
 namespace Clunk::Vk
 {
 
@@ -47,7 +53,7 @@ namespace Clunk::Vk
     */
     void create_vk_surface(SDL_Window* Window, const VkInstance Instance, VkSurfaceKHR* Surface);
 
-    struct VulkanLoader
+    struct ClVkLoader
     {
         VkInstance Instance = nullptr;
         VkSurfaceKHR Surface = nullptr;
@@ -61,16 +67,16 @@ namespace Clunk::Vk
      * @brief Create a VulkanLoader struct
      * 
      * @param Window SDL_Window pointer
-     * @return VulkanLoader 
+     * @return ClVkLoader 
      */
-    VulkanLoader create_vulkan_loader(SDL_Window* Window, const char* AppName, u32 AppVersion);
+    ClVkLoader cl_create_vk_loader(SDL_Window* Window, const char* AppName, u32 AppVersion);
 
     /**
-     * @brief Destoy the contents of the VulkanLoader struct
+     * @brief Destoy the contents of the ClVkLoader struct
      * 
-     * @param VkLoader a reference to the struct to be destroyed
+     * @param pVkLoader a pointer to the ClVkLoader struct to be destroyed
      */
-    void destroy_vulkan_loader(VulkanLoader& VkLoader);
+    void cl_destroy_vk_loader(ClVkLoader* pVkLoader);
 
 }
 

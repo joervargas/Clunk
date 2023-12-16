@@ -1,4 +1,5 @@
 #include "VkUtils.h"
+#include "ClVkImg.h"
 
 namespace Clunk::Vk
 {
@@ -68,7 +69,12 @@ namespace Clunk::Vk
         std::optional<u32> result = std::nullopt;
         for(u32 i = 0; i != families.size(); i++)
         {
-            if(families[i].queueCount && families[i].queueFlags & DesiredQueueFlags)
+            // if(families[i].queueCount && families[i].queueFlags & DesiredQueueFlags)
+            // {
+            //     result = i;
+            //     return result;
+            // }
+            if(families[i].queueFlags & DesiredQueueFlags)
             {
                 result = i;
                 return result;
@@ -95,7 +101,7 @@ namespace Clunk::Vk
                 .queueCount = 1,
                 .pQueuePriorities = &queuePriority,
             };
-            queueCreateInfos.push_back(queueCI);
+            queueCreateInfos[i] = queueCI;
         }
 
         const std::vector<const char*> device_exts =
@@ -191,7 +197,7 @@ namespace Clunk::Vk
         return imageCountExceeded ? capabilities.maxImageCount : imageCount;
     }
 
-    void create_vk_swapchain(const VkDevice Device, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, VkSurfaceCapabilitiesKHR Capabilities, VkSurfaceFormatKHR Format, VkPresentModeKHR PresentMode, VkExtent2D Extent, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots)
+    void create_vk_swapchain(const VkDevice Device, VkSurfaceKHR Surface, std::vector<u32> QueueFamilyIndices, VkSurfaceCapabilitiesKHR Capabilities, VkSurfaceFormatKHR Format, VkPresentModeKHR PresentMode, u32 Width, u32 Height, VkSwapchainKHR *pSwapchain, bool bSupportScreenshots)
     {
         CLOG_INFO("Creating VkSwapchain...");
 
@@ -203,7 +209,7 @@ namespace Clunk::Vk
             .minImageCount = choose_vk_swapchain_image_count(Capabilities),
             .imageFormat = Format.format,
             .imageColorSpace = Format.colorSpace,
-            .imageExtent = Extent,
+            .imageExtent = VkExtent2D{ .width = Width, .height = Height },
             .imageArrayLayers = 1,
             .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
             .imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
@@ -221,7 +227,7 @@ namespace Clunk::Vk
         CLOG_INFO("VkSwapchain created");
     }
 
-    void create_vk_swapchain_images(const VkDevice Device, const VkSwapchainKHR Swapchain, std::vector<VkImage> &SwapchainImages, std::vector<VkImageView> &SwapchainImageViews)
+    void create_vk_swapchain_images(const VkDevice Device, const VkSwapchainKHR Swapchain, const VkFormat Format, std::vector<VkImage> &SwapchainImages, std::vector<VkImageView> &SwapchainImageViews)
     {
         u32 imageCount = 0;
         VK_CHECK(vkGetSwapchainImagesKHR(Device, Swapchain, &imageCount, nullptr));
@@ -233,7 +239,7 @@ namespace Clunk::Vk
 
         for(u32 i = 0; i < imageCount; i++)
         {
-            create_vk_image_view(Device, SwapchainImages[i], VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, &SwapchainImageViews[i]);
+            create_vk_image_view(Device, SwapchainImages[i], Format, VK_IMAGE_ASPECT_COLOR_BIT, &SwapchainImageViews[i]);
         }
     }
 
@@ -241,15 +247,16 @@ namespace Clunk::Vk
     {
         const VkCommandPoolCreateInfo ci =
         {
-            .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+            .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
             .pNext = nullptr,
+            .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
             .queueFamilyIndex = QueueFamilyIndex
         };
 
         return vkCreateCommandPool(Device, &ci, nullptr, pCommandPool);
     }
 
-    VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, std::vector<VkCommandBuffer> &CommandBuffers)
+    VkResult allocate_vk_command_buffers(const VkDevice Device, const VkCommandPool CommandPool, u32 BufferCount, VkCommandBuffer* pCommandBuffers)
     {
         const VkCommandBufferAllocateInfo ai =
         {
@@ -259,30 +266,7 @@ namespace Clunk::Vk
             .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
             .commandBufferCount = BufferCount
         };
-        return vkAllocateCommandBuffers(Device, &ai, CommandBuffers.data());
-    }
-
-    void create_vk_image_view(VkDevice Device, VkImage Image, VkFormat Format, VkImageAspectFlags AspectFlags, VkImageView *pImageView, VkImageViewType ImageViewType, u32 LayerCount, u32 MipLevels)
-    {
-        const VkImageViewCreateInfo view_info =
-        {
-            .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-            .pNext = nullptr,
-            .flags = 0,
-            .image = Image,
-            .viewType = ImageViewType,
-            .format = Format,
-            .subresourceRange =
-            {
-                .aspectMask = AspectFlags,
-                .baseMipLevel = 0,
-                .levelCount = MipLevels,
-                .baseArrayLayer = 0,
-                .layerCount = LayerCount
-            }
-        };
-
-        VK_CHECK(vkCreateImageView(Device, &view_info, nullptr, pImageView));
+        return vkAllocateCommandBuffers(Device, &ai, pCommandBuffers);
     }
 
     VkResult create_vk_semaphore(VkDevice Device, VkSemaphore *pSemaphore)
@@ -295,5 +279,156 @@ namespace Clunk::Vk
         return vkCreateSemaphore(Device, &ci, nullptr, pSemaphore);
     }
 
-}
+    VkResult create_vk_fence(VkDevice Device, VkFence* pFence, b8 bIsSignaled)
+    {
+        VkFenceCreateInfo ci =
+        {
+            .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+        };
+        if(bIsSignaled)
+        {
+            ci.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+        }
 
+        return vkCreateFence(Device, &ci, nullptr, pFence);
+    }
+
+    VkResult create_vk_pipeline_layout(VkDevice Device, u32 DescriptorSetLayoutCount, VkDescriptorSetLayout *pDescriptorSetLayouts, u32 PushConstantRangeCount, VkPushConstantRange *pPushConstantRange, VkPipelineLayout *pPipeLineLayout)
+    {
+        const VkPipelineLayoutCreateInfo create_info =
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .setLayoutCount = DescriptorSetLayoutCount,
+            .pSetLayouts = pDescriptorSetLayouts,
+            .pushConstantRangeCount = PushConstantRangeCount,
+            .pPushConstantRanges = pPushConstantRange
+        };
+        return vkCreatePipelineLayout(Device, &create_info, nullptr, pPipeLineLayout);
+    }
+
+    const VkPipelineVertexInputStateCreateInfo create_info_vk_pipeline_vertex_input()
+    {
+        return VkPipelineVertexInputStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO
+        };
+    }
+
+    const VkPipelineInputAssemblyStateCreateInfo create_info_vk_pipeline_assembly(VkPrimitiveTopology Topology, VkBool32 bPrimitiveRestartEnabled)
+    {
+        return VkPipelineInputAssemblyStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+            .topology = Topology,
+            .primitiveRestartEnable = bPrimitiveRestartEnabled
+        };
+    }
+
+    const VkPipelineViewportStateCreateInfo create_info_vk_pipeline_viewport(u32 ViewportCount, VkViewport *pViewports, u32 ScissorCount, VkRect2D *pScissors)
+    {
+        return VkPipelineViewportStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+            .viewportCount = ViewportCount,
+            .pViewports = pViewports,
+            .scissorCount = ScissorCount,
+            .pScissors = pScissors
+        };
+    }
+
+    const VkPipelineRasterizationStateCreateInfo create_info_vk_pipeline_rasterization(VkPolygonMode PolygonMode, VkCullModeFlags CullMode, VkFrontFace FrontFace, f32 LineWidth)
+    {
+        return VkPipelineRasterizationStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+            .polygonMode = PolygonMode,
+            .cullMode = CullMode,
+            .frontFace = FrontFace,
+            .lineWidth = LineWidth
+        };
+    }
+
+    const VkPipelineMultisampleStateCreateInfo create_info_vk_pipeline_multisample(VkSampleCountFlagBits Samples, VkBool32 bSampleShading, f32 MinSampleShading)
+    {
+        return VkPipelineMultisampleStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+            .rasterizationSamples = Samples,
+            .sampleShadingEnable = bSampleShading,
+            .minSampleShading = MinSampleShading
+        };
+    }
+
+    const VkPipelineColorBlendAttachmentState create_info_vk_pipeline_color_blend_attachment(b8 bUseBlending)
+    {
+        return VkPipelineColorBlendAttachmentState
+        {
+            .blendEnable = VK_TRUE,
+            .srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,
+            .dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+            .colorBlendOp = VK_BLEND_OP_ADD,
+            .srcAlphaBlendFactor = bUseBlending ? VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA : VK_BLEND_FACTOR_ONE,
+            .dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO,
+            .alphaBlendOp = VK_BLEND_OP_ADD,
+            .colorWriteMask =
+                VK_COLOR_COMPONENT_R_BIT |
+                VK_COLOR_COMPONENT_G_BIT |
+                VK_COLOR_COMPONENT_B_BIT |
+                VK_COLOR_COMPONENT_A_BIT
+        };
+    }
+
+    const VkPipelineColorBlendStateCreateInfo create_info_vk_pipeline_color_blend(VkPipelineColorBlendAttachmentState* pColorBlendAttachments, u32 ColorBlendAttachmentsCount)
+    {
+        return VkPipelineColorBlendStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+            .logicOpEnable = VK_FALSE,
+            .logicOp = VK_LOGIC_OP_COPY,
+            .attachmentCount = ColorBlendAttachmentsCount,
+            .pAttachments = pColorBlendAttachments,
+            .blendConstants = { 0.f, 0.f, 0.f, 0.f }
+        };
+    }
+
+    const VkPipelineDepthStencilStateCreateInfo create_info_vk_pipeline_depth_stencil()
+    {
+        return VkPipelineDepthStencilStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+            .depthTestEnable = VK_TRUE,
+            .depthWriteEnable = VK_TRUE,
+            .depthCompareOp = VK_COMPARE_OP_LESS,
+            .depthBoundsTestEnable = VK_FALSE,
+            .minDepthBounds = 0.0f,
+            .maxDepthBounds = 1.0f
+        };
+    }
+
+    const VkPipelineDynamicStateCreateInfo create_info_vk_pipeline_dynamic_state(VkDynamicState* pDynamicStates, u32 DynamicStateCount)
+    {
+        return VkPipelineDynamicStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .dynamicStateCount = DynamicStateCount,
+            .pDynamicStates = pDynamicStates
+        };
+    }
+
+    const VkPipelineTessellationStateCreateInfo create_info_vk_pipeline_tessellation(u32 NumPatchControlPoints)
+    {
+        return VkPipelineTessellationStateCreateInfo
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .patchControlPoints = NumPatchControlPoints
+        };
+    }
+
+
+}

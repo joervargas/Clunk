@@ -13,7 +13,7 @@ file(GLOB HDR_FILES
 set(Engine_DIR ./ClunkEngine)
 add_subdirectory(${Engine_DIR}/PCH)
 add_subdirectory(${Engine_DIR}/ClMath)
-add_subdirectory(${Engine_DIR}/Events)
+# add_subdirectory(${Engine_DIR}/Events)
 add_subdirectory(${Engine_DIR}/ClPlatforms)
 add_subdirectory(${Engine_DIR}/ClRenderManager)
 add_subdirectory(${Engine_DIR}/ClScene)
@@ -51,18 +51,20 @@ target_link_libraries(${PROJECT_NAME}
     SDL2::SDL2main
     TinyXML2
     TinyObjLoader
+    PCH
     ClMath
     ClPlatforms
     ClRenderManager
     ClScene
     ClAssets
     Core
-    Events
+    # Events
 )
 
 if(${VULKAN_GRAPHICS})
     target_link_libraries(${PROJECT_NAME}
         # vulkan
+        ClVulkan
         ClVulkanRenderer
     )
 endif()

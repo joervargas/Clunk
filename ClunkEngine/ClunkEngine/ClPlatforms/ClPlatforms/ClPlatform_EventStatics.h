@@ -1,6 +1,9 @@
 #pragma once
 
 #include "ClPlatform_EventTypes.h"
+#include "ClPlatform_ButtonEvent.h"
+#include "ClPlatform_AxisMotionEvent.h"
+#include "ClPlatform_WindowEvent.h"
 
 namespace Clunk::Events
 {
@@ -15,7 +18,7 @@ namespace Clunk::Events
 
     namespace Mouse
     {
-        extern MouseMotionEvent MouseMotion;
+        extern AxisMotionEvent MouseMotion;
 
         extern ButtonEvent Left_MButton;
         extern ButtonEvent Middle_MButton;

@@ -18,18 +18,16 @@ else()
     message("***Vulkan not found***")
 endif()
 
-# if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-#     find_library(SDL2::SDL2 ${ENGINE_LIB_DIR})
-# endif()
+include_directories(${Target}/ClVulkan)
+include_directories(${Target}/ClVkRenderLayers)
+
+link_directories(${Target}/ClVulkan)
+link_directories(${Target}/ClVkRenderLayers)
 
 # add_subdirectory(${Target}/ClVkLoader)
 add_subdirectory(${Target}/ClVulkan)
-# add_subdirectory(${Target}/ClVkImage)
-# add_subdirectory(${Target}/ClVkBuffer)
-# add_subdirectory(${Target}/ClVkDescriptor)
-# add_subdirectory(${Target}/ClVkSwapchain)
-# add_subdirectory(${Target}/ClVkPipeline)
-# add_subdirectory(${Target}/ClVkCmds)
+add_subdirectory(${Target}/ClVkRenderLayers)
+
 
 
 add_library(${Target}
@@ -45,6 +43,9 @@ target_include_directories(${Target}
 target_link_libraries(${Target}
     SDL2::SDL2
     Vulkan::Vulkan
+    # SPIRV-Tools
+    glslang
+    glslang-default-resource-limits
     ClPlatforms
     TinyXML2
     TinyObjLoader
@@ -56,5 +57,6 @@ target_link_libraries(${Target}
     ClMath
     ClVkExt
     ClVulkan
+    ClVkRenderLayers
     ClRenderManager
 )

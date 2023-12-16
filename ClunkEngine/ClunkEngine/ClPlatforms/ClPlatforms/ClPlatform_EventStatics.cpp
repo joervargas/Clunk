@@ -14,7 +14,7 @@ namespace Clunk::Events
 
     namespace Mouse
     {
-        MouseMotionEvent MouseMotion;
+        AxisMotionEvent MouseMotion;
 
         ButtonEvent Left_MButton;
         ButtonEvent Middle_MButton;

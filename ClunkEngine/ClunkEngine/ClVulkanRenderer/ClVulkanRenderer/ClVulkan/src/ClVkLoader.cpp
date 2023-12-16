@@ -1,5 +1,6 @@
-#include "VulkanLoader.h"
+#include "ClVkLoader.h"
 #include "VkUtils.h"
+#include "ClVkExt/ClVkExt.h"
 
 #include <Core/Logger.h>
 #include <vector>
@@ -30,6 +31,7 @@ namespace Clunk::Vk
             #endif
             #if defined(__linux__)
                 "VK_KHR_xcb_surface",
+                "VK_KHR_xlib_surface",
             #endif
             VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
             VK_EXT_DEBUG_REPORT_EXTENSION_NAME,
@@ -60,7 +62,8 @@ namespace Clunk::Vk
         };
 
         VK_CHECK(vkCreateInstance(&createInfo, nullptr, pInstance));
-
+        vk_ext::LoadInstanceFunctions(*pInstance, instance_extenstions);
+        
         CLOG_INFO("VkInstance handle created.");
     }
 
@@ -156,20 +159,25 @@ namespace Clunk::Vk
                 .pfnCallback = &VulkanDebugReportCallback,
                 .pUserData = nullptr
             };
+            auto func = (PFN_vkCreateDebugReportCallbackEXT) vkGetInstanceProcAddr(Instance, "vkCreateDebugReportCallbackEXT");
+            VK_CHECK(func(Instance, &reportCallbackInfo, nullptr, pReportCallback));
         }
 
         CLOG_INFO("Validation Callbacks created.");
         return false;
     }
 
-    void destroy_debug_calbacks(const VkInstance Instance, VkDebugUtilsMessengerEXT *pMessenger, VkDebugReportCallbackEXT *pReportCallback)
+    void destroy_debug_calbacks(const VkInstance& Instance, VkDebugUtilsMessengerEXT& Messenger, VkDebugReportCallbackEXT& ReportCallback)
     {
         // Destroy Messenger block
         {
             auto func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(Instance, "vkDestroyDebugUtilsMessengerEXT");
             if(func != nullptr)
             {
-                func(Instance, *pMessenger, nullptr);
+                func(Instance, Messenger, nullptr);
+            } else {
+                CLOG_ERROR("vkDestroyDebugUtilsMessengerEXT funtion unable to load");
+                exit(EXIT_FAILURE);
             }
         }
         // Destroy Report Callback
@@ -177,7 +185,10 @@ namespace Clunk::Vk
             auto func = (PFN_vkDestroyDebugReportCallbackEXT) vkGetInstanceProcAddr(Instance, "vkDestroyDebugReportCallbackEXT");
             if(func != nullptr)
             {
-                func(Instance, *pReportCallback, nullptr);
+                func(Instance, ReportCallback, nullptr);
+            } else {
+                CLOG_ERROR("vkDestroyDebugReportCallbackEXT funtion unable to load");
+                exit(EXIT_FAILURE);
             }
         }
     }
@@ -196,31 +207,37 @@ namespace Clunk::Vk
         CLOG_INFO("SDL Vulkan Surface created.");
     }
 
-    VulkanLoader create_vulkan_loader(SDL_Window *Window, const char* AppName, u32 AppVersion)
+    ClVkLoader cl_create_vk_loader(SDL_Window *Window, const char* AppName, u32 AppVersion)
     {   
         CLOG_INFO("Creating VulkanLoader...");
 
-        VulkanLoader vkLoader;
+        ClVkLoader vkLoader;
         create_vk_instance(&vkLoader.Instance, vkLoader.Vk_API_Version ,  AppName, AppVersion, "Clunk Engine", VK_MAKE_API_VERSION(0, 0, 1, 0));
-        create_debug_callbacks(vkLoader.Instance, &vkLoader.Messenger, &vkLoader.ReportCallback);
+        if( VALIDATION )
+        {
+            create_debug_callbacks(vkLoader.Instance, &vkLoader.Messenger, &vkLoader.ReportCallback);
+        }
         create_vk_surface(Window, vkLoader.Instance, &vkLoader.Surface);
 
         CLOG_INFO("VulkanLoader created.");
         return vkLoader;
     }
 
-    void destroy_vulkan_loader(VulkanLoader &VkLoader)
+    void cl_destroy_vk_loader(ClVkLoader* VkLoader)
     {
         CLOG_INFO("Destroying VulkanLoader struct...");
 
-        vkDestroySurfaceKHR(VkLoader.Instance, VkLoader.Surface, nullptr);
-        destroy_debug_calbacks(VkLoader.Instance, &VkLoader.Messenger, &VkLoader.ReportCallback);
-        vkDestroyInstance(VkLoader.Instance, nullptr);
+        vkDestroySurfaceKHR(VkLoader->Instance, VkLoader->Surface, nullptr);
+        if( VALIDATION )
+        {
+            destroy_debug_calbacks(VkLoader->Instance, VkLoader->Messenger, VkLoader->ReportCallback);
+        }
+        vkDestroyInstance(VkLoader->Instance, nullptr);
         
-        VkLoader.Surface = nullptr;
-        VkLoader.Messenger = nullptr;
-        VkLoader.ReportCallback = nullptr;
-        VkLoader.Instance = nullptr;
+        VkLoader->Surface = nullptr;
+        VkLoader->Messenger = nullptr;
+        VkLoader->ReportCallback = nullptr;
+        VkLoader->Instance = nullptr;
 
         CLOG_INFO("VulkanLoader destroyed.");
     }
