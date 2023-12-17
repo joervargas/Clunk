@@ -84,9 +84,9 @@ namespace Clunk::Vk
         
         ClVkDescriptor mDescriptor;
 
+        std::vector<VkFramebuffer> mFramebuffers;
         u32 mFrameBufferWidth = 0;
         u32 mFrameBufferHeight = 0;
-        std::vector<VkFramebuffer> mFramebuffers;
         ClVkRenderPass mRenderPass;
 
         VkPipelineLayout mPipelineLayout = nullptr;
@@ -205,7 +205,7 @@ namespace Clunk::Vk
 
         virtual void Update(u32 CurrentIndex, ClVkBuffer& TransformUniform, ClVkImage& DepthImage, f32 DeltaTime) = 0;
 
-        virtual void DrawFrame(const VkCommandBuffer& CmdBuffer, size_t CurrentImage) = 0;
+        virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) = 0;
 
     private:
 
@@ -241,7 +241,7 @@ namespace Clunk::Vk
 
         virtual void Update(u32 CurrentIndex, ClVkBuffer& TransformUniform, ClVkImage& DepthImage, f32 DeltaTime) override;
 
-        virtual void DrawFrame(const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
+        virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 
         virtual void CleanupFramebuffers(const ClVkContext& VkCtx) override 
         { 

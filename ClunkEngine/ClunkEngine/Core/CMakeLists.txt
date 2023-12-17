@@ -31,7 +31,7 @@ add_library(${Target}
 
 target_include_directories(${Target}
     PUBLIC
-        ./
+        ${CMAKE_CURRENT_SOURCE_DIR}/
 )
 
 target_link_libraries(${Target}

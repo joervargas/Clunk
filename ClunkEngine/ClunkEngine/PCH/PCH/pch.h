@@ -149,7 +149,7 @@ STATIC_ASSERT(sizeof(f64) == 8, "Expected f64 to be 8 bytes.");
     #define PLATFORM_SDL 1
     #define _WIN32_WINNT 0x0502
     #define VA_LIST va_list
-    #define VSN_PRINTF(buff, buff_size, format_char_p, args) _vsnprintf_s(buff, buff_size, format_char_p, args)
+    #define VSN_PRINTF(buff, buff_size, format_char_p, args) vsnprintf(buff, buff_size, format_char_p, args)
     #ifndef _WIN64
         #error "64-bit is required on Windows!"
     #endif
@@ -159,10 +159,10 @@ STATIC_ASSERT(sizeof(f64) == 8, "Expected f64 to be 8 bytes.");
     #define PLATFORM_SDL 1
     #define VA_LIST __builtin_va_list
     #define VSN_PRINTF(buff, buff_size, format_char_p, args) vsnprintf(buff, buff_size, format_char_p, args)
-#if defined(__ANDROID__)
-    #define PLATFORM_ANDROID 1
-    #define PLATFORM_SDL 1 // Comment out if use native libraries
-#endif
+    #if defined(__ANDROID__)
+        #define PLATFORM_ANDROID 1
+        #define PLATFORM_SDL 1 // Comment out if use native libraries
+    #endif
 #elif defined(__unix__)
     // Catch anything not caught by the above.
     #define PLATFORM_UNIX 1

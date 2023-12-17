@@ -158,11 +158,11 @@ namespace Clunk::Vk
         }
     }
 
-    void ClVk3dLayerList::DrawFrame(const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
+    void ClVk3dLayerList::DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
     {
         for(ClVk3dLayer* layer : mList)
         {
-            layer->DrawFrame(CmdBuffer, CurrentImage);
+            layer->DrawFrame(VkCtx, CmdBuffer, CurrentImage);
         }
     }
 }

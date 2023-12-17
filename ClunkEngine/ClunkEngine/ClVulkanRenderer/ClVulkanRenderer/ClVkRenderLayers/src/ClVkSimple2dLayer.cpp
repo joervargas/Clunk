@@ -74,7 +74,8 @@ namespace Clunk::Vk
 
     void ClVkSimple2dLayer::CreateDescriptor(ClVkContext &VkCtx)
     {
-        mDescriptor.Pool = cl_create_vk_desc_pool(VkCtx, 0, 0, 1);
+        u32 NumFrames = VkCtx.FrameSync.GetNumFramesInFlight();
+        mDescriptor.Pool = cl_create_vk_desc_pool(VkCtx, 0, 0, 1 * NumFrames);
 
         std::vector<VkDescriptorSetLayoutBinding> bindings = {
             get_vk_desc_set_layout_binding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT)
@@ -91,7 +92,7 @@ namespace Clunk::Vk
         VK_CHECK(vkCreateDescriptorSetLayout(VkCtx.Device, &layout_info, nullptr, &layout));
 
         mDescriptor.Layouts = std::vector<VkDescriptorSetLayout>(VkCtx.FrameSync.GetNumFramesInFlight(), layout);
-        mDescriptor.Sets.reserve(mDescriptor.Layouts.size());
+        mDescriptor.Sets.resize(mDescriptor.Layouts.size());
         VkDescriptorSetAllocateInfo alloc_info = {
             .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
             .pNext = nullptr,

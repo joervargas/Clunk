@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core/Logger.h>
+#include <vulkan/vk_enum_string_helper.h>
 
 
 namespace Clunk::Vk
@@ -13,7 +14,7 @@ namespace Clunk::Vk
             VkResult err = x;                               \
             if(err)                                         \
             {                                               \
-                THROW_EXCEPTION("Vulkan Error: %s", err);   \
+                THROW_EXCEPTION("Vulkan Error: %s", string_VkResult(err));   \
             }                                               \
         }  
 }

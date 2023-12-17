@@ -4,6 +4,7 @@
 
 #include "Application.h"
 #include "Logger.h"
+#include <SDL.h>
 // #include <unistd.h>
 
 
