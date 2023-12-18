@@ -8,7 +8,6 @@
 #include <ClMath/Vec3.h>
 
 #include <PCH/pch.h>
-#include <array>
 
 namespace Clunk::Vk
 {
@@ -55,14 +54,12 @@ namespace Clunk::Vk
 
         bool operator==(const Simple2dVertex& other) const
         {
-            // return pos == other.pos && color == other.color && texCoord == other.texCoord;
-            return pos == other.pos && color == other.color;
+            return pos == other.pos && color == other.color && texCoord == other.texCoord;
         }
 
         bool operator==(const Simple2dVertex& other)
         {
-            // return pos == other.pos && color == other.color && texCoord == other.texCoord;
-            return pos == other.pos && color == other.color;
+            return pos == other.pos && color == other.color && texCoord == other.texCoord;
         }
     };
 

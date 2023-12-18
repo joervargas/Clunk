@@ -121,7 +121,7 @@ namespace Clunk
          * @brief Overrides std::exception::what()
          * @return const char* (C string) featuring: Error number, Error Desc, Src File, Line Number
          */
-        const char* what();
+        virtual const char* what() const override;
 
         CLException(String ErrorDesc, String SrcFileName, i32 LineNumber, ...);
 

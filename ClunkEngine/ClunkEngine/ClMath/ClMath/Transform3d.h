@@ -29,7 +29,7 @@ namespace Clunk
             const Quat& Rotation = Quat(0.0f, 0.0f, 0.0f, 1.0f), 
             const Vec3& Scale = Vec3(1.0f, 1.0f, 1.0f)
         ) : 
-            position(Position), rotation(Rotation), scale(Scale)
+            rotation(Rotation), position(Position), scale(Scale)
         {}
 
 

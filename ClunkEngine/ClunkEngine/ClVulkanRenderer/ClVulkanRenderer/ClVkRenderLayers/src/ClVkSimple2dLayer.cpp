@@ -5,7 +5,8 @@
 
 namespace Clunk::Vk
 {
-    ClVkSimple2dLayer::ClVkSimple2dLayer(ClVkContext& VkCtx, const char* TextureFile)
+    ClVkSimple2dLayer::ClVkSimple2dLayer(ClVkContext& VkCtx, const char* TextureFile) : 
+        ClVk2dLayer()
     {
         mTexture = cl_create_vk_image(VkCtx, TextureFile);
         create_vk_sampler(VkCtx.Device, &mSampler);

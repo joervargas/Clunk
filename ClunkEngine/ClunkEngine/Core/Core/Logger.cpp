@@ -103,7 +103,7 @@ namespace Clunk
         LogFile->logBuffer << msg.str() << std::endl;
     }
 
-    const char* CLException::what()
+    const char* CLException::what() const
     {
         return m_ErrText.c_str();
     }
