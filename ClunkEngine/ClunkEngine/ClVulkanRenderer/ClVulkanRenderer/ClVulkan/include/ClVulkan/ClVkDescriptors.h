@@ -8,7 +8,7 @@ namespace Clunk::Vk
 {
     VkDescriptorSetLayoutBinding get_vk_desc_set_layout_binding(u32 Binding, VkDescriptorType DescType, u32 Count, VkShaderStageFlags ShaderStage);
 
-    VkWriteDescriptorSet get_vk_buffer_write_desc_set(VkDescriptorSet& DescSet, VkDescriptorBufferInfo& BufferInfo, u32 Binding, VkDescriptorType& DescType);
+    VkWriteDescriptorSet get_vk_buffer_write_desc_set(VkDescriptorSet& DescSet, VkDescriptorBufferInfo& BufferInfo, u32 Binding, VkDescriptorType DescType);
 
     VkWriteDescriptorSet get_vk_image_write_desc_set(VkDescriptorSet& DescSet, VkDescriptorImageInfo& ImageInfo, u32 Binding);
 

@@ -16,7 +16,7 @@ namespace Clunk::Vk
         };
     }
 
-    VkWriteDescriptorSet get_vk_buffer_write_desc_set(VkDescriptorSet &DescSet, VkDescriptorBufferInfo &BufferInfo, u32 Binding, VkDescriptorType &DescType)
+    VkWriteDescriptorSet get_vk_buffer_write_desc_set(VkDescriptorSet &DescSet, VkDescriptorBufferInfo &BufferInfo, u32 Binding, VkDescriptorType DescType)
     {
         return VkWriteDescriptorSet
         {

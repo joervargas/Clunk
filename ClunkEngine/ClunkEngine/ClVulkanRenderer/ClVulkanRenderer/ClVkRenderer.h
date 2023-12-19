@@ -1,21 +1,22 @@
 #pragma once
 
-#include <ClRenderManager/ClIRenderer.h>
 #include <PCH/pch.h>
+#include <ClRenderManager/ClIRenderer.h>
 #include <ClPlatforms/ClPlatform.h>
+#include <ClMath/ClMath.h>
 
 #include <ClVkRenderLayers/ClVkRenderLayers.h>
+#include "ClVkTransforms.h"
 
 #include <vulkan/vulkan.h>
+#include <chrono>
 
 // #define GLM_FORCE_RADIANS
 // #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 // #include <glm/glm.hpp>
 // #include <glm/gtc/matrix_transform.hpp>
 
-#include <chrono>
 
-#include <ClMath/ClMath.h>
 
 namespace Clunk::Vk
 {
@@ -92,6 +93,9 @@ namespace Clunk::Vk
         ClVkContext mVkCtx;
 
         ClVkImage mDepthImage;
+
+        ClVkTransforms mWorldTransform;
+        ClVkBuffer mWorldTransformUniform;
 
         ClVkBeginLayer mBeginLayer;
 

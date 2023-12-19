@@ -73,18 +73,40 @@ namespace Clunk::Vk
     void cl_destroy_vk_buffers(ClVkContext& VkCtx, std::vector<ClVkBuffer> Buffers);
 
     template<typename T>
-    ClVkBuffer cl_create_vk_gpu_buffer(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, const std::vector<T>& Data, VkDeviceSize Size)
+    ClVkBuffer cl_create_vk_gpu_buffer(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, const T& Data)
     {
-        ClVkBuffer staging = cl_create_vk_buffer(VkCtx, UsageFlags | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT, Size);
+        VkDeviceSize data_size = sizeof(T);
+        ClVkBuffer staging = cl_create_vk_buffer(VkCtx, UsageFlags | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT, data_size);
 
         void* data_ptr = nullptr;
         vmaMapMemory(VkCtx.MemAllocator, staging.Allocation, &data_ptr);
-            memcpy(data_ptr, Data.data(), (size_t)Size);
+            memcpy(data_ptr, Data, (size_t)data_size);
         vmaUnmapMemory(VkCtx.MemAllocator, staging.Allocation);
 
-        ClVkBuffer buffer = cl_create_vk_buffer(VkCtx, UsageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 0, Size);
+        ClVkBuffer buffer = cl_create_vk_buffer(VkCtx, UsageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 0, data_size);
         VkCommandBuffer cmd_buffer = cl_begin_single_time_vk_command_buffer(VkCtx);
-            copy_vk_buffer(VkCtx.Device, cmd_buffer, staging.Handle, buffer.Handle, Size);
+            copy_vk_buffer(VkCtx.Device, cmd_buffer, staging.Handle, buffer.Handle, data_size);
+        cl_end_single_time_vk_command_buffer(VkCtx, cmd_buffer);
+
+        cl_destroy_vk_buffer(VkCtx, staging);
+
+        return buffer;
+    }
+
+    template<typename T>
+    ClVkBuffer cl_create_vk_gpu_array_buffer(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, const std::vector<T>& Data)
+    {
+        VkDeviceSize data_size = sizeof(T) * Data.size();
+        ClVkBuffer staging = cl_create_vk_buffer(VkCtx, UsageFlags | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT, data_size);
+
+        void* data_ptr = nullptr;
+        vmaMapMemory(VkCtx.MemAllocator, staging.Allocation, &data_ptr);
+            memcpy(data_ptr, Data.data(), (size_t)data_size);
+        vmaUnmapMemory(VkCtx.MemAllocator, staging.Allocation);
+
+        ClVkBuffer buffer = cl_create_vk_buffer(VkCtx, UsageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 0, data_size);
+        VkCommandBuffer cmd_buffer = cl_begin_single_time_vk_command_buffer(VkCtx);
+            copy_vk_buffer(VkCtx.Device, cmd_buffer, staging.Handle, buffer.Handle, data_size);
         cl_end_single_time_vk_command_buffer(VkCtx, cmd_buffer);
 
         cl_destroy_vk_buffer(VkCtx, staging);

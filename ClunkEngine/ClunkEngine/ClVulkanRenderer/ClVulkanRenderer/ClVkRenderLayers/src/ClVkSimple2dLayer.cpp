@@ -40,12 +40,10 @@ namespace Clunk::Vk
         }
 
         // create vertex buffer
-        VkDeviceSize vbuffer_size = sizeof(Simple2dVertex) * VERTICES_DATA.size();
-        mVerts = cl_create_vk_gpu_buffer<Simple2dVertex>(VkCtx, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VERTICES_DATA, vbuffer_size);
+        mVerts = cl_create_vk_gpu_array_buffer<Simple2dVertex>(VkCtx, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VERTICES_DATA);
 
         // create index buffer
-        VkDeviceSize ibuffer_size = sizeof(u16) * INDICE_DATA.size();
-        mIndices = cl_create_vk_gpu_buffer<u16>(VkCtx, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, INDICE_DATA, ibuffer_size);
+        mIndices = cl_create_vk_gpu_array_buffer<u16>(VkCtx, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, INDICE_DATA);
     }
 
     ClVkSimple2dLayer::~ClVkSimple2dLayer()
@@ -212,6 +210,8 @@ namespace Clunk::Vk
         };
 
         VK_CHECK(vkCreateGraphicsPipelines(VkCtx.Device, nullptr, 1, &create_info, nullptr, &mPipeline));
+
+        CLOG_INFO("VkSimple2dLayer pipeline created.")
     }
 
     void ClVkSimple2dLayer::Draw(const ClVkContext& VkCtx, VkCommandBuffer CmdBuffer)

@@ -4,7 +4,7 @@
 #include <ClVulkan/ClVkContext.h>
 
 #include <glslang/Include/glslang_c_interface.h>
-#include <vulkan/vk_enum_string_helper.h>
+
 
 namespace Clunk::Vk
 {
@@ -17,6 +17,18 @@ namespace Clunk::Vk
         i32 width, height;
         platform->GetDrawableSize(&width, &height);
         mVkCtx = cl_create_vk_context(mVkLoader, width, height);
+
+        // Create a depth img
+        ClVkImage depthImage = cl_create_vk_depth_image(mVkCtx, width, height);
+
+        // Create world transform uniforms
+        mWorldTransform = ClVkTransforms{
+            .model = Mat4::Identity(),
+            .view = Mat4::LookAtLH(Vec3(2.0f, 2.0f, 2.0f), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 1.0f)),
+            .proj = Mat4::PerspectiveLH(45.f, static_cast<f32>(width/ height), 0.1f, 100.f)
+        };
+        mWorldTransform.proj[5] *= -1;
+        mWorldTransformUniform = cl_create_vk_gpu_buffer<ClVkTransforms>(mVkCtx, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, mWorldTransform);
 
         mBeginLayer = ClVkBeginLayer(mVkCtx, nullptr);
         mEndLayer = ClVkEndLayer(mVkCtx, nullptr);

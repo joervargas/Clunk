@@ -64,7 +64,7 @@ namespace Clunk::Vk
     {
     public:
 
-        ClVkSimple3dLayer(ClVkContext &VkCtx, const ClVkImage& DepthImage, const char* MeshFile, const char *TextureFile);
+        ClVkSimple3dLayer(ClVkContext &VkCtx, const ClVkImage& DepthImage, const ClVkBuffer& TransformUniform, const char* MeshFile, const char *TextureFile);
 
         virtual ~ClVkSimple3dLayer();
 
@@ -76,7 +76,7 @@ namespace Clunk::Vk
 
     private:
 
-        void CreateDescriptor(ClVkContext& VkCtx);
+        void CreateDescriptor(ClVkContext& VkCtx, const ClVkBuffer& TransformUniform);
 
         void CreatePipeline(const ClVkContext& VkCtx, std::vector<ClVkShaderModule>& ShaderModules, ClVkRenderPass& RenderPass, VkPipelineLayout& Layout, VkExtent2D CustomExtent = VkExtent2D{ .width = 0, .height = 0 });
 
