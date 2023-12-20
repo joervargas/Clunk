@@ -80,7 +80,7 @@ namespace Clunk::Vk
 
         void* data_ptr = nullptr;
         vmaMapMemory(VkCtx.MemAllocator, staging.Allocation, &data_ptr);
-            memcpy(data_ptr, Data, (size_t)data_size);
+            memcpy(data_ptr, &Data, (size_t)data_size);
         vmaUnmapMemory(VkCtx.MemAllocator, staging.Allocation);
 
         ClVkBuffer buffer = cl_create_vk_buffer(VkCtx, UsageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, 0, data_size);

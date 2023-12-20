@@ -133,7 +133,6 @@ namespace Clunk::Vk
         //     mList[i]->Update(CurrentIndex, DeltaTime);
         // }
     }
-
     void ClVk2dLayerList::DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
     {
         for(auto& layer : mList)
@@ -144,7 +143,7 @@ namespace Clunk::Vk
 
     void ClVk3dLayerList::Destroy(ClVkContext& VkCtx)
     {
-        for(ClVk3dLayer* layer : mList)
+        for(auto& layer : mList)
         {
             layer->Destroy(VkCtx);
         }
@@ -152,7 +151,7 @@ namespace Clunk::Vk
 
     void ClVk3dLayerList::Update(u32 CurrentIndex, ClVkBuffer &TransformUniform, ClVkImage &DepthImage, f32 DeltaTime)
     {
-        for(ClVk3dLayer* layer : mList)
+        for(auto& layer : mList)
         {
             layer->Update(CurrentIndex, TransformUniform, DepthImage, DeltaTime);
         }
@@ -160,7 +159,7 @@ namespace Clunk::Vk
 
     void ClVk3dLayerList::DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
     {
-        for(ClVk3dLayer* layer : mList)
+        for(auto& layer : mList)
         {
             layer->DrawFrame(VkCtx, CmdBuffer, CurrentImage);
         }

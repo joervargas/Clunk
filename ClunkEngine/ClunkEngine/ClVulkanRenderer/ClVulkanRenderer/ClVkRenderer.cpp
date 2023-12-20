@@ -19,7 +19,7 @@ namespace Clunk::Vk
         mVkCtx = cl_create_vk_context(mVkLoader, width, height);
 
         // Create a depth img
-        ClVkImage depthImage = cl_create_vk_depth_image(mVkCtx, width, height);
+        mDepthImage = cl_create_vk_depth_image(mVkCtx, width, height);
 
         // Create world transform uniforms
         mWorldTransform = ClVkTransforms{
@@ -30,13 +30,11 @@ namespace Clunk::Vk
         mWorldTransform.proj[5] *= -1;
         mWorldTransformUniform = cl_create_vk_gpu_buffer<ClVkTransforms>(mVkCtx, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, mWorldTransform);
 
-        mBeginLayer = ClVkBeginLayer(mVkCtx, nullptr);
-        mEndLayer = ClVkEndLayer(mVkCtx, nullptr);
+        mBeginLayer = ClVkBeginLayer(mVkCtx, &mDepthImage);
+        mEndLayer = ClVkEndLayer(mVkCtx, &mDepthImage);
 
-        // mLayers3d = ClVk3dLayerList(&mVkCtx);
-
-        mLayers2d.Push( new ClVkSimple2dLayer(mVkCtx, "./Assets/Images/statue.jpg") );
-
+        // mLayers2d.Push( new ClVkSimple2dLayer(mVkCtx, "./Assets/Images/statue.jpg") );
+        mLayers3d.Push( new ClVkSimple3dLayer(mVkCtx, mDepthImage, mWorldTransformUniform, "./Assets/Models/viking_room/viking_room.obj", "./Assets/Models/viking_room/viking_room.png" ));
     }
 
     void ClVkRenderer::Init()
@@ -46,18 +44,20 @@ namespace Clunk::Vk
 
     void ClVkRenderer::Update(f32 DeltaTime)
     {
-        // mLayers3d.Update(mVkCtx.FrameSync.GetCurrentIndex(), )
-        mLayers2d.Update(mVkCtx.FrameSync.GetCurrentIndex(), DeltaTime);
+        mLayers3d.Update(mVkCtx.FrameSync.GetCurrentIndex(), mWorldTransformUniform, mDepthImage, DeltaTime);
+        // mLayers2d.Update(mVkCtx.FrameSync.GetCurrentIndex(), DeltaTime);
 
     }
 
     void ClVkRenderer::Destroy()
     {
         mBeginLayer.Destroy(mVkCtx);
-        // mLayers3d.Destroy();
-        mLayers2d.Destroy(mVkCtx);
-
+            mLayers3d.Destroy(mVkCtx);
+            mLayers2d.Destroy(mVkCtx);
         mEndLayer.Destroy(mVkCtx);
+
+        cl_destroy_vk_image(mVkCtx, &mDepthImage);
+        cl_destroy_vk_buffer(mVkCtx, mWorldTransformUniform);
 
         cl_destroy_vk_context(&mVkCtx);
         cl_destroy_vk_loader(&mVkLoader);
@@ -137,9 +137,8 @@ namespace Clunk::Vk
         VK_CHECK(vkBeginCommandBuffer(DrawBuffer, &begin_info));
 
         mBeginLayer.DrawFrame(mVkCtx, DrawBuffer, ImageIndex);
-        // mLayers3d.DrawFrame(DrawBuffer, ImageIndex);
-        mLayers2d.DrawFrame(mVkCtx, DrawBuffer, ImageIndex);
-
+            mLayers3d.DrawFrame(mVkCtx, DrawBuffer, ImageIndex);
+            mLayers2d.DrawFrame(mVkCtx, DrawBuffer, ImageIndex);
         mEndLayer.DrawFrame(mVkCtx, DrawBuffer, ImageIndex);
 
         VK_CHECK(vkEndCommandBuffer(DrawBuffer));
@@ -150,10 +149,10 @@ namespace Clunk::Vk
         CLOG_INFO("Cleaning VkSwapchain and VkFramebuffers...");
 
         mBeginLayer.CleanupFramebuffers(mVkCtx);
-        // mLayers3d.CleanupFramebuffers();
-        mLayers2d.CleanupFramebuffers(mVkCtx);
-
+            mLayers3d.CleanupFramebuffers(mVkCtx);
+            mLayers2d.CleanupFramebuffers(mVkCtx);
         mEndLayer.CleanupFramebuffers(mVkCtx);
+
         cl_destroy_vk_swapchain(mVkCtx.Device, &mVkCtx.Swapchain);
 
         CLOG_INFO("VkSwapchain and VkFramebuffers cleaned.");
@@ -176,11 +175,10 @@ namespace Clunk::Vk
             width, height
         );
             
-        mBeginLayer.RecreateFramebuffers(mVkCtx, nullptr);
-        // mLayers3d.RecreateFramebuffers(&mDepthImage);
-        mLayers2d.RecreateFramebuffers(mVkCtx, nullptr);
-
-        mEndLayer.RecreateFramebuffers(mVkCtx, nullptr);
+        mBeginLayer.RecreateFramebuffers(mVkCtx, &mDepthImage);
+            mLayers3d.RecreateFramebuffers(mVkCtx, &mDepthImage);
+            mLayers2d.RecreateFramebuffers(mVkCtx, nullptr);
+        mEndLayer.RecreateFramebuffers(mVkCtx, &mDepthImage);
 
         CLOG_INFO("VkSwapchain and VkFramebuffers recreated.");
     }

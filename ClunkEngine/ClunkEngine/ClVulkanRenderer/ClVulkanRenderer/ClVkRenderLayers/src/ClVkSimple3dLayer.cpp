@@ -2,7 +2,7 @@
 #include "ClVkSimple3dLayer.h"
 
 #include <ClVulkan/VkUtils.h>
-
+#include <TinyObjLoader/tiny_obj_loader.h>
 
 namespace Clunk::Vk
 {
@@ -39,7 +39,48 @@ namespace Clunk::Vk
             cl_destroy_vk_shader_module(VkCtx.Device, shader);
         }
 
+        // Loading Model
+        tinyobj::attrib_t attrib;
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials;
+        String warn, err;
 
+        std::vector<Simple3dVertex> vertices;
+        std::vector<u32> indices;
+
+        if(!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MeshFile))
+        {
+            CLOG_ERROR(warn.c_str(), err.c_str());
+        }
+
+        for (const auto& shape : shapes)
+        {
+            for (const auto& index : shape.mesh.indices)
+            {
+                Simple3dVertex vertex{};
+
+                vertex.pos = {
+                    attrib.vertices[3 * index.vertex_index + 0],
+                    attrib.vertices[3 * index.vertex_index + 1],
+                    attrib.vertices[3 * index.vertex_index + 2]
+                };
+
+                vertex.color = {
+                    1.0f, 1.0f, 1.0f
+                };
+
+                vertex.texCoord = {
+                    attrib.texcoords[2 * index.texcoord_index + 0],
+                    1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+                };
+
+                vertices.push_back(vertex);
+                indices.push_back(indices.size());    
+            }
+        }
+
+        mVerts = cl_create_vk_gpu_array_buffer<Simple3dVertex>(VkCtx, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, vertices);
+        mIndices = cl_create_vk_gpu_array_buffer<u32>(VkCtx, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, indices);
     }
 
     ClVkSimple3dLayer::~ClVkSimple3dLayer()
@@ -49,6 +90,11 @@ namespace Clunk::Vk
     void ClVkSimple3dLayer::Destroy(ClVkContext &VkCtx)
     {
         ClVk3dLayer::Destroy(VkCtx);
+
+        cl_destroy_vk_buffer(VkCtx, mVerts);
+        cl_destroy_vk_buffer(VkCtx, mIndices);
+        cl_destroy_vk_image(VkCtx, &mTexture);
+        vkDestroySampler(VkCtx.Device, mSampler, nullptr);
     }
 
     void ClVkSimple3dLayer::Update(u32 CurrentIndex, ClVkBuffer &TransformUniform, ClVkImage &DepthImage, f32 DeltaTime)
@@ -57,6 +103,9 @@ namespace Clunk::Vk
 
     void ClVkSimple3dLayer::DrawFrame(const ClVkContext &VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
     {
+        BeginRenderPass(VkCtx, CmdBuffer, CurrentImage);
+        Draw(VkCtx, CmdBuffer);
+        EndRenderPass(CmdBuffer);
     }
 
     void ClVkSimple3dLayer::CreateDescriptor(ClVkContext &VkCtx, const ClVkBuffer& TransformUniform)
@@ -111,6 +160,7 @@ namespace Clunk::Vk
 
             vkUpdateDescriptorSets(VkCtx.Device, static_cast<u32>(desc_writes.size()), desc_writes.data(), 0, nullptr);
         }
+        
     }
 
     void ClVkSimple3dLayer::CreatePipeline(const ClVkContext &VkCtx, std::vector<ClVkShaderModule> &ShaderModules, ClVkRenderPass &RenderPass, VkPipelineLayout &Layout, VkExtent2D CustomExtent)
@@ -213,5 +263,12 @@ namespace Clunk::Vk
     
     void ClVkSimple3dLayer::Draw(const ClVkContext &VkCtx, VkCommandBuffer CmdBuffer)
     {
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(CmdBuffer, 0, 1, &mVerts.Handle, offsets);
+        vkCmdBindIndexBuffer(CmdBuffer, mIndices.Handle, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdBindDescriptorSets(CmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelineLayout, 0, 1, &mDescriptor.Sets[VkCtx.FrameSync.GetCurrentIndex()], 0, nullptr);
+
+        vkCmdDrawIndexed(CmdBuffer, static_cast<u32>(mIndices.Size), 1, 0, 0, 0);
     }
 }

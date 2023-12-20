@@ -30,8 +30,9 @@ namespace Clunk::Vk
         ClVkRenderer(const ClVkRenderer& Other) :
             mVkLoader(Other.mVkLoader), mVkCtx(Other.mVkCtx),
             mDepthImage(Other.mDepthImage),
+            mWorldTransform(Other.mWorldTransform), mWorldTransformUniform(Other.mWorldTransformUniform),
             mBeginLayer(Other.mBeginLayer), mEndLayer(Other.mEndLayer),
-            mLayers2d(Other.mLayers2d),
+            mLayers2d(Other.mLayers2d), mLayers3d(Other.mLayers3d),
             m_bIsResized(Other.m_bIsResized)
         {}
 
@@ -40,9 +41,12 @@ namespace Clunk::Vk
             mVkLoader = std::move(Other.mVkLoader);
             mVkCtx = std::move(Other.mVkCtx);
             mDepthImage = std::move(Other.mDepthImage);
+            mWorldTransform = std::move(Other.mWorldTransform);
+            mWorldTransformUniform = std::move(Other.mWorldTransformUniform);
             mBeginLayer = std::move(Other.mBeginLayer);
             mEndLayer = std::move(Other.mEndLayer);
             mLayers2d = std::move(Other.mLayers2d);
+            mLayers3d = std::move(Other.mLayers3d);
             m_bIsResized = std::move(Other.m_bIsResized);
         }
 
@@ -52,9 +56,12 @@ namespace Clunk::Vk
             mVkLoader = Other.mVkLoader;
             mVkCtx = Other.mVkCtx;
             mDepthImage = Other.mDepthImage;
+            mWorldTransform = Other.mWorldTransform;
+            mWorldTransformUniform = Other.mWorldTransformUniform;
             mBeginLayer = Other.mBeginLayer;
             mEndLayer = Other.mEndLayer;
             mLayers2d = Other.mLayers2d;
+            mLayers3d = Other.mLayers3d;
             m_bIsResized = Other.m_bIsResized;
 
             return *this;
@@ -66,9 +73,12 @@ namespace Clunk::Vk
             mVkLoader = std::move(Other.mVkLoader);
             mVkCtx = std::move(Other.mVkCtx);
             mDepthImage = std::move(Other.mDepthImage);
+            mWorldTransform = std::move(Other.mWorldTransform);
+            mWorldTransformUniform = std::move(Other.mWorldTransformUniform);
             mBeginLayer = std::move(Other.mBeginLayer);
             mEndLayer = std::move(Other.mEndLayer);
             mLayers2d = std::move(Other.mLayers2d);
+            mLayers3d = std::move(Other.mLayers3d);
             m_bIsResized = std::move(Other.m_bIsResized);
 
             return *this;
@@ -102,9 +112,8 @@ namespace Clunk::Vk
         ClVkEndLayer mEndLayer;
 
         ClVk2dLayerList mLayers2d;
-        // std::vector<ClVk2dLayer*> mLayers2d;
 
-        // ClVk3dLayerList mLayers3d;
+        ClVk3dLayerList mLayers3d;
 
         void CleanupSwapchain();
         void RecreateSwapchain();

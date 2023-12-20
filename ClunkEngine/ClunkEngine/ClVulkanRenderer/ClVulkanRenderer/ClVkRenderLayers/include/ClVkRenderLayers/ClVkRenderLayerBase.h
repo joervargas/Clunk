@@ -200,6 +200,20 @@ namespace Clunk::Vk
     public:
 
         ClVk3dLayer() : ClVkRenderLayerBase() {}
+        ClVk3dLayer(const ClVk3dLayer& Other) : ClVkRenderLayerBase(Other) {}
+        ClVk3dLayer(ClVk3dLayer&& Other) : ClVkRenderLayerBase(Other) {}
+
+        ClVk3dLayer& operator=(const ClVk3dLayer& Other)
+        {
+            ClVkRenderLayerBase::operator=(Other);
+            return *this;
+        }
+
+        ClVk3dLayer& operator=(ClVk3dLayer&& Other)
+        {
+            ClVkRenderLayerBase::operator=(Other);
+            return *this;
+        }
 
         virtual ~ClVk3dLayer() {};
 
@@ -216,6 +230,21 @@ namespace Clunk::Vk
     public:
 
         ClVk3dLayerList() : ClVk3dLayer() {}
+        ClVk3dLayerList(const ClVk3dLayerList& Other) : ClVk3dLayer(Other) { mList = Other.mList; }
+        ClVk3dLayerList(ClVk3dLayerList&& Other) : ClVk3dLayer(Other) { mList = std::move(Other.mList); }
+
+        ClVk3dLayerList& operator=(const ClVk3dLayerList& Other)
+        {
+            ClVk3dLayer::operator=(Other);
+            mList = Other.mList;
+            return *this;
+        }
+        ClVk3dLayerList& operator=(ClVk3dLayerList&& Other)
+        {
+            ClVk3dLayer::operator=(Other);
+            mList = std::move(Other.mList);
+            return *this;
+        }
 
         virtual ~ClVk3dLayerList()
         {
