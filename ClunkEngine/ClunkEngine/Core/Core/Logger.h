@@ -38,10 +38,11 @@ namespace Clunk
      * @param level The log level to use.
      * @param message The message to be logged.
      * @param fileName The file throwing error
+     * @param funcName The function name throwing the error
      * @param lineNumber The line Number of fileName where this was called
      * @param ... Any formatted data that should be included in the log entry.
      */
-    void log_output(ELog_Level level, String message, String fileName, i32 lineNumber, ...);
+    void log_output(ELog_Level level, String message, String fileName, String funcName, i32 lineNumber, ...);
 
     /**
      * @brief Outputs for Validation layers
@@ -57,14 +58,14 @@ namespace Clunk
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_PRINT(level, message, ...) log_output(level, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_PRINT(level, message, ...) log_output(level, message, __FILE__, __func__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs a fatal-level message. Should be used to stop the application when hit.
      * @param message The message to be logged. Can be a format string for additional parameters.
      * @param ... Additional parameters to be logged.
      */
-    #define CLOG_FATAL(message, ...) log_output(ELog_Level::FATAL_LEVEL, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_FATAL(message, ...) log_output(ELog_Level::FATAL_LEVEL, __FILE__, __func__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs an error-level message. Should be used to indicate critical runtime problems 
@@ -72,7 +73,7 @@ namespace Clunk
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_ERROR(message, ...) log_output(ELog_Level::ERROR_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_ERROR(message, ...) log_output(ELog_Level::ERROR_LEVEL, message, __FILE__, __func__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs a warning-level message. Should be used to indicate non-critial problems with 
@@ -80,7 +81,7 @@ namespace Clunk
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_WARN(message, ...) log_output(ELog_Level::WARN_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_WARN(message, ...) log_output(ELog_Level::WARN_LEVEL, message, __FILE__, __func__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs a warning-level message. Should be used to indicate non-critial problems with 
@@ -88,21 +89,21 @@ namespace Clunk
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_INFO(message, ...) log_output(ELog_Level::INFO_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_INFO(message, ...) log_output(ELog_Level::INFO_LEVEL, message, __FILE__, __func__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs an info-level message. Should be used for non-erronuous informational purposes.
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_DEBUG(message, ...) log_output(ELog_Level::DEBUG_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_DEBUG(message, ...) log_output(ELog_Level::DEBUG_LEVEL, message, __FILE__, __func__, __LINE__, ##__VA_ARGS__);
 
     /** 
      * @brief Console Logs a trace-level message. Should be used for verbose debugging purposes.
      * @param message The message to be logged.
      * @param ... Any formatted data that should be included in the log entry.
      */
-    #define CLOG_TRACE(message, ...) log_output(ELog_Level::TRACE_LEVEL, message, __FILE__, __LINE__, ##__VA_ARGS__);
+    #define CLOG_TRACE(message, ...) log_output(ELog_Level::TRACE_LEVEL, message, __FILE__, __func__, __LINE__, ##__VA_ARGS__);
 
 
     class CLException : public std::exception
@@ -112,7 +113,9 @@ namespace Clunk
         String m_ErrorDesc;
 
         String m_SrcFileName;
-        
+
+        String m_SrcFuncName;
+
         String m_LineNumber;
 
         String m_ErrText;
@@ -123,7 +126,7 @@ namespace Clunk
          */
         virtual const char* what() const override;
 
-        CLException(String ErrorDesc, String SrcFileName, i32 LineNumber, ...);
+        CLException(String ErrorDesc, String SrcFileName, String SrcFuncName, i32 LineNumber, ...);
 
     protected:
 
@@ -194,6 +197,6 @@ namespace Clunk
     /**
      * Throws errors. Takes a formatable ErrorDesc whicha accepsts variable arguments
      */
-    #define THROW_EXCEPTION(ErrorDesc, ...) throw Clunk::CLException(ErrorDesc, __FILE__, __LINE__, ##__VA_ARGS__)
+    #define THROW_EXCEPTION(ErrorDesc, ...) throw Clunk::CLException(ErrorDesc, __FILE__, __func__, __LINE__, ##__VA_ARGS__)
 
 }

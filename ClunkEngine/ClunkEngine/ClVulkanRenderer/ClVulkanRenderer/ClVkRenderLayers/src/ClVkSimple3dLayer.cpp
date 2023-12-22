@@ -97,8 +97,9 @@ namespace Clunk::Vk
         vkDestroySampler(VkCtx.Device, mSampler, nullptr);
     }
 
-    void ClVkSimple3dLayer::Update(u32 CurrentIndex, ClVkBuffer &TransformUniform, ClVkImage &DepthImage, f32 DeltaTime)
+    void ClVkSimple3dLayer::Update(ClVkContext &VkCtx, u32 CurrentIndex, ClVkBuffer &TransformUniform, const ClVkTransforms &Transforms, f32 DeltaTime)
     {
+        cl_update_vk_buffer(VkCtx, TransformUniform, &Transforms, sizeof(Transforms));
     }
 
     void ClVkSimple3dLayer::DrawFrame(const ClVkContext &VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
@@ -269,6 +270,8 @@ namespace Clunk::Vk
 
         vkCmdBindDescriptorSets(CmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelineLayout, 0, 1, &mDescriptor.Sets[VkCtx.FrameSync.GetCurrentIndex()], 0, nullptr);
 
-        vkCmdDrawIndexed(CmdBuffer, static_cast<u32>(mIndices.Size), 1, 0, 0, 0);
+        // vkCmdDrawIndexed(CmdBuffer, static_cast<u32>(mIndices.Size), 1, 0, 0, 0);
+        // u32 size = static_cast<u32>(mIndices.Size) / sizeof(u32);
+        vkCmdDrawIndexed(CmdBuffer, mIndices.Count, 1, 0, 0, 0); 
     }
 }

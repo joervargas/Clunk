@@ -13,6 +13,7 @@ add_library(${Target}
 )
 
 # add_subdirectory(ClVkExt)
+include_directories(../)
 include_directories(../ClVulkan/include)
 # include_directories(../../libs/VkMemAllocator/include)
 

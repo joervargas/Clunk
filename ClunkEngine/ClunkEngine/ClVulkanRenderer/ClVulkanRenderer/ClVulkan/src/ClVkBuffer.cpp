@@ -102,4 +102,12 @@ namespace Clunk::Vk
         }
         Buffers.clear();
     }
+
+    void cl_update_vk_buffer(ClVkContext &VkCtx, ClVkBuffer &Buffer, const void *Data, const size_t DataSize)
+    {
+        void* data_ptr = nullptr;
+        vmaMapMemory(VkCtx.MemAllocator, Buffer.Allocation, &data_ptr);
+            memcpy(data_ptr, Data, DataSize);
+        vmaUnmapMemory(VkCtx.MemAllocator, Buffer.Allocation);
+    }
 }

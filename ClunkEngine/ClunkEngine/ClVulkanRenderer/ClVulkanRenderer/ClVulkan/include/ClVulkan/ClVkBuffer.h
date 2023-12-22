@@ -59,9 +59,10 @@ namespace Clunk::Vk
 
     struct ClVkBuffer
     {
-        VkBuffer        Handle;
-        VmaAllocation   Allocation;
-        VkDeviceSize    Size;
+        VkBuffer        Handle = nullptr;
+        VmaAllocation   Allocation = nullptr;
+        VkDeviceSize    Size = 0;
+        u32             Count = 1;
     };
 
     ClVkBuffer cl_create_vk_buffer(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, VmaAllocationCreateFlags AllocationCreateFlags, VkDeviceSize Size);
@@ -71,6 +72,17 @@ namespace Clunk::Vk
     void cl_destroy_vk_buffer(ClVkContext& VkCtx, ClVkBuffer& Buffer);
 
     void cl_destroy_vk_buffers(ClVkContext& VkCtx, std::vector<ClVkBuffer> Buffers);
+
+    void cl_update_vk_buffer(ClVkContext& VkCtx, ClVkBuffer& Buffer, const void* Data, const size_t DataSize);
+
+    template<typename T>
+    ClVkBuffer cl_create_vk_uniform_buffer(ClVkContext& VkCtx, const T& Data)
+    {
+        VkDeviceSize data_size = sizeof(T);
+        ClVkBuffer buffer = cl_create_vk_buffer(VkCtx, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT, data_size);
+
+        return buffer;
+    }
 
     template<typename T>
     ClVkBuffer cl_create_vk_gpu_buffer(ClVkContext& VkCtx, VkBufferUsageFlags UsageFlags, const T& Data)
@@ -110,6 +122,8 @@ namespace Clunk::Vk
         cl_end_single_time_vk_command_buffer(VkCtx, cmd_buffer);
 
         cl_destroy_vk_buffer(VkCtx, staging);
+        
+        buffer.Count = static_cast<u32>(Data.size());
 
         return buffer;
     }

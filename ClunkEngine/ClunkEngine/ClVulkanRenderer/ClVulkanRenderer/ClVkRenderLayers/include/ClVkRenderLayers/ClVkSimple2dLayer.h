@@ -74,7 +74,7 @@ namespace Clunk::Vk
 
         virtual void Destroy(ClVkContext& VkCtx) override;
 
-        virtual void Update(u32 CurrentIndex, f32 DeltaTime) override;
+        virtual void Update(ClVkContext& VkCtx, u32 CurrentIndex, f32 DeltaTime) override;
 
         virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 

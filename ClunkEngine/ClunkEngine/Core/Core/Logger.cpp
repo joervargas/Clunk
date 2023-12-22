@@ -16,7 +16,7 @@
 namespace Clunk
 {
     
-    void log_output(ELog_Level level, String message, String fileName, i32 lineNumber, ...)
+    void log_output(ELog_Level level, String message, String fileName, String funcName, i32 lineNumber, ...)
     {
         const char* level_strings[6] = {"{FATAL}: ", "{ERROR}: ", "{WARN}: ", "{INFO}: ", "{DEBUG}: ", "{TRACE}: "};
         const char* color_strings[6] = {"0;41", "1;31", "1;33", "1;34", "1;32", "1;35"};
@@ -45,8 +45,9 @@ namespace Clunk
             msg << "\n********************************* ERROR *********************************\n";
         }
         msg << level_strings[level] << 
-            "\n" << out_msg << 
-            "\nFile: " << fileName <<
+            " " << out_msg << 
+            "\nFile: " << fileName << "(" << lineNumber << ")" <<
+            "\nFunc: " << funcName <<
             "\nLine: " << lineNumber;
         if(is_error)
         {
@@ -55,7 +56,7 @@ namespace Clunk
 
         // printf("\033[%sm%s\033[0m", colour_strings[color], message);
         // std::cout << "\033[" << color_strings[level] << "m" << out_msg << "\033[m" << std::endl;
-        std::cout << "\n\t" << "\033[" << color_strings[level] << "m" << msg.str() << "\033[m" << std::endl;
+        std::cout << "\n" << "\033[" << color_strings[level] << "m" << msg.str() << "\033[m" << std::endl;
 
         LogFileManager* LogFile = LogFileManager::GetLogFileManager();
         LogFile->logBuffer << msg.str() << std::endl;
@@ -110,7 +111,8 @@ namespace Clunk
 
     CLException::CLException(
             String ErrorDesc, 
-            String SrcFileName, 
+            String SrcFileName,
+            String SrcFuncName,
             i32 LineNumber,
             ...
         )
@@ -130,6 +132,7 @@ namespace Clunk
         // Set properties
         m_ErrorDesc = out_msg;
         m_SrcFileName = SrcFileName;
+        m_SrcFuncName = SrcFuncName;
         m_LineNumber = LineNumber;
 
         // Write properties to humand readable string
@@ -141,7 +144,7 @@ namespace Clunk
             // m_LineNumber << "\n";
 
         // m_ErrText = ErrStr.str();
-        log_output(ELog_Level::ERROR_LEVEL, m_ErrorDesc, SrcFileName, LineNumber );
+        log_output(ELog_Level::ERROR_LEVEL, m_ErrorDesc, SrcFileName, SrcFuncName, LineNumber );
         // CLOG_ERROR(m_ErrText.c_str())
     }
 

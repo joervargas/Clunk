@@ -28,13 +28,13 @@ namespace Clunk::Vk
             .proj = Mat4::PerspectiveLH(45.f, static_cast<f32>(width/ height), 0.1f, 100.f)
         };
         mWorldTransform.proj[5] *= -1;
-        mWorldTransformUniform = cl_create_vk_gpu_buffer<ClVkTransforms>(mVkCtx, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, mWorldTransform);
+        mWorldTransformUniform = cl_create_vk_uniform_buffer<ClVkTransforms>(mVkCtx, mWorldTransform);
 
         mBeginLayer = ClVkBeginLayer(mVkCtx, &mDepthImage);
         mEndLayer = ClVkEndLayer(mVkCtx, &mDepthImage);
 
-        // mLayers2d.Push( new ClVkSimple2dLayer(mVkCtx, "./Assets/Images/statue.jpg") );
         mLayers3d.Push( new ClVkSimple3dLayer(mVkCtx, mDepthImage, mWorldTransformUniform, "./Assets/Models/viking_room/viking_room.obj", "./Assets/Models/viking_room/viking_room.png" ));
+        // mLayers2d.Push( new ClVkSimple2dLayer(mVkCtx, "./Assets/Images/statue.jpg") );
     }
 
     void ClVkRenderer::Init()
@@ -44,9 +44,13 @@ namespace Clunk::Vk
 
     void ClVkRenderer::Update(f32 DeltaTime)
     {
-        mLayers3d.Update(mVkCtx.FrameSync.GetCurrentIndex(), mWorldTransformUniform, mDepthImage, DeltaTime);
-        // mLayers2d.Update(mVkCtx.FrameSync.GetCurrentIndex(), DeltaTime);
+        static auto start_time = std::chrono::high_resolution_clock::now();
+        auto current_time = std::chrono::high_resolution_clock::now();
+        float time = std::chrono::duration<float, std::chrono::seconds::period>(current_time - start_time).count();
 
+        mWorldTransform.model = Mat4::RotateZ(mWorldTransform.model, 0.03f * time);
+        mLayers3d.Update(mVkCtx, mVkCtx.FrameSync.GetCurrentIndex(), mWorldTransformUniform, mWorldTransform, DeltaTime);
+        // mLayers2d.Update(mVCtx, mVkCtx.FrameSync.GetCurrentIndex(), DeltaTime);
     }
 
     void ClVkRenderer::Destroy()

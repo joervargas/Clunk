@@ -122,11 +122,11 @@ namespace Clunk::Vk
         }
     }
 
-    void ClVk2dLayerList::Update(u32 CurrentIndex, f32 DeltaTime)
+    void ClVk2dLayerList::Update(ClVkContext& VkCtx, u32 CurrentIndex, f32 DeltaTime)
     {
         for(auto& layer : mList)
         {
-            layer->Update(CurrentIndex, DeltaTime);
+            layer->Update(VkCtx, CurrentIndex, DeltaTime);
         }
         // for(u32 i = 0; i < mList.size(); i++)
         // {
@@ -149,11 +149,11 @@ namespace Clunk::Vk
         }
     }
 
-    void ClVk3dLayerList::Update(u32 CurrentIndex, ClVkBuffer &TransformUniform, ClVkImage &DepthImage, f32 DeltaTime)
+    void ClVk3dLayerList::Update(ClVkContext& VkCtx, u32 CurrentIndex, ClVkBuffer &TransformUniform, const ClVkTransforms &Transforms, f32 DeltaTime)
     {
         for(auto& layer : mList)
         {
-            layer->Update(CurrentIndex, TransformUniform, DepthImage, DeltaTime);
+            layer->Update(VkCtx, CurrentIndex, TransformUniform, Transforms, DeltaTime);
         }
     }
 

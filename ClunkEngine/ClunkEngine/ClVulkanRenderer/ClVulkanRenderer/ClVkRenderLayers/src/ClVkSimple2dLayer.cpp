@@ -60,7 +60,7 @@ namespace Clunk::Vk
         vkDestroySampler(VkCtx.Device, mSampler, nullptr);
     }
 
-    void ClVkSimple2dLayer::Update(u32 CurrentIndex, f32 DeltaTime)
+    void ClVkSimple2dLayer::Update(ClVkContext &VkCtx, u32 CurrentIndex, f32 DeltaTime)
     {
     }
 
