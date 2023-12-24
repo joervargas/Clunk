@@ -97,9 +97,9 @@ namespace Clunk::Vk
         vkDestroySampler(VkCtx.Device, mSampler, nullptr);
     }
 
-    void ClVkSimple3dLayer::Update(ClVkContext &VkCtx, u32 CurrentIndex, ClVkBuffer &TransformUniform, const ClVkTransforms &Transforms, f32 DeltaTime)
+    void ClVkSimple3dLayer::Update(ClVkContext &VkCtx, u32 CurrentIndex, ClVkBuffer &ProjViewUniform, const ClProjectionView &ProjView, f32 DeltaTime)
     {
-        cl_update_vk_buffer(VkCtx, TransformUniform, &Transforms, sizeof(Transforms));
+        cl_update_vk_buffer(VkCtx, ProjViewUniform, &ProjView, sizeof(ProjView));
     }
 
     void ClVkSimple3dLayer::DrawFrame(const ClVkContext &VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
@@ -109,7 +109,7 @@ namespace Clunk::Vk
         EndRenderPass(CmdBuffer);
     }
 
-    void ClVkSimple3dLayer::CreateDescriptor(ClVkContext &VkCtx, const ClVkBuffer& TransformUniform)
+    void ClVkSimple3dLayer::CreateDescriptor(ClVkContext &VkCtx, const ClVkBuffer& ProjViewUniform)
     {
         u32 NumFrames = VkCtx.FrameSync.GetNumFramesInFlight();
         mDescriptor.Pool = cl_create_vk_desc_pool(VkCtx, 1 * NumFrames, 0, 1 * NumFrames);
@@ -143,9 +143,9 @@ namespace Clunk::Vk
         for(u32 i = 0; i < NumFrames; i++)
         {
             VkDescriptorBufferInfo buffer_info1 = {
-                .buffer = TransformUniform.Handle,
+                .buffer = ProjViewUniform.Handle,
                 .offset = 0,
-                .range = TransformUniform.Size
+                .range = ProjViewUniform.Size
             };
 
             VkDescriptorImageInfo img_info1 = {

@@ -22,18 +22,18 @@ namespace Clunk::Vk
         mDepthImage = cl_create_vk_depth_image(mVkCtx, width, height);
 
         // Create world transform uniforms
-        mWorldTransform = ClVkTransforms{
+        mWorldProjView = ClProjectionView{
             .model = Mat4::Identity(),
             .view = Mat4::LookAtLH(Vec3(2.0f, 2.0f, 2.0f), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 1.0f)),
             .proj = Mat4::PerspectiveLH(45.f, static_cast<f32>(width/ height), 0.1f, 100.f)
         };
-        mWorldTransform.proj[5] *= -1;
-        mWorldTransformUniform = cl_create_vk_uniform_buffer<ClVkTransforms>(mVkCtx, mWorldTransform);
+        mWorldProjView.proj[5] *= -1;
+        mWorldProjViewUniform = cl_create_vk_uniform_buffer<ClProjectionView>(mVkCtx, mWorldProjView);
 
         mBeginLayer = ClVkBeginLayer(mVkCtx, &mDepthImage);
         mEndLayer = ClVkEndLayer(mVkCtx, &mDepthImage);
 
-        mLayers3d.Push( new ClVkSimple3dLayer(mVkCtx, mDepthImage, mWorldTransformUniform, "./Assets/Models/viking_room/viking_room.obj", "./Assets/Models/viking_room/viking_room.png" ));
+        mLayers3d.Push( new ClVkSimple3dLayer(mVkCtx, mDepthImage, mWorldProjViewUniform, "./Assets/Models/viking_room/viking_room.obj", "./Assets/Models/viking_room/viking_room.png" ));
         // mLayers2d.Push( new ClVkSimple2dLayer(mVkCtx, "./Assets/Images/statue.jpg") );
     }
 
@@ -48,8 +48,8 @@ namespace Clunk::Vk
         auto current_time = std::chrono::high_resolution_clock::now();
         float time = std::chrono::duration<float, std::chrono::seconds::period>(current_time - start_time).count();
 
-        mWorldTransform.model = Mat4::RotateZ(mWorldTransform.model, 0.03f * time);
-        mLayers3d.Update(mVkCtx, mVkCtx.FrameSync.GetCurrentIndex(), mWorldTransformUniform, mWorldTransform, DeltaTime);
+        mWorldProjView.model = Mat4::RotateZ(mWorldProjView.model, 0.03f * time);
+        mLayers3d.Update(mVkCtx, mVkCtx.FrameSync.GetCurrentIndex(), mWorldProjViewUniform, mWorldProjView, DeltaTime);
         // mLayers2d.Update(mVCtx, mVkCtx.FrameSync.GetCurrentIndex(), DeltaTime);
     }
 
@@ -61,7 +61,7 @@ namespace Clunk::Vk
         mEndLayer.Destroy(mVkCtx);
 
         cl_destroy_vk_image(mVkCtx, &mDepthImage);
-        cl_destroy_vk_buffer(mVkCtx, mWorldTransformUniform);
+        cl_destroy_vk_buffer(mVkCtx, mWorldProjViewUniform);
 
         cl_destroy_vk_context(&mVkCtx);
         cl_destroy_vk_loader(&mVkLoader);

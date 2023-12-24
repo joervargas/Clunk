@@ -106,7 +106,7 @@ namespace Clunk
     #define CLOG_TRACE(message, ...) log_output(ELog_Level::TRACE_LEVEL, message, __FILE__, __func__, __LINE__, ##__VA_ARGS__);
 
 
-    class CLException : public std::exception
+    class CLException
     {
     public:
 
@@ -121,10 +121,10 @@ namespace Clunk
         String m_ErrText;
 
         /**
-         * @brief Overrides std::exception::what()
+         * @brief Like std::exception::what()
          * @return const char* (C string) featuring: Error number, Error Desc, Src File, Line Number
          */
-        virtual const char* what() const override;
+        virtual const char* what() const;
 
         CLException(String ErrorDesc, String SrcFileName, String SrcFuncName, i32 LineNumber, ...);
 

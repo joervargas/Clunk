@@ -4,7 +4,7 @@
 
 #include <ClMath/Mat4.h>
 
-struct ClVkTransforms
+struct ClProjectionView
 {
     // glm::mat4 model;
     // glm::mat4 view;
