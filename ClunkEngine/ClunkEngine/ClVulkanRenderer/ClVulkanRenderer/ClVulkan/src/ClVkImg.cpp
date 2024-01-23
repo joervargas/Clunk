@@ -14,7 +14,7 @@ namespace Clunk::Vk
             VkFormat Format, VkImageTiling Tiling, 
             VkImageUsageFlags Usage, VkMemoryPropertyFlags Properties, 
             VkImage* pImage, VmaAllocation* pAllocation, 
-            VkImageCreateFlags Flags, u32 MipLevels
+            u32 MipLevels, VkImageCreateFlags Flags
         )
     {
         const VkImageCreateInfo imageInfo = 
@@ -139,7 +139,8 @@ namespace Clunk::Vk
             },
         };
 
-        VkPipelineStageFlags srcStage, dstStage;
+        VkPipelineStageFlags srcStage = VK_PIPELINE_STAGE_NONE;
+        VkPipelineStageFlags dstStage = VK_PIPELINE_STAGE_NONE;
 
         if( NewLayout == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL ||
                 (Format == VK_FORMAT_D16_UNORM) ||
@@ -392,6 +393,39 @@ namespace Clunk::Vk
         cl_end_single_time_vk_command_buffer(VkCtx, cmdBuffer);
 
         return depthImg;
+    }
+
+    ClVkImage cl_create_vk_cubemap_image(ClVkContext &VkCtx, const char **FileNames, size_t FileCount)
+    {
+        if(FileCount < 1 || FileCount > 6 && FileCount > 1 || FileCount < 6) 
+        {
+            CLOG_ERROR("Cubemap FileCount must be either 1 or 6");
+            return ClVkImage();
+        }
+        
+        int total_width = 0, total_height = 0; 
+        int width = 0, height = 0, channels = 0;
+        std::vector<stbi_uc*> img_data = {};
+
+        if (FileCount == 1)
+        {
+
+        } else { // FileCount != 1
+            for(u32 i = 0; i < FileCount; i++)
+            {
+                stbi_uc* pixels = stbi_load(FileNames[i], &width, &height, &channels, STBI_rgb_alpha);
+                if(!pixels) 
+                { 
+                    CLOG_ERROR("Failed to load cubemap texture [%s]\n", FileNames[i]); 
+                    return ClVkImage(); 
+                }
+                img_data.push_back(pixels);
+                total_width += width;
+                total_height += height;
+            }
+        }
+
+        return ClVkImage();
     }
 
     void cl_destroy_vk_image(ClVkContext& VkCtx, ClVkImage* pImage)

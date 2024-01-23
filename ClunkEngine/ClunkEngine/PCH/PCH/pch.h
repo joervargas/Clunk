@@ -78,6 +78,23 @@ typedef struct range {
     u64 size;
 } range;
 
+template<typename T>
+struct clOffset2D
+{
+    clOffset2D(T x, T y) : X(x), Y(y) {} 
+    T X;
+    T Y;
+};
+
+template<typename T>
+struct clOffset3D
+{
+    clOffset3D(T x, T y, T z) : X(x), Y(y), Z(z) {} 
+    T X;
+    T Y;
+    T Z;
+};
+
 // Properly define static assertions.
 #if defined(__clang__) || defined(__gcc__)
     /** @brief Static assertion */

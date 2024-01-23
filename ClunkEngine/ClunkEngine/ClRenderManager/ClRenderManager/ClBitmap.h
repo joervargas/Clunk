@@ -17,34 +17,36 @@ namespace Clunk
         EBitmapFormat_Float
     };
 
-    class Bitmap
+    class ClBitmap
     {
     public:
 
-        Bitmap() = default;
-        Bitmap(i32 Width, i32 Height, i32 Components, EBitmapFormat Format) :
+        std::vector<u8> Data;
+
+        ClBitmap() = default;
+        ClBitmap(i32 Width, i32 Height, i32 Channels, EBitmapFormat Format) :
+            Data(Width * Height * Channels * GetBytesPerComponent(Format)),
             mWidth(Width), mHeight(Height),
-            mComponents(Components), mFormat(Format),
-            mData(Width * Height * Components * GetBytesPerComponent(Format))
+            mChannels(Channels), mFormat(Format)
         {
-            // initGetSetFuncs()
+            initGetSetFuncs();
         }
 
-        Bitmap(i32 Width, i32 Height, i32 Depth, i32 Components, EBitmapFormat Format) :
-            mWidth(Width), mHeight(Height), mDepth(Depth),
-            mComponents(Components), mFormat(Format),
-            mData(Width * Height * Components * GetBytesPerComponent(Format))
+        ClBitmap(i32 Width, i32 Height, i32 Layers, i32 Channels, EBitmapFormat Format) :
+            Data(Width * Height * Channels * GetBytesPerComponent(Format)),
+            mWidth(Width), mHeight(Height), mLayers(Layers),
+            mChannels(Channels), mFormat(Format)
         {
-            // initGetSetFuncs()
+            initGetSetFuncs();
         }
 
-        Bitmap(i32 Width, i32 Height, i32 Depth, i32 Components, EBitmapFormat Format, const void* pData) :
-            mWidth(Width), mHeight(Height), mDepth(Depth),
-            mComponents(Components), mFormat(Format),
-            mData(Width * Height * Components * GetBytesPerComponent(Format))
+        ClBitmap(i32 Width, i32 Height, i32 Layers, i32 Channels, EBitmapFormat Format, const void* pData) :
+            Data(Width * Height * Channels * GetBytesPerComponent(Format)),
+            mWidth(Width), mHeight(Height), mLayers(Layers),
+            mChannels(Channels), mFormat(Format)
         {
-            // initGetSetFuncs()
-            memcpy(mData.data(), pData, mData.size());
+            initGetSetFuncs();
+            memcpy(Data.data(), pData, Data.size());
         }
 
         static int GetBytesPerComponent(EBitmapFormat Format)
@@ -54,46 +56,97 @@ namespace Clunk
             return 0;
         }
 
+        void SetPixel(int X, int Y, const Vec4& Value)
+        {
+            (*this.*setPixelFunc)(X, Y, Value);
+        }
+
+        Vec4 GetPixel(int X, int Y) const
+        {
+            return (*this.*getPixelFunc)(X, Y);
+        }
+
+        inline EBitmapType GetType() const { return mType; }
+        inline void SetType(EBitmapType T) { mType = T; }
+        inline EBitmapFormat GetFormat() const { return mFormat; }
+        inline i32 GetWidth() const { return mWidth; }
+        inline i32 GetHeight() const { return mHeight; }
+        inline i32 GetLayers() const { return mLayers; }
+        inline i32 GetChannels() const { return mChannels; }
+
     private: // variables
 
         i32 mWidth = 0;
         i32 mHeight = 0;
-        i32 mDepth = 0;
-        i32 mComponents = 0; // count of R,G,B,A values present in a pixel
+        i32 mLayers = 1;
+        i32 mChannels = 0; // count of R,G,B,A values present in a pixel
         EBitmapFormat mFormat = EBitmapFormat_UnsignedByte;
         EBitmapType mType = EBitmapType_2D;
 
-        std::vector<u8> mData;
+        // Function pointers depending on mData's type
+        using setPixel_t = void(ClBitmap::*)(int, int, const Vec4&);
+        using getPixel_t = Vec4(ClBitmap::*)(int, int) const;
+        setPixel_t setPixelFunc = &ClBitmap::setPixelUnsignedByte;
+        getPixel_t getPixelFunc = &ClBitmap::getPixelUnsignedByte;
 
     private: // functions
 
+        void initGetSetFuncs()
+        {
+            switch (mFormat)
+            {
+            case EBitmapFormat_UnsignedByte:
+                setPixelFunc = &ClBitmap::setPixelUnsignedByte;
+                getPixelFunc = &ClBitmap::getPixelUnsignedByte;
+                break;
+            case EBitmapFormat_Float:
+                setPixelFunc = &ClBitmap::setPixelFloat;
+                getPixelFunc = &ClBitmap::getPixelFloat;
+                break;
+            }
+        }
+
         void setPixelFloat(i32 X, i32 Y, const Vec4& Value)
         {
-            const int offset = mComponents * (Y * mWidth + X);
-            float* data = reinterpret_cast<float*>(mData.data());
-            if(mComponents > 0) data[offset + 0] = Value.x;
-            if(mComponents > 1) data[offset + 1] = Value.y;
-            if(mComponents > 2) data[offset + 2] = Value.z;
-            if(mComponents > 3) data[offset + 3] = Value.w;
+            const int offset = mChannels * (Y * mWidth + X);
+            float* data = reinterpret_cast<float*>(Data.data());
+            if(mChannels > 0) data[offset + 0] = Value.x;
+            if(mChannels > 1) data[offset + 1] = Value.y;
+            if(mChannels > 2) data[offset + 2] = Value.z;
+            if(mChannels > 3) data[offset + 3] = Value.w;
         }
 
         Vec4 getPixelFloat(i32 X, i32 Y) const
         {
-            const int offset = mComponents * ( Y * mWidth + X);
-            const float* data = reinterpret_cast<const float*>(mData.data());
+            const int offset = mChannels * ( Y * mWidth + X);
+            const float* data = reinterpret_cast<const float*>(Data.data());
             return Vec4(
-                mComponents > 0 ? data[offset + 0] : 0.0f,
-                mComponents > 1 ? data[offset + 1] : 0.0f,
-                mComponents > 2 ? data[offset + 2] : 0.0f,
-                mComponents > 3 ? data[offset + 3] : 0.0f
+                mChannels > 0 ? data[offset + 0] : 0.0f,
+                mChannels > 1 ? data[offset + 1] : 0.0f,
+                mChannels > 2 ? data[offset + 2] : 0.0f,
+                mChannels > 3 ? data[offset + 3] : 0.0f
             );
         }
 
         void setPixelUnsignedByte(i32 X, i32 Y, const Vec4& Value)
-        {}
+        {
+            const i32 offset = mChannels * (Y * mWidth + X);
+            if(mChannels > 0) Data[offset + 0] = u8(Value.x * 255.0f);
+            if(mChannels > 1) Data[offset + 1] = u8(Value.y * 255.0f);
+            if(mChannels > 2) Data[offset + 2] = u8(Value.z * 255.0f);
+            if(mChannels > 3) Data[offset + 3] = u8(Value.w * 255.0f);
+        }
 
         Vec4 getPixelUnsignedByte(i32 X, i32 Y) const
-        {}
+        {
+            const i32 offset = mChannels * (Y * mWidth + X);
+            return Vec4(
+                mChannels > 0 ? float(Data[offset + 0]) / 255.0f : 0.0f,
+                mChannels > 1 ? float(Data[offset + 1]) / 255.0f : 0.0f,
+                mChannels > 2 ? float(Data[offset + 2]) / 255.0f : 0.0f,
+                mChannels > 3 ? float(Data[offset + 3]) / 255.0f : 0.0f
+            );
+        }
 
     };
 

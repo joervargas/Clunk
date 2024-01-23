@@ -25,7 +25,7 @@ namespace Clunk::Vk
      * @param Image VkImage* handle to assign to
      * @param Memory VkDeviceMemory* handle to assign to
      * @param Flags VkImageCreateFlags. Default = 0
-     * @param MipLevels u32 Mip level count. Default = 0
+     * @param MipLevels u32 Mip level count. Default = 1
      */
     void create_vk_image(
         VkDevice Device, VmaAllocator Allocator, 
@@ -33,7 +33,7 @@ namespace Clunk::Vk
         VkFormat Format, VkImageTiling Tiling, 
         VkImageUsageFlags Usage, VkMemoryPropertyFlags Properties, 
         VkImage* pImage, VmaAllocation* pAllocation, 
-        VkImageCreateFlags Flags = 0, u32 MipLevels = 1
+        u32 MipLevels = 1, VkImageCreateFlags Flags = 0
     );
 
     /**
@@ -157,6 +157,8 @@ namespace Clunk::Vk
      * @return ClVkImage 
      */
     ClVkImage cl_create_vk_depth_image(ClVkContext& VkCtx, u32 Width, u32 Height);
+
+    ClVkImage cl_create_vk_cubemap_image(ClVkContext& VkCtx, const char** FileNames, size_t FileCount);
 
     /**
      * @brief Destroys ClVkImage and all its resources
