@@ -3,6 +3,7 @@
 
 #include <ClVulkan/VkUtils.h>
 #include <TinyObjLoader/tiny_obj_loader.h>
+#include <chrono>
 
 namespace Clunk::Vk
 {
@@ -24,6 +25,10 @@ namespace Clunk::Vk
         };
         mRenderPass = cl_create_vk_renderpass(VkCtx, renderpass_info);
         mFramebuffers = cl_create_vk_color_depth_framebuffers(VkCtx, mRenderPass, DepthImage.View);
+
+        mModelSpace = Mat4::Identity();
+        mModelSpaceBuffer = cl_create_vk_uniform_buffer<Mat4>(VkCtx, mModelSpace);
+        
         CreateDescriptor(VkCtx, TransformUniform);
 
         VK_CHECK(create_vk_pipeline_layout(VkCtx.Device, static_cast<u32>(mDescriptor.Layouts.size()), mDescriptor.Layouts.data(), 0, nullptr, &mPipelineLayout));
@@ -81,6 +86,8 @@ namespace Clunk::Vk
 
         mVerts = cl_create_vk_gpu_array_buffer<Simple3dVertex>(VkCtx, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, vertices);
         mIndices = cl_create_vk_gpu_array_buffer<u32>(VkCtx, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, indices);
+
+        cl_update_vk_buffer(VkCtx, mModelSpaceBuffer, &mModelSpace, sizeof(Mat4));
     }
 
     ClVkSimple3dLayer::~ClVkSimple3dLayer()
@@ -93,6 +100,7 @@ namespace Clunk::Vk
 
         cl_destroy_vk_buffer(VkCtx, mVerts);
         cl_destroy_vk_buffer(VkCtx, mIndices);
+        cl_destroy_vk_buffer(VkCtx, mModelSpaceBuffer);
         cl_destroy_vk_image(VkCtx, &mTexture);
         vkDestroySampler(VkCtx.Device, mSampler, nullptr);
     }
@@ -100,6 +108,13 @@ namespace Clunk::Vk
     void ClVkSimple3dLayer::Update(ClVkContext &VkCtx, u32 CurrentIndex, ClVkBuffer &TransformUniform, const ClVkTransforms &Transforms, f32 DeltaTime)
     {
         cl_update_vk_buffer(VkCtx, TransformUniform, &Transforms, sizeof(Transforms));
+        
+        static auto start_time = std::chrono::high_resolution_clock::now();
+        auto current_time = std::chrono::high_resolution_clock::now();
+        float time = std::chrono::duration<float, std::chrono::seconds::period>(current_time - start_time).count();
+
+        mModelSpace = Mat4::RotateZ(mModelSpace, 0.03f * time);
+        cl_update_vk_buffer(VkCtx, mModelSpaceBuffer, &mModelSpace, sizeof(Mat4));
     }
 
     void ClVkSimple3dLayer::DrawFrame(const ClVkContext &VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
@@ -112,11 +127,12 @@ namespace Clunk::Vk
     void ClVkSimple3dLayer::CreateDescriptor(ClVkContext &VkCtx, const ClVkBuffer& TransformUniform)
     {
         u32 NumFrames = VkCtx.FrameSync.GetNumFramesInFlight();
-        mDescriptor.Pool = cl_create_vk_desc_pool(VkCtx, 1 * NumFrames, 0, 1 * NumFrames);
+        mDescriptor.Pool = cl_create_vk_desc_pool(VkCtx, 2 * NumFrames, 0, 1 * NumFrames);
 
         std::vector<VkDescriptorSetLayoutBinding> bindings = {
             get_vk_desc_set_layout_binding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT),
-            get_vk_desc_set_layout_binding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT)
+            get_vk_desc_set_layout_binding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT),
+            get_vk_desc_set_layout_binding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT)
         };
 
         VkDescriptorSetLayoutCreateInfo layout_info = {
@@ -147,7 +163,11 @@ namespace Clunk::Vk
                 .offset = 0,
                 .range = TransformUniform.Size
             };
-
+            VkDescriptorBufferInfo buffer_info2 = {
+                .buffer = mModelSpaceBuffer.Handle,
+                .offset = 0,
+                .range = mModelSpaceBuffer.Size
+            };
             VkDescriptorImageInfo img_info1 = {
                 .sampler = mSampler,
                 .imageView = mTexture.View,
@@ -156,7 +176,8 @@ namespace Clunk::Vk
 
             std::vector<VkWriteDescriptorSet> desc_writes = {
                 get_vk_buffer_write_desc_set(mDescriptor.Sets[i], buffer_info1, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER),
-                get_vk_image_write_desc_set(mDescriptor.Sets[i], img_info1, 1)
+                get_vk_buffer_write_desc_set(mDescriptor.Sets[i], buffer_info2, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER),
+                get_vk_image_write_desc_set(mDescriptor.Sets[i], img_info1, 2)
             };
 
             vkUpdateDescriptorSets(VkCtx.Device, static_cast<u32>(desc_writes.size()), desc_writes.data(), 0, nullptr);

@@ -37,8 +37,6 @@ namespace Clunk::Vk
         // void BeginRenderPass(VkCommandBuffer CmdBuffer, u32 CurrentImage);
         // void EndRenderPass(VkCommandBuffer CmdBuffer);
 
-    private:
-
     };
 
 }

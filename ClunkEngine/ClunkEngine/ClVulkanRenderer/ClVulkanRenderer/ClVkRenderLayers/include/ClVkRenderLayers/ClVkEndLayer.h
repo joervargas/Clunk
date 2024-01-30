@@ -20,7 +20,6 @@ namespace Clunk::Vk
     protected:
 
 
-    private:
 
     };
 }

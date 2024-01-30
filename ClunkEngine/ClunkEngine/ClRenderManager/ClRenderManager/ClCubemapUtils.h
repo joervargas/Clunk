@@ -12,4 +12,6 @@ namespace Clunk
     {
         return convertVerticalCrossToCubeMapFaces(convertEquirectangularMapToVerticalCross(b));
     }
+    
+    ClBitmap convertMultiFileToCubeMapFaces(std::vector<const char*> Files, int* pWidth, int* pHeight);
 }

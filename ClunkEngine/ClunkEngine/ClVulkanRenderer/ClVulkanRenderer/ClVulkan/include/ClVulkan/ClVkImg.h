@@ -158,7 +158,7 @@ namespace Clunk::Vk
      */
     ClVkImage cl_create_vk_depth_image(ClVkContext& VkCtx, u32 Width, u32 Height);
 
-    ClVkImage cl_create_vk_cubemap_image(ClVkContext& VkCtx, const char** FileNames, size_t FileCount);
+    ClVkImage cl_create_vk_cubemap_image(ClVkContext& VkCtx, std::vector<const char*> FileNames);
 
     /**
      * @brief Destroys ClVkImage and all its resources

@@ -23,7 +23,7 @@ namespace Clunk::Vk
 
         // Create world transform uniforms
         mWorldTransform = ClVkTransforms{
-            .model = Mat4::Identity(),
+            // .model = Mat4::Identity(),
             .view = Mat4::LookAtLH(Vec3(2.0f, 2.0f, 2.0f), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 1.0f)),
             .proj = Mat4::PerspectiveLH(45.f, static_cast<f32>(width/ height), 0.1f, 100.f)
         };
@@ -44,11 +44,11 @@ namespace Clunk::Vk
 
     void ClVkRenderer::Update(f32 DeltaTime)
     {
-        static auto start_time = std::chrono::high_resolution_clock::now();
-        auto current_time = std::chrono::high_resolution_clock::now();
-        float time = std::chrono::duration<float, std::chrono::seconds::period>(current_time - start_time).count();
+        // static auto start_time = std::chrono::high_resolution_clock::now();
+        // auto current_time = std::chrono::high_resolution_clock::now();
+        // float time = std::chrono::duration<float, std::chrono::seconds::period>(current_time - start_time).count();
 
-        mWorldTransform.model = Mat4::RotateZ(mWorldTransform.model, 0.03f * time);
+        // mWorldTransform.model = Mat4::RotateZ(mWorldTransform.model, 0.03f * time);
         mLayers3d.Update(mVkCtx, mVkCtx.FrameSync.GetCurrentIndex(), mWorldTransformUniform, mWorldTransform, DeltaTime);
         // mLayers2d.Update(mVCtx, mVkCtx.FrameSync.GetCurrentIndex(), DeltaTime);
     }

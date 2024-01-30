@@ -5,4 +5,5 @@
 #include "ClVkEndLayer.h"
 #include "ClVkSimple2dLayer.h"
 #include "ClVkSimple3dLayer.h"
+#include "ClVkSimpleSkyBoxLayer.h"
 #include "ClVkModelLayer.h"

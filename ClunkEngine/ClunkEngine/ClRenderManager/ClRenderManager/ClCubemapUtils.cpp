@@ -1,9 +1,12 @@
 #include "ClCubemapUtils.h"
 
+#include <cstdio>
+#include <STB_Image/stb_image.h>
+
+#include <Core/Logger.h>
 #include <ClMath/Vec2.h>
 #include <ClMath/Vec3.h>
 
-#include <cstdio>
 
 namespace Clunk
 {
@@ -115,15 +118,15 @@ namespace Clunk
         u8* dst = cubemap.Data.data();
 
         /*
-                ------
-                | +Y |
+            ------
+            | +Y |
         ----------------
         | -X | -Z | +X |
         ----------------
-                | -Y |
-                ------
-                | +Z |
-                ------
+            | -Y |
+            ------
+            | +Z |
+            ------
         */
 
        const i32 pixel_size = cubemap.GetChannels() * ClBitmap::GetBytesPerComponent(cubemap.GetFormat());
@@ -173,11 +176,44 @@ namespace Clunk
 
                     memcpy(dst, src + (y * b.GetWidth() + x) * pixel_size, pixel_size);
                     dst += pixel_size;
-                }
+                } // i
             } // j
        } // face
 
         return cubemap;
     }
 
+    ClBitmap convertMultiFileToCubeMapFaces(std::vector<const char *> Files,  int* pWidth, int* pHeight)
+    {
+        if (Files.size() != 6) { return ClBitmap(); }
+        int width = 0;
+        int height = 0;
+        int channels = 0;
+
+        std::vector<u8> img_data;
+        for(const char* file_path : Files)
+        {
+            stbi_uc* pixels = stbi_load(file_path, &width, &height, &channels, STBI_rgb_alpha);
+            if(!pixels)
+            {
+                THROW_EXCEPTION("Failed to load cubemap image [%s]\n", file_path);
+                fflush(stdout);
+            }
+
+            i32 img_size = width * height * 4;
+            // Reserve an appropriate ammount in vector for optimization purposes.
+            if(img_data.capacity() != (img_size * 6)) { img_data.reserve(img_size * 6); }
+
+            for(int i = 0; i < img_size; i++)
+            {
+                img_data.push_back(pixels[i]);
+            }
+        }
+        
+        ClBitmap result(width, height, 6, channels, EBitmapFormat_UnsignedByte, img_data.data());
+        if(pWidth) { *pWidth = width; }
+        if(pHeight) { *pHeight = height; }
+        
+        return result;
+    }
 }

@@ -74,7 +74,7 @@ namespace Clunk::Vk
 
         virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 
-    private:
+    protected:
 
         void CreateDescriptor(ClVkContext& VkCtx, const ClVkBuffer& TransformUniform);
 
@@ -84,6 +84,9 @@ namespace Clunk::Vk
 
         ClVkBuffer mVerts;
         ClVkBuffer mIndices;
+
+        ClVkBuffer mModelSpaceBuffer;
+        Mat4 mModelSpace;
 
         ClVkImage mTexture;
         VkSampler mSampler;

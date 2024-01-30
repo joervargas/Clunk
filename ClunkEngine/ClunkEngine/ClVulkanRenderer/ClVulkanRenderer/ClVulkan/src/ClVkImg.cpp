@@ -2,6 +2,9 @@
 #include "ClVkContext.h"
 #include "ClVkBuffer.h"
 
+// #include <ClRenderManager/ClBitmap.h>
+#include <ClRenderManager/ClCubemapUtils.h>
+
 #include <STB_Image/stb_image.h>
 
 
@@ -395,37 +398,89 @@ namespace Clunk::Vk
         return depthImg;
     }
 
-    ClVkImage cl_create_vk_cubemap_image(ClVkContext &VkCtx, const char **FileNames, size_t FileCount)
+    ClVkImage cl_create_vk_cubemap_image(ClVkContext &VkCtx, std::vector<const char*> FileNames)
     {
-        if(FileCount < 1 || FileCount > 6 && FileCount > 1 || FileCount < 6) 
+        b8 correct_filecount = false;
+        if (FileNames.size() == 1) { correct_filecount = true; }
+        if (FileNames.size() == 6) { correct_filecount = true; }
+        if(!correct_filecount) 
         {
             CLOG_ERROR("Cubemap FileCount must be either 1 or 6");
             return ClVkImage();
         }
-        
-        int total_width = 0, total_height = 0; 
+
         int width = 0, height = 0, channels = 0;
-        std::vector<stbi_uc*> img_data = {};
 
-        if (FileCount == 1)
+        ClBitmap cube;
+        if(FileNames.size() == 1)
         {
+            stbi_uc* pixels = stbi_load(FileNames[0], &width, &height, &channels, STBI_rgb_alpha);
+            ClBitmap in(width, height, 1, STBI_rgb_alpha, EBitmapFormat_UnsignedByte, pixels);
+            ClBitmap out = convertEquirectangularMapToVerticalCross(in);
 
-        } else { // FileCount != 1
-            for(u32 i = 0; i < FileCount; i++)
-            {
-                stbi_uc* pixels = stbi_load(FileNames[i], &width, &height, &channels, STBI_rgb_alpha);
-                if(!pixels) 
-                { 
-                    CLOG_ERROR("Failed to load cubemap texture [%s]\n", FileNames[i]); 
-                    return ClVkImage(); 
-                }
-                img_data.push_back(pixels);
-                total_width += width;
-                total_height += height;
-            }
+            cube = convertVerticalCrossToCubeMapFaces(out);
+            stbi_image_free(pixels);
+        }
+        if (FileNames.size() == 6)
+        {
+            cube = convertMultiFileToCubeMapFaces(FileNames, &width, &height);
         }
 
-        return ClVkImage();
+        VkFormat img_format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        u32 tex_width = static_cast<u32>(width);
+        u32 tex_height = static_cast<u32>(height);
+        VkDeviceSize img_size = ((tex_width * tex_height) * 4) * 6;
+
+        VkBuffer staging_buffer;
+        VmaAllocation staging_allocation;
+        
+        create_vk_buffer(VkCtx.Device, VkCtx.MemAllocator, 
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT,
+            img_size, &staging_buffer, &staging_allocation);
+
+        void* p_data;
+        vmaMapMemory(VkCtx.MemAllocator, staging_allocation, &p_data);
+            memcpy(p_data, cube.Data.data(), static_cast<size_t>(img_size));
+        vmaUnmapMemory(VkCtx.MemAllocator, staging_allocation);
+
+        ClVkImage result;
+        create_vk_image(
+            VkCtx.Device, VkCtx.MemAllocator, 
+            tex_width, tex_height, img_format, VK_IMAGE_TILING_OPTIMAL, 
+            VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            &result.Handle, &result.Allocation, 1, VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT
+        );
+
+        VkCommandBuffer cmd = cl_begin_single_time_vk_command_buffer(VkCtx);
+            
+            transition_vk_image_layout(
+                cmd, result.Handle, 
+                img_format, 
+                VK_IMAGE_LAYOUT_UNDEFINED, 
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+            copy_vk_cmd_buffer_to_image(cmd, staging_buffer, result.Handle, width, height);
+
+            transition_vk_image_layout(
+                cmd, result.Handle, 
+                img_format, 
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            
+        cl_end_single_time_vk_command_buffer(VkCtx, cmd);
+
+        vkDestroyBuffer(VkCtx.Device, staging_buffer, nullptr);
+        vmaFreeMemory(VkCtx.MemAllocator, staging_allocation);
+        
+        create_vk_image_view(
+            VkCtx.Device, result.Handle, 
+            img_format, VK_IMAGE_ASPECT_COLOR_BIT, 
+            &result.View, 
+            VK_IMAGE_VIEW_TYPE_CUBE, 6);
+            
+        return result;
     }
 
     void cl_destroy_vk_image(ClVkContext& VkCtx, ClVkImage* pImage)
