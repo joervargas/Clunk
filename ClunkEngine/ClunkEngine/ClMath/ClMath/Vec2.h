@@ -8,7 +8,8 @@
 
 namespace Clunk
 {
-    class Vec2
+    template<class T>
+    class TVec2
     {
     public:
     
@@ -16,23 +17,23 @@ namespace Clunk
         {
             struct
             {
-                f32 x, y;
+                T X, Y;
             };
 
             struct
             {
-                f32 u, v;
+                T U, V;
             };
             struct
             {
-                f32 r, g;
+                T R, G;
             };
 
-            f32 vec[2];
+            T Data[2];
         };
 
-        Vec2(const f32 X = 0.0f, const f32 Y = 0.0f) : x(X), y(Y) {};
-        Vec2(const f32 Values[2])
+        TVec2(const T X = T{}, const T Y = T{}) : X(X), Y(Y) {};
+        TVec2(const T Values[2])
         {
             x = Values[0];
             y = Values[1];
@@ -40,198 +41,198 @@ namespace Clunk
 
 ///////////////////////////////////////////////////////////
 
-        f32& operator[](u8 i)
+        T& operator[](u8 Index)
         {
-            return ((&x)[i]);
+            return ((&X)[i]);
         }
 
-        const f32& operator[](u8 i) const
+        const T& operator[](u8 Index) const
         {
-            return ((&x)[i]);
-        }
-
-/////////////////////////////////////////////////////////
-
-        bool operator==(const Vec2& Other)
-        {
-            return x == Other.x && y == Other.y;
-        }
-
-        const bool operator==(const Vec2& Other) const
-        {
-            return x == Other.x && y == Other.y;
-        }
-
-        void operator=(const Vec2& Other)
-        {
-            x = Other.x;
-            y = Other.y;
+            return ((&X)[i]);
         }
 
 /////////////////////////////////////////////////////////
 
-        Vec2 operator+(const f32 Val)
+        // bool operator==(const TVec2& Other)
+        // {
+        //     return X == Other.X && Y == Other.Y;
+        // }
+
+        const bool operator==(const TVec2& Other) const
         {
-            Vec2 v;
-            v = x + Val;
-            v = y + Val;
+            return X == Other.X && Y == Other.Y;
+        }
+
+        void operator=(const TVec2& Other)
+        {
+            X = Other.X;
+            Y = Other.Y;
+        }
+
+/////////////////////////////////////////////////////////
+
+        TVec2 operator+(const T Val)
+        {
+            TVec2 v;
+            v = X + Val;
+            v = Y + Val;
             return v;
         }
 
-        const Vec2 operator+(const f32 Val) const
+        const TVec2 operator+(const T Val) const
         {
-            Vec2 v;
-            v = x + Val;
-            v = y + Val;
+            TVec2 v;
+            v = X + Val;
+            v = Y + Val;
             return v;
         }
 
-        void operator+=(const f32 Val)
+        void operator+=(const T Val)
         {
-            x += Val;
-            y += Val;
+            X += Val;
+            Y += Val;
         }
 
-        Vec2 operator+(const Vec2& Other)
+        TVec2 operator+(const TVec2& Other)
         {
-            Vec2 v;
-            v.x = x + Other.x;
-            v.y = y + Other.y;
+            TVec2 v;
+            v.X = X + Other.X;
+            v.Y = y + Other.Y;
             return v;
         }
 
-        const Vec2 operator+(const Vec2& Other) const
+        const TVec2 operator+(const TVec2& Other) const
         {
-            Vec2 v;
-            v.x = x + Other.x;
-            v.y = y + Other.y;
+            T v;
+            v.X = x + Other.X;
+            v.Y = y + Other.Y;
             return v;
         }
 
-        void operator+=(const Vec2& Other)
+        void operator+=(const TVec2& Other)
         {
-            x += Other.x;
-            y += Other.y;
+            X += Other.X;
+            Y += Other.Y;
         }
 
 
 ///////////////////////////////////////////////////
 
-        Vec2 operator-(const f32 Val)
+        TVec2 operator-(const T Val)
         {
-            Vec2 v;
-            v = x - Val;
-            v = y - Val;
+            TVec2 v;
+            v = X - Val;
+            v = Y - Val;
             return v;
         }
 
-        const Vec2 operator-(const f32 Val) const
+        const TVec2 operator-(const T Val) const
         {
-            Vec2 v;
-            v = x - Val;
-            v = y - Val;
+            TVec2 v;
+            v = X - Val;
+            v = Y - Val;
             return v;
         }
 
-        void operator-=(const f32 Val)
+        void operator-=(const T Val)
         {
-            x -= Val;
-            y -= Val;
+            X -= Val;
+            Y -= Val;
         }
 
-        Vec2 operator-(const Vec2& Other)
+        TVec2 operator-(const TVec2& Other)
         {
-            Vec2 v;
-            v.x = x - Other.x;
-            v.y = y - Other.y;
+            TVec2 v;
+            v.X = X - Other.X;
+            v.Y = Y - Other.Y;
             return v;
         }
 
-        const Vec2 operator-(const Vec2& Other) const
+        const TVec2 operator-(const TVec2& Other) const
         {
-            Vec2 v;
-            v.x = x - Other.x;
-            v.y = y - Other.y;
+            TVec2 v;
+            v.X = x - Other.X;
+            v.Y = y - Other.Y;
             return v;
         }
 
-        void operator-=(const Vec2& other)
+        void operator-=(const TVec2& Other)
         {
-            x -= other.x;
-            y -= other.y;
+            X -= Other.X;
+            Y -= other.Y;
         }
 
 //////////////////////////////////////////////
 
-        Vec2 operator*(f32 Val)
+        TVec2 operator*(T Val)
         {
-            Vec2 v;
-            v.x = x * Val;
-            v.y = y * Val;
+            TVec2 v;
+            v.X = X * Val;
+            v.Y = Y * Val;
             return v;
         }
 
-        const Vec2 operator*(f32 Val) const
+        const TVec2 operator*(T Val) const
         {
-            Vec2 v;
-            v.x = x * Val;
-            v.y = y * Val;
+            TVec2 v;
+            v.X = X * Val;
+            v.Y = Y * Val;
             return v;
         }
 
-        void operator*=(f32 Val)
+        void operator*=(T Val)
         {
-            x += Val;
-            y += Val;
+            X += Val;
+            Y += Val;
         }
 
 ///////////////////////////////////////////////
 
-        void operator/=(f32 Val)
+        void operator/=(T Val)
         {
-            Val = 1.0f / Val;
-            x *= Val;
-            y *= Val;
+            Val = T(1) / Val;
+            X *= Val;
+            Y *= Val;
         }
 
-        Vec2 operator/(f32 Val)
+        TVec2 operator/(T Val)
         {
-            Vec2 v;
-            Val = 1.0f / Val;
-            v = x * Val;
-            v = y * Val;
+            TVec2 v;
+            Val = T(1) / Val;
+            v = X * Val;
+            v = Y * Val;
             return v;
         }
 
-        const Vec2 operator/(f32 Val) const
+        const TVec2 operator/(T Val) const
         {
-            Vec2 v;
-            Val = 1.0f / Val;
-            v = x * Val;
-            v = y * Val;
+            TVec2 v;
+            Val = T(1) / Val;
+            v = X * Val;
+            v = Y * Val;
             return v;
         }
 
 //////////////////////////////////////////////
 
-        f32 Length()
+        T Length()
         {
-            return std::sqrt(x*x + y*y);
+            return std::sqrt(X*X + Y*Y);
         }
 
-        const f32 Length() const
+        const T Length() const
         {
-            return std::sqrt(x*x + y*y);
+            return std::sqrt(X*X + Y*Y);
         }
 
-        f32 LengthSquared()
+        T LengthSquared()
         {
-            return x*x + y*y;
+            return X*X + Y*Y;
         }
 
-        const f32 LengthSquared() const
+        const T LengthSquared() const
         {
-            return x*x + y*y;
+            return X*X + Y*Y;
         }
 
         void Normalize()
@@ -240,58 +241,335 @@ namespace Clunk
             *this /= Length();
         }
 
-        Vec2 GetNormal()
+        T GetNormal()
         {
             // TODO: Test this
             return *this / Length();
         }
 
-        static Vec2 Normalize(const Vec2& Vec)
+        static T Normalize(const TVec2& Vec)
         {
             return Vec / Vec.Length();
         }
 
-        const Vec2 GetNormal() const
+        const TVec2 GetNormal() const
         {
             // TODO: Test this
             return *this / Length();
         }
 
-        f32 DotProduct(const Vec2& Other)
+        T DotProduct(const TVec2& Other)
         {
-            return (x * Other.x + y * Other.y);
+            return (X * Other.X + Y * Other.Y);
         }
 
-        static f32 DotProduct(const Vec2& V1, const Vec2& V2)
+        static T DotProduct(const TVec2& V1, const TVec2& V2)
         {
-            return (V1.x * V2.x + V1.y * V2.y);
+            return (V1.X * V2.X + V1.Y * V2.Y);
         }
 
-        f32 CrossProduct(const Vec2& Other)
+        T CrossProduct(const TVec2& Other)
         {
-            return x * Other.y - y * Other.x;
+            return X * Other.Y - Y * Other.X;
         }
 
-        static f32 CrossProduct(const Vec2& V1, const Vec2& V2)
+        static T CrossProduct(const TVec2& V1, const TVec2& V2)
         {
-            return V1.x * V2.y - V1.y * V2.x;
+            return V1.X * V2.Y - V1.Y * V2.X;
         }
 
     };
+
+//     class Vec2
+//     {
+//     public:
+    
+//         union
+//         {
+//             struct
+//             {
+//                 f32 x, y;
+//             };
+
+//             struct
+//             {
+//                 f32 u, v;
+//             };
+//             struct
+//             {
+//                 f32 r, g;
+//             };
+
+//             f32 vec[2];
+//         };
+
+//         Vec2(const f32 X = 0.0f, const f32 Y = 0.0f) : x(X), y(Y) {};
+//         Vec2(const f32 Values[2])
+//         {
+//             x = Values[0];
+//             y = Values[1];
+//         }
+
+// ///////////////////////////////////////////////////////////
+
+//         f32& operator[](u8 i)
+//         {
+//             return ((&x)[i]);
+//         }
+
+//         const f32& operator[](u8 i) const
+//         {
+//             return ((&x)[i]);
+//         }
+
+// /////////////////////////////////////////////////////////
+
+//         bool operator==(const Vec2& Other)
+//         {
+//             return x == Other.x && y == Other.y;
+//         }
+
+//         const bool operator==(const Vec2& Other) const
+//         {
+//             return x == Other.x && y == Other.y;
+//         }
+
+//         void operator=(const Vec2& Other)
+//         {
+//             x = Other.x;
+//             y = Other.y;
+//         }
+
+// /////////////////////////////////////////////////////////
+
+//         Vec2 operator+(const f32 Val)
+//         {
+//             Vec2 v;
+//             v = x + Val;
+//             v = y + Val;
+//             return v;
+//         }
+
+//         const Vec2 operator+(const f32 Val) const
+//         {
+//             Vec2 v;
+//             v = x + Val;
+//             v = y + Val;
+//             return v;
+//         }
+
+//         void operator+=(const f32 Val)
+//         {
+//             x += Val;
+//             y += Val;
+//         }
+
+//         Vec2 operator+(const Vec2& Other)
+//         {
+//             Vec2 v;
+//             v.x = x + Other.x;
+//             v.y = y + Other.y;
+//             return v;
+//         }
+
+//         const Vec2 operator+(const Vec2& Other) const
+//         {
+//             Vec2 v;
+//             v.x = x + Other.x;
+//             v.y = y + Other.y;
+//             return v;
+//         }
+
+//         void operator+=(const Vec2& Other)
+//         {
+//             x += Other.x;
+//             y += Other.y;
+//         }
+
+
+// ///////////////////////////////////////////////////
+
+//         Vec2 operator-(const f32 Val)
+//         {
+//             Vec2 v;
+//             v = x - Val;
+//             v = y - Val;
+//             return v;
+//         }
+
+//         const Vec2 operator-(const f32 Val) const
+//         {
+//             Vec2 v;
+//             v = x - Val;
+//             v = y - Val;
+//             return v;
+//         }
+
+//         void operator-=(const f32 Val)
+//         {
+//             x -= Val;
+//             y -= Val;
+//         }
+
+//         Vec2 operator-(const Vec2& Other)
+//         {
+//             Vec2 v;
+//             v.x = x - Other.x;
+//             v.y = y - Other.y;
+//             return v;
+//         }
+
+//         const Vec2 operator-(const Vec2& Other) const
+//         {
+//             Vec2 v;
+//             v.x = x - Other.x;
+//             v.y = y - Other.y;
+//             return v;
+//         }
+
+//         void operator-=(const Vec2& other)
+//         {
+//             x -= other.x;
+//             y -= other.y;
+//         }
+
+// //////////////////////////////////////////////
+
+//         Vec2 operator*(f32 Val)
+//         {
+//             Vec2 v;
+//             v.x = x * Val;
+//             v.y = y * Val;
+//             return v;
+//         }
+
+//         const Vec2 operator*(f32 Val) const
+//         {
+//             Vec2 v;
+//             v.x = x * Val;
+//             v.y = y * Val;
+//             return v;
+//         }
+
+//         void operator*=(f32 Val)
+//         {
+//             x += Val;
+//             y += Val;
+//         }
+
+// ///////////////////////////////////////////////
+
+//         void operator/=(f32 Val)
+//         {
+//             Val = 1.0f / Val;
+//             x *= Val;
+//             y *= Val;
+//         }
+
+//         Vec2 operator/(f32 Val)
+//         {
+//             Vec2 v;
+//             Val = 1.0f / Val;
+//             v = x * Val;
+//             v = y * Val;
+//             return v;
+//         }
+
+//         const Vec2 operator/(f32 Val) const
+//         {
+//             Vec2 v;
+//             Val = 1.0f / Val;
+//             v = x * Val;
+//             v = y * Val;
+//             return v;
+//         }
+
+//////////////////////////////////////////////
+
+    //     f32 Length()
+    //     {
+    //         return std::sqrt(x*x + y*y);
+    //     }
+
+    //     const f32 Length() const
+    //     {
+    //         return std::sqrt(x*x + y*y);
+    //     }
+
+    //     f32 LengthSquared()
+    //     {
+    //         return x*x + y*y;
+    //     }
+
+    //     const f32 LengthSquared() const
+    //     {
+    //         return x*x + y*y;
+    //     }
+
+    //     void Normalize()
+    //     {
+    //         // TODO: Test this
+    //         *this /= Length();
+    //     }
+
+    //     Vec2 GetNormal()
+    //     {
+    //         // TODO: Test this
+    //         return *this / Length();
+    //     }
+
+    //     static Vec2 Normalize(const Vec2& Vec)
+    //     {
+    //         return Vec / Vec.Length();
+    //     }
+
+    //     const Vec2 GetNormal() const
+    //     {
+    //         // TODO: Test this
+    //         return *this / Length();
+    //     }
+
+    //     f32 DotProduct(const Vec2& Other)
+    //     {
+    //         return (x * Other.x + y * Other.y);
+    //     }
+
+    //     static f32 DotProduct(const Vec2& V1, const Vec2& V2)
+    //     {
+    //         return (V1.x * V2.x + V1.y * V2.y);
+    //     }
+
+    //     f32 CrossProduct(const Vec2& Other)
+    //     {
+    //         return x * Other.y - y * Other.x;
+    //     }
+
+    //     static f32 CrossProduct(const Vec2& V1, const Vec2& V2)
+    //     {
+    //         return V1.x * V2.y - V1.y * V2.x;
+    //     }
+
+    // };
 }
 
 namespace std
 {
-    template<> struct hash<Clunk::Vec2>
+    template<typename T> struct hash<Clunk::TVec2<T>>
     {
-        size_t operator()(const Clunk::Vec2& V) const
+        size_t operator()(const Clunk::TVec2<T>& V) const
         {
             // size_t xHash = hash<f32>()(V.x);
             // size_t yHash = (hash<f32>()(V.y) << 1);
             // size_t zHash = (hash<f32>()(V.z) << 1);
             // return (xHash ^ yHash >> 1) ^ zHash;
-            return ((hash<f32>()(V.x)
-                    ^ (hash<f32>()(V.y) << 1)) >> 1);
+            return ((hash<f32>()(V.X)
+                    ^ (hash<f32>()(V.Y) << 1)) >> 1);
         }
     };
+}
+
+namespace Clunk
+{
+    typedef TVec2<f32> Vec2;
+    typedef TVec2<i32> IVec2;
 }

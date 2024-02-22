@@ -20,39 +20,39 @@ namespace Clunk
         {
             struct
             {
-                f32 x, y , z, w;
+                f32 X, Y , Z, W;
             };
             struct
             {
-                Vec3 vec;
-                f32 scalar;
+                Vec3 Vec;
+                f32 Scalar;
             };
             f32 q[4];
         };
 
-        Quat(f32 _x = 0.0f, f32 _y = 0.0f, f32 _z = 0.0f, f32 _w = 0.0f) : 
-            x(_x), y(_y), z(_z), w(_w) {}
+        Quat(f32 _x = 0.0f, f32 _y = 0.0f, f32 _z = 0.0f, f32 _w = 1.0f) : 
+            X(_x), Y(_y), Z(_z), W(_w) {}
 
-        Quat(const Vec3& V, f32 S)
+        Quat(const Vec3& V, f32 S = 1.0f)
         {
-            x = V.x; y = V.y; z = V.z; w = S;
+            X = V.X; Y = V.Y; Z = V.Z; W = S;
         }
 
         void operator=(const Quat& Other)
         {
-            x = Other.x;
-            y = Other.y;
-            z = Other.z;
-            w = Other.w;
+            X = Other.X;
+            Y = Other.Y;
+            Z = Other.Z;
+            W = Other.W;
         }
 
-        bool operator==(const Quat& Other)
+        bool operator==(const Quat& Other) const
         {
             return (
-                fabsf(x - Other.x) <= EPSILON &&
-                fabsf(y - Other.y) <= EPSILON &&
-                fabsf(z - Other.z) <= EPSILON &&
-                fabsf(w - Other.w) <= EPSILON
+                fabsf(X - Other.X) <= EPSILON &&
+                fabsf(Y - Other.Y) <= EPSILON &&
+                fabsf(Z - Other.Z) <= EPSILON &&
+                fabsf(W - Other.W) <= EPSILON
             );
         }
 
@@ -63,86 +63,86 @@ namespace Clunk
 
         Quat operator+(const Quat& Other)
         {
-            return Quat(x + Other.x, y + Other.y, z + Other.z, w + Other.w);
+            return Quat(X + Other.X, Y + Other.Y, Z + Other.Z, W + Other.W);
         }
 
         const Quat operator+(const Quat& Other) const
         {
-            return Quat(x + Other.x, y + Other.y, z + Other.z, w + Other.w);
+            return Quat(X + Other.X, Y + Other.Y, Z + Other.Z, W + Other.W);
         }
 
         Quat operator-(const Quat& Other)
         {
-            return Quat(x - Other.x, y - Other.y, z - Other.z, w - Other.w);
+            return Quat(X - Other.X, Y - Other.Y, Z - Other.Z, W - Other.W);
         }
 
         const Quat operator-(const Quat& Other) const
         {
-            return Quat(x - Other.x, y - Other.y, z - Other.z, w - Other.w);
+            return Quat(X - Other.X, Y - Other.Y, Z - Other.Z, W - Other.W);
         }
 
         Quat operator-()
         {
-            return Quat(-x, -y, -z, -w);
+            return Quat(-X, -Y, -Z, -W);
         }
 
         const Quat operator-() const
         {
-            return Quat(-x, -y, -z, -w);
+            return Quat(-X, -Y, -Z, -W);
         }
 
         Quat operator*(f32 Val)
         {
-            return Quat(x * Val, y * Val, z * Val, w * Val);
+            return Quat(X * Val, Y * Val, Z * Val, W * Val);
         }
 
         const Quat operator*(f32 Val) const
         {
-            return Quat(x * Val, y * Val, z * Val, w * Val);
+            return Quat(X * Val, Y * Val, Z * Val, W * Val);
         }
 
         Quat operator*(const Quat& Other)
         {
             Quat result;
-            result.scalar = Other.scalar * scalar - Vec3::Dot(Other.vec, vec);
-            result.vec = (vec * Other.scalar) + (Other.vec * scalar) + Vec3::Cross(Other.vec, vec);
+            result.Scalar = Other.Scalar * Scalar - Vec3::Dot(Other.Vec, Vec);
+            result.Vec = (Vec * Other.Scalar) + (Other.Vec * Scalar) + Vec3::Cross(Other.Vec, Vec);
             return result;
         }
 
         const Quat operator*(const Quat& Other) const
         {
             Quat result;
-            result.scalar = Other.scalar * scalar - Vec3::Dot(Other.vec, vec);
-            result.vec = (vec * Other.scalar) + (Other.vec * scalar) + Vec3::Cross(Other.vec, vec);
+            result.Scalar = Other.Scalar * Scalar - Vec3::Dot(Other.Vec, Vec);
+            result.Vec = (Vec * Other.Scalar) + (Other.Vec * Scalar) + Vec3::Cross(Other.Vec, Vec);
             return result;
         }
 
         Vec3 operator*(const Vec3& V)
         {
-            return vec * 2.0f * Vec3::Dot(vec, V) + 
-                V * (scalar * scalar - Vec3::Dot(vec, vec)) + 
-                Vec3::Cross(vec, V) * 2.0f * scalar;
+            return Vec * 2.0f * Vec3::Dot(Vec, V) + 
+                V * (Scalar * Scalar - Vec3::Dot(Vec, Vec)) + 
+                Vec3::Cross(Vec, V) * 2.0f * Scalar;
         }
 
         const Vec3 operator*(const Vec3& V) const
         {
-            return vec * 2.0f * Vec3::Dot(vec, V) + 
-                V * (scalar * scalar - Vec3::Dot(vec, vec)) + 
-                Vec3::Cross(vec, V) * 2.0f * scalar;
+            return Vec * 2.0f * Vec3::Dot(Vec, V) + 
+                V * (Scalar * Scalar - Vec3::Dot(Vec, Vec)) + 
+                Vec3::Cross(Vec, V) * 2.0f * Scalar;
         }
 
         Quat operator^(f32 Val)
         {
-            f32 angle = 2.0f * acosf(scalar);
-            Vec3 axis = Vec3::Normalize(vec);
+            f32 angle = 2.0f * acosf(Scalar);
+            Vec3 axis = Vec3::Normalize(Vec);
 
             f32 halfCos = cosf(Val * angle * 0.5f);
             f32 halfSin = sinf(Val * angle * 0.5f);
 
             return Quat(
-                axis.x * halfSin,
-                axis.y * halfSin,
-                axis.z * halfSin,
+                axis.X * halfSin,
+                axis.Y * halfSin,
+                axis.Z * halfSin,
                 halfCos
             );
         }
@@ -160,53 +160,53 @@ namespace Clunk
 
         static inline Vec3 GetAxis(const Quat& Q)
         {
-            return Vec3::Normalize(Vec3(Q.x, Q.y, Q.z));
+            return Vec3::Normalize(Vec3(Q.X, Q.Y, Q.Z));
         }
 
         inline Vec3 GetAxis()
         {
-            return Vec3::Normalize(Vec3(x, y, z));
+            return Vec3::Normalize(Vec3(X, Y, Z));
         }
 
         static inline f32 GetAngle(const Quat& Q)
         {
-            return 2.0f * acosf(Q.w);
+            return 2.0f * acosf(Q.W);
         }
 
         inline f32 GetAngle()
         {
-            return 2.0f * acosf(w);
+            return 2.0f * acosf(W);
         }
 
         static inline f32 Dot(const Quat& Q1, const Quat& Q2)
         {
-            return Q1.x * Q2.x + Q1.y * Q2.y + Q1.z * Q2.z + Q1.w * Q2.w;
+            return Q1.X * Q2.X + Q1.Y * Q2.Y + Q1.Z * Q2.Z + Q1.W * Q2.W;
         }
 
         inline f32 Dot(const Quat& Other)
         {
-            return x * Other.x + y * Other.y + z * Other.z + w * Other.w;
+            return X * Other.X + Y * Other.Y + Z * Other.Z + W * Other.W;
         }
 
         inline f32 LengthSquared()
         {
-            return x * x + y * y + z * z + w * w;
+            return X * X + Y * Y + Z * Z + W * W;
         }
 
         inline const f32 LengthSquared() const
         {
-            return x * x + y * y + z * z + w * w;
+            return X * X + Y * Y + Z * Z + W * W;
         }
 
         inline f32 Length()
         {
-            f32 lensq = x * x + y * y + z * z + w * w;
+            f32 lensq = X * X + Y * Y + Z * Z + W * W;
             return sqrtf(lensq);
         }
 
         inline const f32 Length() const
         {
-            f32 lensq = x * x + y * y + z * z + w * w;
+            f32 lensq = X * X + Y * Y + Z * Z + W * W;
             return sqrtf(lensq);
         }
 
@@ -218,18 +218,18 @@ namespace Clunk
 
         inline void Conjugate()
         {
-            x = -x;
-            y = -y;
-            z = -z;
+            X = -X;
+            Y = -Y;
+            Z = -Z;
         }
 
         inline Quat GetConjugate()
         {
             return Quat(
-                -x,
-                -y,
-                -z,
-                w
+                -X,
+                -Y,
+                -Z,
+                W
             );
         }
 
@@ -262,7 +262,7 @@ namespace Clunk
             return Quat::GetNormal((delta^T) * Start);
         }
 
-        static Quat LookRotation(const Vec3& Direction, const Vec3& Up, const Vec3& Right);
+        static Quat LookRotation(const Vec3& Direction, const Vec3& Up);
 
         Mat4 ToMat4();
 

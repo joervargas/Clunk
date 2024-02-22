@@ -6,6 +6,7 @@
 #include <Core/Logger.h>
 #include <ClMath/Vec2.h>
 #include <ClMath/Vec3.h>
+#include <glm/glm.hpp>
 
 
 namespace Clunk
@@ -37,16 +38,17 @@ namespace Clunk
 
         if(FaceID == 0) return Vec3(-1.0f, A - 1.0f, B - 1.0f);
         if(FaceID == 1) return Vec3(A - 1.0f, -1.0f, 1.0f - B);
-        if(FaceID == 2) return Vec3(1.0f, A - 1.0f, 1.0f -B);
+        if(FaceID == 2) return Vec3(1.0f, A - 1.0f, 1.0f - B);
         if(FaceID == 3) return Vec3(1.0f - A, 1.0f, 1.0f - B);
         if(FaceID == 4) return Vec3(B - 1.0f, A - 1.0f, 1.0f);
         if(FaceID == 5) return Vec3(1.0f - B, A - 1.0f, -1.0f);
+        
         return Vec3();
     }
 
     ClBitmap convertEquirectangularMapToVerticalCross(const ClBitmap &b)
     {
-        if(b.GetType() == EBitmapType::EBitmapType_2D) return ClBitmap();
+        if(b.GetType() != EBitmapType::EBitmapType_2D) return ClBitmap();
 
         const i32 faceSize = b.GetWidth() / 4;
 
@@ -54,15 +56,24 @@ namespace Clunk
         const i32 h = faceSize * 4;
 
         ClBitmap result(w, h, b.GetChannels(), b.GetFormat());
-        const clOffset2D<i32> kFaceOffsets[] = 
+        const IVec2 kFaceOffsets[] = 
         {
-            clOffset2D<i32>(faceSize, faceSize * 3),
-            clOffset2D<i32>(0, faceSize),
-            clOffset2D<i32>(faceSize, faceSize),
-            clOffset2D<i32>(faceSize, 2 * faceSize),
-            clOffset2D<i32>(faceSize, 0),
-            clOffset2D<i32>(faceSize, faceSize * 2)
+            IVec2(faceSize, faceSize * 3),
+            IVec2(0, faceSize),
+            IVec2(faceSize, faceSize),
+            IVec2(faceSize * 2, faceSize),
+            IVec2(faceSize, 0),
+            IVec2(faceSize, faceSize * 2)
         };
+        // const glm::ivec2 kFaceOffsets[] =
+        // {
+        //     glm::ivec2(faceSize, faceSize * 3),
+        //     glm::ivec2(0, faceSize),
+        //     glm::ivec2(faceSize, faceSize),
+        //     glm::ivec2(faceSize * 2, faceSize),
+        //     glm::ivec2(faceSize, 0),
+        //     glm::ivec2(faceSize, faceSize * 2)
+        // };
 
         const i32 clampW = b.GetWidth() - 1;
         const i32 clampH = b.GetHeight() - 1;
@@ -74,17 +85,17 @@ namespace Clunk
                 for(i32 j = 0; j != faceSize; j++)
                 {
                     const Vec3 P = faceCoordsToXYZ(i, j, face, faceSize);
-                    const float R = hypot(P.x, P.y);
-                    const float theta = atan2(P.y, P.x);
-                    const float phi = atan2(P.z, R);
+                    const float R = hypot(P.X, P.Y);
+                    const float theta = atan2(P.Y, P.X);
+                    const float phi = atan2(P.Z, R);
                     // float point source coordinates
                     const float Uf = float(2.0f * faceSize * (theta + Math::PI) / Math::PI);
                     const float Vf = float(2.0f * faceSize * (Math::PI / 2.0f - phi) / Math::PI);
                     // 4 samples for bilinear interpolation
-                    const i32 U1 = std::clamp(i32(floor(Uf)), 0, clampW);
-                    const i32 V1 = std::clamp(i32(floor(Vf)), 0, clampH);
-                    const i32 U2 = std::clamp(U1 + 1, 0, clampW);
-                    const i32 V2 = std::clamp(V1 + 1, 0, clampH);
+                    const i32 U1 = Math::Clamp(i32(floor(Uf)), 0, clampW);
+                    const i32 V1 = Math::Clamp(i32(floor(Vf)), 0, clampH);
+                    const i32 U2 = Math::Clamp(U1 + 1, 0, clampW);
+                    const i32 V2 = Math::Clamp(V1 + 1, 0, clampH);
                     // fractional part
                     const float s = Uf - U1;
                     const float t = Vf - V1;
@@ -93,12 +104,21 @@ namespace Clunk
                     const Vec4 B = b.GetPixel(U2, V1);
                     const Vec4 C = b.GetPixel(U1, V2);
                     const Vec4 D = b.GetPixel(U2, V2);
+                    // const glm::vec4 A = b.GetPixel(U1, V1);
+                    // const glm::vec4 B = b.GetPixel(U2, V1);
+                    // const glm::vec4 C = b.GetPixel(U1, V2);
+                    // const glm::vec4 D = b.GetPixel(U2, V2);
                     // bilinear interpolation
-                    const Vec4 color =  A * (1.0f - s) + 
-                                        B * (s) * (1.0f - t) + 
-                                        C * (1.0f - s) * (t) + 
+                    const Vec4 color =  A * (1 - s) * (1 - t) + 
+                                        B * (s) * (1 - t) + 
+                                        C * (1 - s) * (t) + 
                                         D * (s) * (t);
+                    // const glm::vec4 color =  A * (1 - s) * (1 - t) + 
+                    //                     B * (s) * (1 - t) + 
+                    //                     C * (1 - s) * (t) + 
+                    //                     D * (s) * (t);
                     result.SetPixel(i + kFaceOffsets[face].X, j + kFaceOffsets[face].Y, color);
+                    // result.SetPixel(i + kFaceOffsets[face].x, j + kFaceOffsets[face].y, color);
                 } // j++
             } // i++
         } // face++
@@ -111,7 +131,7 @@ namespace Clunk
         const i32 face_width = b.GetWidth() / 3;
         const i32 face_height = b.GetHeight() / 4;
 
-        ClBitmap cubemap(face_width, face_height, 6, b.GetChannels(), b.GetFormat());
+        ClBitmap cubemap(face_width, face_height, b.GetChannels(), 6, b.GetFormat());
         cubemap.SetType(EBitmapType::EBitmapType_Cube);
 
         const u8* src = b.Data.data();
@@ -210,7 +230,7 @@ namespace Clunk
             }
         }
         
-        ClBitmap result(width, height, 6, channels, EBitmapFormat_UnsignedByte, img_data.data());
+        ClBitmap result(width, height, channels, EBitmapFormat_UnsignedByte, img_data.data());
         if(pWidth) { *pWidth = width; }
         if(pHeight) { *pHeight = height; }
         

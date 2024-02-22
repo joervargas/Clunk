@@ -5,8 +5,10 @@
 #include <vulkan/vulkan.h>
 #include <VkMemAllocator/vk_mem_alloc.h>
 
+#include "ClVkContext.h"
+
 // Forward Declarations
-struct ClVkContext;
+// struct ClVkContext;
 
 namespace Clunk::Vk
 {
@@ -157,6 +159,10 @@ namespace Clunk::Vk
      * @return ClVkImage 
      */
     ClVkImage cl_create_vk_depth_image(ClVkContext& VkCtx, u32 Width, u32 Height);
+
+    b8 cl_create_vk_image_from_data(ClVkContext& VkCtx, u32 Width, u32 Height, VkFormat Format, void* ImageData, ClVkImage* OutputImage, u32 LayerCount = 1, VkImageCreateFlags Flags = 0);
+
+    b8 cl_update_vk_image(ClVkContext& VkCtx, u32 Width, u32 Height, u32 LayerCount, VkFormat Format, void* ImageData, ClVkImage* OutputImage);
 
     ClVkImage cl_create_vk_cubemap_image(ClVkContext& VkCtx, std::vector<const char*> FileNames);
 

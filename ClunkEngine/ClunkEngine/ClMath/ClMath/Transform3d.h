@@ -19,9 +19,11 @@ namespace Clunk
 
         struct
         {
-            Quat rotation;
-            alignas(16) Vec3 position;
-            alignas(16) Vec3 scale;
+            // alignas(16) Vec3 Position;
+            // alignas(16) Vec3 Scale;
+            Vec3 Position;
+            Vec3 Scale;
+            Quat Rotation;
         };
 
         Transform3d(
@@ -29,15 +31,17 @@ namespace Clunk
             const Quat& Rotation = Quat(0.0f, 0.0f, 0.0f, 1.0f), 
             const Vec3& Scale = Vec3(1.0f, 1.0f, 1.0f)
         ) : 
-            rotation(Rotation), position(Position), scale(Scale)
+            Position(Position), 
+            Scale(Scale),
+            Rotation(Rotation)
         {}
 
 
         void operator=(const Transform3d& Other)
         {
-            position = Other.position;
-            rotation = Other.rotation;
-            scale = Other.scale;
+            Position = Other.Position;
+            Scale = Other.Scale;
+            Rotation = Other.Rotation;
         }
 
         // const Transform operator=(const Transform& Other) const

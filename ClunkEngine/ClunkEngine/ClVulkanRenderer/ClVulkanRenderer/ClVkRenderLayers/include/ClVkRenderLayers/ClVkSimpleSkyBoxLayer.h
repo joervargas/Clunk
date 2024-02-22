@@ -48,7 +48,7 @@ namespace Clunk::Vk
     {
     public:
 
-        ClVkSimpleSkyBoxLayer(ClVkContext &VkCtx, const ClVkImage& DepthImage, const ClVkBuffer& TransformUniform, const char* MeshFile, std::vector<const char*> TextureFiles);
+        ClVkSimpleSkyBoxLayer(ClVkContext &VkCtx, const ClVkImage& DepthImage, const ClVkBuffer& TransformUniform, std::vector<const char*> TextureFiles);
 
         virtual ~ClVkSimpleSkyBoxLayer();
 
@@ -83,9 +83,9 @@ namespace std
     {
         size_t operator()(const Clunk::Vk::SimpleSkyBoxVertex& V) const
         {
-            return ((hash<f32>()(V.pos.x) ^
-                    (hash<f32>()(V.pos.y) << 1)) >> 1) ^
-                    (hash<f32>()(V.pos.z) << 1);
+            return ((hash<f32>()(V.pos.X) ^
+                    (hash<f32>()(V.pos.Y) << 1)) >> 1) ^
+                    (hash<f32>()(V.pos.Z) << 1);
         }
     };
 }

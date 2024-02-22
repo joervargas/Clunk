@@ -12,7 +12,34 @@ namespace Clunk
     {
     public:
 
-        f32 mat[3][3];
+        union{
+
+            f32 Data[9];
+
+            struct 
+            {
+                Vec3 Right;
+                Vec3 Up;
+                Vec3 Forward;
+            };
+
+            struct
+            {
+                f32 xx, xy, xz;
+                f32 yx, yy, yz;
+                f32 zx, zy, zz;
+            };
+            
+            struct
+            {
+                f32 r0c0, r1c0, r2c0;
+                f32 r0c1, r1c1, r2c1;
+                f32 r0c2, r1c2, r2c2;
+            };
+            
+            f32 Row[3][3];
+            
+        };
     
         Mat3(
                 f32 Mat00 = 0.0f, f32 Mat01 = 0.0f, f32 Mat02 = 0.0f,
@@ -20,26 +47,27 @@ namespace Clunk
                 f32 Mat20 = 0.0f, f32 Mat21 = 0.0f, f32 Mat22 = 0.0f
             )
         {
-            mat[0][0] = Mat00; mat[0][1] = Mat01; mat[0][2] = Mat02;
-            mat[1][0] = Mat10; mat[1][1] = Mat11; mat[1][2] = Mat12;
-            mat[2][0] = Mat20; mat[2][1] = Mat21; mat[2][2] = Mat22;
+            Row[0][0] = Mat00; Row[0][1] = Mat01; Row[0][2] = Mat02;
+            Row[1][0] = Mat10; Row[1][1] = Mat11; Row[1][2] = Mat12;
+            Row[2][0] = Mat20; Row[2][1] = Mat21; Row[2][2] = Mat22;
         }
 
         Mat3(const Vec3& A, const Vec3& B, const Vec3& C)
         {
-            mat[0][0] = A.x; mat[0][1] = A.y; mat[0][2] = A.z;
-            mat[1][0] = B.x; mat[1][1] = B.y; mat[1][2] = B.z;
-            mat[2][0] = C.x; mat[2][1] = C.y; mat[2][2] = C.z;
+            Row[0][0] = A.X; Row[0][1] = A.Y; Row[0][2] = A.Z;
+            Row[1][0] = B.X; Row[1][1] = B.Y; Row[1][2] = B.Z;
+            Row[2][0] = C.X; Row[2][1] = C.Y; Row[2][2] = C.Z;
         }
 
-        Vec3 Row(u8 I)
+        Vec3 RowVec(u8 I)
         {
-            return(*reinterpret_cast<Vec3*>(mat[I]));
+            // return (*reinterpret_cast<Vec3*>(Row[I]));
+            return Vec3(Row[I][0], Row[I][1], Row[I][2]);
         }
 
-        Vec3 Col(u8 J)
+        Vec3 ColVec(u8 J)
         {
-            return Vec3(mat[0][J], mat[1][J], mat[2][J]);
+            return Vec3(Row[0][J], Row[1][J], Row[2][J]);
         }
 
         static Mat3 Identity()
@@ -62,29 +90,29 @@ namespace Clunk
 
         float& operator()(u8 I, u8 J)
         {
-            return (mat[I][J]);
+            return (Row[I][J]);
         }
 
         const float& operator()(u8 I, u8 J) const
         {
-            return (mat[I][J]);
+            return (Row[I][J]);
         }
 
         Vec3& operator[](u8 I)
         {
-            return(*reinterpret_cast<Vec3*>(mat[I]));
+            return(*reinterpret_cast<Vec3*>(Row[I]));
         }
 
         const Vec3& operator[](u8 J) const
         {
-            return(*reinterpret_cast<const Vec3*>(mat[J]));
+            return(*reinterpret_cast<const Vec3*>(Row[J]));
         }
 
 /////////////////////////////////////////////////////////////////////
 
         // void operator=(Mat3& Other)
         // {
-        //     mat = Other.mat;
+        //     Row = Other.Row;
         // }
         
 /////////////////////////////////////////////////////////////////////
@@ -124,9 +152,9 @@ namespace Clunk
         Vec3 operator*(const Vec3& Val)
         {
             Vec3 v(
-                (*this)(0, 0) * Val.x + (*this)(0, 1) * Val.y + (*this)(0, 2) * Val.z,
-                (*this)(1, 0) * Val.x + (*this)(1, 1) * Val.y + (*this)(1, 2) * Val.z,
-                (*this)(2, 0) * Val.x + (*this)(2, 1) * Val.y + (*this)(2, 2) * Val.z
+                (*this)(0, 0) * Val.X + (*this)(0, 1) * Val.Y + (*this)(0, 2) * Val.Z,
+                (*this)(1, 0) * Val.X + (*this)(1, 1) * Val.Y + (*this)(1, 2) * Val.Z,
+                (*this)(2, 0) * Val.X + (*this)(2, 1) * Val.Y + (*this)(2, 2) * Val.Z
             );
             return v;
         }
@@ -179,17 +207,17 @@ namespace Clunk
             f32 s = std::sin(T);
             f32 d = 1.0f - c;
 
-            f32 x = Axis.x * d;
-            f32 y = Axis.y * d;
-            f32 z = Axis.z * d;
-            f32 axay = x * Axis.y;
-            f32 axaz = x * Axis.z;
-            f32 ayaz = y * Axis.z;
+            f32 x = Axis.X * d;
+            f32 y = Axis.Y * d;
+            f32 z = Axis.Z * d;
+            f32 axay = x * Axis.Y;
+            f32 axaz = x * Axis.Z;
+            f32 ayaz = y * Axis.Z;
 
             Mat3 m(
-                c + x * Axis.x, axay - s * Axis.z, axaz + s * Axis.y,
-                axay + s * Axis.z, c + y * Axis.y, ayaz - s * Axis.x,
-                axaz - s * Axis.y, ayaz + s * Axis.x, c + z * Axis.z
+                c + x * Axis.X, axay - s * Axis.Z, axaz + s * Axis.Y,
+                axay + s * Axis.Z, c + y * Axis.Y, ayaz - s * Axis.X,
+                axaz - s * Axis.Y, ayaz + s * Axis.X, c + z * Axis.Z
             );
             return (*this) * m;
         }

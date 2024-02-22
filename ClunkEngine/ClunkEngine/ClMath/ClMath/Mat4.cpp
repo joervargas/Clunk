@@ -93,9 +93,9 @@ namespace Clunk
     Mat4 Mat4::Scale(const Mat4& Mat, const Vec3& Scale)
     {
         Mat4 s = Mat4::Identity();
-        s[0] = Scale.x;
-        s[5] = Scale.y;
-        s[10] = Scale.z;
+        s[0] = Scale.X;
+        s[5] = Scale.Y;
+        s[10] = Scale.Z;
         return Mat * s;
     }
 
@@ -111,9 +111,9 @@ namespace Clunk
     void Mat4::Scale(const Vec3& Scale)
     {
         Mat4 s = Mat4::Identity();
-        s[0] = Scale.x;
-        s[5] = Scale.y;
-        s[10] = Scale.z;
+        s[0] = Scale.X;
+        s[5] = Scale.Y;
+        s[10] = Scale.Z;
         (*this) = (*this) * s;
     }
 
@@ -129,32 +129,32 @@ namespace Clunk
     Mat4 Mat4::Translate(const Mat4& Mat, const Vec3& Translation)
     {
         Mat4 result = Mat;
-        result[12] = Translation.x;
-        result[13] = Translation.y;
-        result[14] = Translation.z;
+        result[12] = Translation.X;
+        result[13] = Translation.Y;
+        result[14] = Translation.Z;
         return result;
     }
 
     void Mat4::Translate(const Vec3& Translation)
     {
-        mat[12] = Translation.x;
-        mat[13] = Translation.y;
-        mat[14] = Translation.z;
+        Data[12] = Translation.X;
+        Data[13] = Translation.Y;
+        Data[14] = Translation.Z;
     }
 
     Mat4 Mat4::ReflectionMatrix(const Vec3& Axis)
     {
-        f32 x = Axis.x * -2.0f;
-        f32 y = Axis.y * -2.0f;
-        f32 z = Axis.z * -2.0f;
-        f32 axay = x * Axis.y;
-        f32 axaz = x * Axis.z;
-        f32 ayaz = y * Axis.z;
+        f32 x = Axis.X * -2.0f;
+        f32 y = Axis.Y * -2.0f;
+        f32 z = Axis.Z * -2.0f;
+        f32 axay = x * Axis.Y;
+        f32 axaz = x * Axis.Z;
+        f32 ayaz = y * Axis.Z;
     
         return Mat4(
-            x * Axis.x + 1.0f, axay, axaz, 0.0f,
-            axay, y * Axis.y + 1.0f, ayaz, 0.0f,
-            axaz, ayaz, z* Axis.z + 1.0f, 0.0f,
+            x * Axis.X + 1.0f, axay, axaz, 0.0f,
+            axay, y * Axis.Y + 1.0f, ayaz, 0.0f,
+            axaz, ayaz, z* Axis.Z + 1.0f, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
         );
     }
@@ -173,10 +173,10 @@ namespace Clunk
 
 		// Transpose upper 3x3 matrix to invert it
 		return Mat4(
-			right.x, up.x, -front.x, 0.0f,
-			right.y, up.y, -front.y, 0.0f,
-			right.z, up.z, -front.z, 0.0f,
-			-target.x, -target.y, target.z, 1.0f
+			right.X, up.X, -front.X, 0.0f,
+			right.Y, up.Y, -front.Y, 0.0f,
+			right.Z, up.Z, -front.Z, 0.0f,
+			-target.X, -target.Y, target.Z, 1.0f
 		);
     }
 
@@ -194,10 +194,10 @@ namespace Clunk
 
 		// Transpose upper 3x3 matrix to invert it
 		return Mat4(
-			right.x, up.x, front.x, 0.0f,
-			right.y, up.y, front.y, 0.0f,
-			right.z, up.z, front.z, 0.0f,
-			-target.x, -target.y, -target.z, 1.0f
+			right.X, up.X, front.X, 0.0f,
+			right.Y, up.Y, front.Y, 0.0f,
+			right.Z, up.Z, front.Z, 0.0f,
+			-target.X, -target.Y, -target.Z, 1.0f
 		);
     }
 
@@ -206,11 +206,11 @@ namespace Clunk
 		f32 half_tan_fov = tanf(Math::DegToRad(FOV) / 2.0f);
 
 		Mat4 result;
-		result.mat[0] = 1.0f / (AspectRatio * half_tan_fov);
-		result.mat[5] = 1.0f / half_tan_fov;
-		result.mat[10] = - (Far + Near) / (Far - Near);
-		result.mat[11] = - 1.0f;
-		result.mat[14] = -(2.0f * Far * Near) / (Far - Near);
+		result.Data[0] = 1.0f / (AspectRatio * half_tan_fov);
+		result.Data[5] = 1.0f / half_tan_fov;
+		result.Data[10] = - (Far + Near) / (Far - Near);
+		result.Data[11] = - 1.0f;
+		result.Data[14] = -(2.0f * Far * Near) / (Far - Near);
 		return result;
     }
 
@@ -220,11 +220,11 @@ namespace Clunk
 		f32 focal_length = 1.0f / tanf( Math::DegToRad(FOV) * 0.5f);
 
 		Mat4 result;
-		result.mat[0] = focal_length / AspectRatio;
-		result.mat[5] = focal_length;
-		result.mat[10] = (Far + Near) / (Far - Near);
-		result.mat[11] = 1.0f;
-		result.mat[14] = (2.0f * Far * Near) / (Near - Far);
+		result.Data[0] = focal_length / AspectRatio;
+		result.Data[5] = focal_length;
+		result.Data[10] = (Far + Near) / (Far - Near);
+		result.Data[11] = 1.0f;
+		result.Data[14] = (2.0f * Far * Near) / (Near - Far);
 		return result;
     }
 
@@ -234,11 +234,11 @@ namespace Clunk
 		f32 focal_length = 1.0f / tanf( Math::DegToRad(FOV) * 0.5f);
 
 		Mat4 result;
-		result.mat[0] = focal_length / AspectRatio;
-		result.mat[5] = -focal_length;
-		result.mat[10] = Far / (Near - Far);
-		result.mat[11] = - 1.0f;
-		result.mat[14] = (Near * Far) / (Near - Far);
+		result.Data[0] = focal_length / AspectRatio;
+		result.Data[5] = -focal_length;
+		result.Data[10] = Far / (Near - Far);
+		result.Data[11] = - 1.0f;
+		result.Data[14] = (Near * Far) / (Near - Far);
 		return result;
     }
 
@@ -347,95 +347,95 @@ namespace Clunk
 
     void Mat4::Invert()
     {
-        f32 t0 = mat[10] * mat[15];
-        f32 t1 = mat[14] * mat[11];
-        f32 t2 = mat[6] * mat[15];
-        f32 t3 = mat[14] * mat[7];
-        f32 t4 = mat[6] * mat[11];
-        f32 t5 = mat[10] * mat[7];
-        f32 t6 = mat[2] * mat[15];
-        f32 t7 = mat[14] * mat[3];
-        f32 t8 = mat[2] * mat[11];
-        f32 t9 = mat[10] * mat[3];
-        f32 t10 = mat[2] * mat[7];
-        f32 t11 = mat[6] * mat[3];
-        f32 t12 = mat[8] * mat[13];
-        f32 t13 = mat[12] * mat[9];
-        f32 t14 = mat[4] * mat[13];
-        f32 t15 = mat[12] * mat[5];
-        f32 t16 = mat[4] * mat[9];
-        f32 t17 = mat[8] * mat[5];
-        f32 t18 = mat[0] * mat[13];
-        f32 t19 = mat[12] * mat[1];
-        f32 t20 = mat[0] * mat[9];
-        f32 t21 = mat[8] * mat[1];
-        f32 t22 = mat[0] * mat[5];
-        f32 t23 = mat[4] * mat[1];
+        f32 t0 = Data[10] * Data[15];
+        f32 t1 = Data[14] * Data[11];
+        f32 t2 = Data[6] * Data[15];
+        f32 t3 = Data[14] * Data[7];
+        f32 t4 = Data[6] * Data[11];
+        f32 t5 = Data[10] * Data[7];
+        f32 t6 = Data[2] * Data[15];
+        f32 t7 = Data[14] * Data[3];
+        f32 t8 = Data[2] * Data[11];
+        f32 t9 = Data[10] * Data[3];
+        f32 t10 = Data[2] * Data[7];
+        f32 t11 = Data[6] * Data[3];
+        f32 t12 = Data[8] * Data[13];
+        f32 t13 = Data[12] * Data[9];
+        f32 t14 = Data[4] * Data[13];
+        f32 t15 = Data[12] * Data[5];
+        f32 t16 = Data[4] * Data[9];
+        f32 t17 = Data[8] * Data[5];
+        f32 t18 = Data[0] * Data[13];
+        f32 t19 = Data[12] * Data[1];
+        f32 t20 = Data[0] * Data[9];
+        f32 t21 = Data[8] * Data[1];
+        f32 t22 = Data[0] * Data[5];
+        f32 t23 = Data[4] * Data[1];
     
         Mat4 result;
-        result[0] = (t0 * mat[5] + t3 * mat[9] + t4 * mat[13]) - (t1 * mat[5] + t2 * mat[9] + t5 * mat[13]);
-        result[1] = (t1 * mat[1] + t6 * mat[9] + t9 * mat[13]) - (t0 * mat[1] + t7 * mat[9] + t8 * mat[13]);
-        result[2] = (t2 * mat[1] + t7 * mat[5] + t10 * mat[13]) - (t3 * mat[1] + t6 * mat[5] + t11 * mat[13]);
-        result[3] = (t5 * mat[1] + t8 * mat[5] + t11 * mat[9]) - (t4 * mat[1] + t9 * mat[5] + t10 * mat[9]);
+        result[0] = (t0 * Data[5] + t3 * Data[9] + t4 * Data[13]) - (t1 * Data[5] + t2 * Data[9] + t5 * Data[13]);
+        result[1] = (t1 * Data[1] + t6 * Data[9] + t9 * Data[13]) - (t0 * Data[1] + t7 * Data[9] + t8 * Data[13]);
+        result[2] = (t2 * Data[1] + t7 * Data[5] + t10 * Data[13]) - (t3 * Data[1] + t6 * Data[5] + t11 * Data[13]);
+        result[3] = (t5 * Data[1] + t8 * Data[5] + t11 * Data[9]) - (t4 * Data[1] + t9 * Data[5] + t10 * Data[9]);
     
-        f32 determinant = 1.0f / (mat[0] * result[0] + mat[4] * result[1] + mat[8] * result[2] + mat[12] * result[3]);
+        f32 determinant = 1.0f / (Data[0] * result[0] + Data[4] * result[1] + Data[8] * result[2] + Data[12] * result[3]);
     
         result[0] = determinant * result[0];
         result[1] = determinant * result[1];
         result[2] = determinant * result[2];
         result[3] = determinant * result[3];
-        result[4] = determinant * ((t1 * mat[4] + t2 * mat[8] + t5 * mat[12]) - (t0 * mat[4] + t3 * mat[8] + t4 * mat[12]));
-        result[5] = determinant * ((t0 * mat[0] + t7 * mat[8] + t8 * mat[12]) - (t1 * mat[0] + t6 * mat[8] + t9 * mat[12]));
-        result[6] = determinant * ((t3 * mat[0] + t6 * mat[4] + t11 * mat[12]) - (t2 * mat[0] + t7 * mat[4] + t10 * mat[12]));
-        result[7] = determinant * ((t4 * mat[0] + t9 * mat[4] + t10 * mat[8]) - (t5 * mat[0] + t8 * mat[4] + t11 * mat[8]));
-        result[8] = determinant * ((t12 * mat[7] + t15 * mat[11] + t16 * mat[15]) - (t13 * mat[7] + t14 * mat[11] + t17 * mat[15]));
-        result[9] = determinant * ((t13 * mat[3] + t18 * mat[11] + t21 * mat[15]) - (t12 * mat[3] + t19 * mat[11] + t20 * mat[15]));
-        result[10] = determinant * ((t14 * mat[3] + t19 * mat[7] + t22 * mat[15]) - (t15 * mat[3] + t18 * mat[7] + t23 * mat[15]));
-        result[11] = determinant * ((t17 * mat[3] + t20 * mat[7] + t23 * mat[11]) - (t16 * mat[3] + t21 * mat[7] + t22 * mat[11]));
-        result[12] = determinant * ((t14 * mat[10] + t17 * mat[14] + t13 * mat[6]) - (t16 * mat[14] + t12 * mat[6] + t15 * mat[10]));
-        result[13] = determinant * ((t20 * mat[14] + t12 * mat[2] + t19 * mat[10]) - (t18 * mat[10] + t21 * mat[14] + t13 * mat[2]));
-        result[14] = determinant * ((t18 * mat[6] + t23 * mat[14] + t15 * mat[2]) - (t22 * mat[14] + t14 * mat[2] + t19 * mat[6]));
-        result[15] = determinant * ((t22 * mat[10] + t16 * mat[2] + t21 * mat[6]) - (t20 * mat[6] + t23 * mat[10] + t17 * mat[2]));
+        result[4] = determinant * ((t1 * Data[4] + t2 * Data[8] + t5 * Data[12]) - (t0 * Data[4] + t3 * Data[8] + t4 * Data[12]));
+        result[5] = determinant * ((t0 * Data[0] + t7 * Data[8] + t8 * Data[12]) - (t1 * Data[0] + t6 * Data[8] + t9 * Data[12]));
+        result[6] = determinant * ((t3 * Data[0] + t6 * Data[4] + t11 * Data[12]) - (t2 * Data[0] + t7 * Data[4] + t10 * Data[12]));
+        result[7] = determinant * ((t4 * Data[0] + t9 * Data[4] + t10 * Data[8]) - (t5 * Data[0] + t8 * Data[4] + t11 * Data[8]));
+        result[8] = determinant * ((t12 * Data[7] + t15 * Data[11] + t16 * Data[15]) - (t13 * Data[7] + t14 * Data[11] + t17 * Data[15]));
+        result[9] = determinant * ((t13 * Data[3] + t18 * Data[11] + t21 * Data[15]) - (t12 * Data[3] + t19 * Data[11] + t20 * Data[15]));
+        result[10] = determinant * ((t14 * Data[3] + t19 * Data[7] + t22 * Data[15]) - (t15 * Data[3] + t18 * Data[7] + t23 * Data[15]));
+        result[11] = determinant * ((t17 * Data[3] + t20 * Data[7] + t23 * Data[11]) - (t16 * Data[3] + t21 * Data[7] + t22 * Data[11]));
+        result[12] = determinant * ((t14 * Data[10] + t17 * Data[14] + t13 * Data[6]) - (t16 * Data[14] + t12 * Data[6] + t15 * Data[10]));
+        result[13] = determinant * ((t20 * Data[14] + t12 * Data[2] + t19 * Data[10]) - (t18 * Data[10] + t21 * Data[14] + t13 * Data[2]));
+        result[14] = determinant * ((t18 * Data[6] + t23 * Data[14] + t15 * Data[2]) - (t22 * Data[14] + t14 * Data[2] + t19 * Data[6]));
+        result[15] = determinant * ((t22 * Data[10] + t16 * Data[2] + t21 * Data[6]) - (t20 * Data[6] + t23 * Data[10] + t17 * Data[2]));
     
         (*this) = result;
     }
 
     Quat Mat4::ToQuat(const Mat4& Mat)
     {
-        Vec3 upv = Vec3::Normalize(Vec3(Mat.up.x, Mat.up.y, Mat.up.z));
-        Vec3 forwardv = Vec3::Normalize(Vec3(Mat.forward.x, Mat.forward.y, Mat.forward.z));
+        Vec3 upv = Vec3::Normalize(Vec3(Mat.Up.X, Mat.Up.Y, Mat.Up.Z));
+        Vec3 forwardv = Vec3::Normalize(Vec3(Mat.Forward.X, Mat.Forward.Y, Mat.Forward.Z));
         Vec3 rightv = Vec3::Cross(upv, forwardv);
         upv = Vec3::Cross(forwardv, rightv);
     
-        return Quat::LookRotation(forwardv, upv, rightv);
+        return Quat::LookRotation(forwardv, upv);
     }
 
     Quat Mat4::ToQuat()
     {
-		Vec3 upv = Vec3::Normalize(Vec3(this->up.x, this->up.y, this->up.z));
-        Vec3 forwardv = Vec3::Normalize(Vec3(this->forward.x, this->forward.y, this->forward.z));
+		Vec3 upv = Vec3::Normalize(Vec3(this->Up.X, this->Up.Y, this->Up.Z));
+        Vec3 forwardv = Vec3::Normalize(Vec3(this->Forward.X, this->Forward.Y, this->Forward.Z));
         Vec3 rightv = Vec3::Cross(upv, forwardv);
         upv = Vec3::Cross(forwardv, rightv);
     
-        return Quat::LookRotation(forwardv, upv, rightv);
+        return Quat::LookRotation(forwardv, upv);
     }
 
     const Quat Mat4::ToQuat() const
     {
-        Vec3 upv = Vec3::Normalize(Vec3(this->up.x, this->up.y, this->up.z));
-        Vec3 forwardv = Vec3::Normalize(Vec3(this->forward.x, this->forward.y, this->forward.z));
+        Vec3 upv = Vec3::Normalize(Vec3(this->Up.X, this->Up.Y, this->Up.Z));
+        Vec3 forwardv = Vec3::Normalize(Vec3(this->Forward.X, this->Forward.Y, this->Forward.Z));
         Vec3 rightv = Vec3::Cross(upv, forwardv);
         upv = Vec3::Cross(forwardv, rightv);
     
-        return Quat::LookRotation(forwardv, upv, rightv);
+        return Quat::LookRotation(forwardv, upv);
     }
 
     Transform3d Mat4::ToTransform3d(const Mat4& Mat)
     {
         Transform3d result;
 
-        result.position = Vec3(Mat[12], Mat[13], Mat[14]);
-        result.rotation = Mat.ToQuat();
+        result.Position = Vec3(Mat[12], Mat[13], Mat[14]);
+        result.Rotation = Mat.ToQuat();
 
         Mat4 rotScaleMat(
             Mat[0], Mat[1], Mat[2], 0.0f,
@@ -444,10 +444,10 @@ namespace Clunk
             0.0f, 0.0f, 0.0f, 1.0f
         );
 
-        Mat4 invRotMat = Quat::ToMat4(Quat::Inverse(result.rotation));
+        Mat4 invRotMat = Quat::ToMat4(Quat::Inverse(result.Rotation));
         Mat4 scaleSkewmat = rotScaleMat * invRotMat;
 
-        result.scale = Vec3(
+        result.Scale = Vec3(
             scaleSkewmat[0],
             scaleSkewmat[5],
             scaleSkewmat[10]
@@ -460,20 +460,20 @@ namespace Clunk
     {
         Transform3d result;
 
-        result.position = Vec3(mat[12], mat[13], mat[14]);
-        result.rotation = this->ToQuat();
+        result.Position = Vec3(Data[12], Data[13], Data[14]);
+        result.Rotation = this->ToQuat();
 
         Mat4 rotScaleMat(
-            mat[0], mat[1], mat[2], 0.0f,
-            mat[4], mat[5], mat[6], 0.0f,
-            mat[8], mat[9], mat[10], 0.0f,
+            Data[0], Data[1], Data[2], 0.0f,
+            Data[4], Data[5], Data[6], 0.0f,
+            Data[8], Data[9], Data[10], 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
         );
 
-        Mat4 invRotMat = Quat::ToMat4(Quat::Inverse(result.rotation));
+        Mat4 invRotMat = Quat::ToMat4(Quat::Inverse(result.Rotation));
         Mat4 scaleSkewmat = rotScaleMat * invRotMat;
 
-        result.scale = Vec3(
+        result.Scale = Vec3(
             scaleSkewmat[0],
             scaleSkewmat[5],
             scaleSkewmat[10]
@@ -486,20 +486,20 @@ namespace Clunk
     {
         Transform3d result;
 
-        result.position = Vec3(mat[12], mat[13], mat[14]);
-        result.rotation = this->ToQuat();
+        result.Position = Vec3(Data[12], Data[13], Data[14]);
+        result.Rotation = this->ToQuat();
 
         Mat4 rotScaleMat(
-            mat[0], mat[1], mat[2], 0.0f,
-            mat[4], mat[5], mat[6], 0.0f,
-            mat[8], mat[9], mat[10], 0.0f,
+            Data[0], Data[1], Data[2], 0.0f,
+            Data[4], Data[5], Data[6], 0.0f,
+            Data[8], Data[9], Data[10], 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
         );
 
-        Mat4 invRotMat = Quat::ToMat4(Quat::Inverse(result.rotation));
+        Mat4 invRotMat = Quat::ToMat4(Quat::Inverse(result.Rotation));
         Mat4 scaleSkewmat = rotScaleMat * invRotMat;
 
-        result.scale = Vec3(
+        result.Scale = Vec3(
             scaleSkewmat[0],
             scaleSkewmat[5],
             scaleSkewmat[10]
@@ -510,21 +510,21 @@ namespace Clunk
 
     Mat4 Mat4::FromTransform3d(const Transform3d &T)
     {
-        Vec3 x = T.rotation * Vec3(1.0f, 0.0f, 0.0f);
-        Vec3 y = T.rotation * Vec3(0.0f, 1.0f, 0.0f);
-        Vec3 z = T.rotation * Vec3(0.0f, 0.0f, 1.0f);
+        Vec3 x = T.Rotation * Vec3(1.0f, 0.0f, 0.0f);
+        Vec3 y = T.Rotation * Vec3(0.0f, 1.0f, 0.0f);
+        Vec3 z = T.Rotation * Vec3(0.0f, 0.0f, 1.0f);
 
-        x = x * T.scale.x;
-        y = y * T.scale.y;
-        z = z * T.scale.z;
+        x = x * T.Scale.X;
+        y = y * T.Scale.Y;
+        z = z * T.Scale.Z;
 
-        Vec3 p = T.position;
+        Vec3 p = T.Position;
 
         return Mat4(
-            x.x, x.y, x.z, 0.0f,
-            y.x, y.y, y.z, 0.0f,
-            z.x, z.y, z.z, 0.0f,
-            p.x, p.y, p.z, 1.0f
+            x.X, x.Y, x.Z, 0.0f,
+            y.X, y.Y, y.Z, 0.0f,
+            z.X, z.Y, z.Z, 0.0f,
+            p.X, p.Y, p.Z, 1.0f
         );
     }
 }

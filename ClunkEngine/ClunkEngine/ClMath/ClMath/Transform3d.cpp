@@ -8,11 +8,11 @@ namespace Clunk
     {
         Transform3d result;
     
-        result.scale = A.scale * B.scale;
-        result.rotation = B.rotation * A.rotation;
+        result.Scale = A.Scale * B.Scale;
+        result.Rotation = B.Rotation * A.Rotation;
     
-        result.position = A.rotation * (A.scale * B.position);
-        result.position = A.position + result.position;
+        result.Position = A.Rotation * (A.Scale * B.Position);
+        result.Position = A.Position + result.Position;
     
         return result;
     }
@@ -21,11 +21,11 @@ namespace Clunk
     {
         Transform3d result;
     
-        result.scale = scale * B.scale;
-        result.rotation = B.rotation * rotation;
+        result.Scale = Scale * B.Scale;
+        result.Rotation = B.Rotation * Rotation;
     
-        result.position = rotation * (scale * B.position);
-        result.position = position + result.position;
+        result.Position = Rotation * (Scale * B.Position);
+        result.Position = Position + result.Position;
     
         (*this) = result;
     }
@@ -34,14 +34,14 @@ namespace Clunk
     {
         Transform3d inverse;
     
-        inverse.rotation = Quat::Inverse(T.rotation);
+        inverse.Rotation = Quat::Inverse(T.Rotation);
     
-        inverse.scale.x = fabs(T.scale.x) < EPSILON ? 0.0f : 1.0f / T.scale.x;
-        inverse.scale.y = fabs(T.scale.y) < EPSILON ? 0.0f : 1.0f / T.scale.y;
-        inverse.scale.z = fabs(T.scale.z) < EPSILON ? 0.0f : 1.0f / T.scale.z;
+        inverse.Scale.X = fabs(T.Scale.X) < EPSILON ? 0.0f : 1.0f / T.Scale.X;
+        inverse.Scale.Y = fabs(T.Scale.Y) < EPSILON ? 0.0f : 1.0f / T.Scale.Y;
+        inverse.Scale.Z = fabs(T.Scale.Z) < EPSILON ? 0.0f : 1.0f / T.Scale.Z;
     
-        Vec3 inverse_translation = T.position * -1.0f;
-        inverse.position = inverse.position * (inverse.scale * inverse_translation);
+        Vec3 inverse_translation = T.Position * -1.0f;
+        inverse.Position = inverse.Position * (inverse.Scale * inverse_translation);
     
         return inverse;
     }
@@ -50,45 +50,45 @@ namespace Clunk
     {
         Transform3d inverse;
     
-        inverse.rotation = Quat::Inverse(rotation);
+        inverse.Rotation = Quat::Inverse(Rotation);
     
-        inverse.scale.x = fabs(scale.x) < EPSILON ? 0.0f : 1.0f / scale.x;
-        inverse.scale.y = fabs(scale.y) < EPSILON ? 0.0f : 1.0f / scale.y;
-        inverse.scale.z = fabs(scale.z) < EPSILON ? 0.0f : 1.0f / scale.z;
+        inverse.Scale.X = fabs(Scale.X) < EPSILON ? 0.0f : 1.0f / Scale.X;
+        inverse.Scale.Y = fabs(Scale.Y) < EPSILON ? 0.0f : 1.0f / Scale.Y;
+        inverse.Scale.Z = fabs(Scale.Z) < EPSILON ? 0.0f : 1.0f / Scale.Z;
     
-        Vec3 inverse_translation = position * -1.0f;
-        inverse.position = inverse.position * (inverse.scale * inverse_translation);
+        Vec3 inverse_translation = Position * -1.0f;
+        inverse.Position = inverse.Position * (inverse.Scale * inverse_translation);
         
         return inverse;
     }
 
     Transform3d Transform3d::Mix(const Transform3d &A, const Transform3d &B, f32 Time)
     {
-        Quat bRot = B.rotation;
-        if(Quat::Dot(A.rotation, bRot) < 0.0f)
+        Quat bRot = B.Rotation;
+        if(Quat::Dot(A.Rotation, bRot) < 0.0f)
         {
             bRot = -bRot;
         }
 
         return Transform3d(
-            Vec3::Lerp(A.position, B.position, Time),
-            Quat::NLerp(A.rotation, bRot, Time),
-            Vec3::Lerp(A.scale, B.scale, Time)
+            Vec3::Lerp(A.Position, B.Position, Time),
+            Quat::NLerp(A.Rotation, bRot, Time),
+            Vec3::Lerp(A.Scale, B.Scale, Time)
         );
     }
 
     Transform3d Transform3d::Mix(const Transform3d &B, f32 Time)
     {
-        Quat bRot = B.rotation;
-        if(Quat::Dot(this->rotation, bRot) < 0.0f)
+        Quat bRot = B.Rotation;
+        if(Quat::Dot(this->Rotation, bRot) < 0.0f)
         {
             bRot = -bRot;
         }
 
         return Transform3d(
-            Vec3::Lerp(this->position, B.position, Time),
-            Quat::NLerp(this->rotation, bRot, Time),
-            Vec3::Lerp(this->scale, B.scale, Time)
+            Vec3::Lerp(this->Position, B.Position, Time),
+            Quat::NLerp(this->Rotation, bRot, Time),
+            Vec3::Lerp(this->Scale, B.Scale, Time)
         );
     }
 
@@ -96,8 +96,8 @@ namespace Clunk
     {
         Transform3d result;
 
-        result.position = Vec3(Mat[12], Mat[13], Mat[14]);
-        result.rotation = Mat4::ToQuat(Mat);
+        result.Position = Vec3(Mat[12], Mat[13], Mat[14]);
+        result.Rotation = Mat4::ToQuat(Mat);
 
         Mat4 rotScaleMat(
             Mat[0], Mat[1], Mat[2], 0.0f,
@@ -105,13 +105,13 @@ namespace Clunk
             Mat[8], Mat[9], Mat[10], 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
         );
-        Mat4 invRotMat = Quat::ToMat4(Quat::Inverse(result.rotation));
-        Mat4 scaleSkewmat = rotScaleMat * invRotMat;
+        Mat4 invRotMat = Quat::ToMat4(Quat::Inverse(result.Rotation));
+        Mat4 scale_skewmat = rotScaleMat * invRotMat;
 
-        result.scale = Vec3(
-            scaleSkewmat[0],
-            scaleSkewmat[5],
-            scaleSkewmat[10]
+        result.Scale = Vec3(
+            scale_skewmat[0],
+            scale_skewmat[5],
+            scale_skewmat[10]
         );
 
         return  result;
@@ -119,61 +119,61 @@ namespace Clunk
 
     Mat4 Transform3d::ToMat4(const Transform3d &T)
     {
-        Vec3 x = T.rotation * Vec3(1.0f, 0.0f, 0.0f);
-        Vec3 y = T.rotation * Vec3(0.0f, 1.0f, 0.0f);
-        Vec3 z = T.rotation * Vec3(0.0f, 0.0f, 1.0f);
+        Vec3 x = T.Rotation * Vec3(1.0f, 0.0f, 0.0f);
+        Vec3 y = T.Rotation * Vec3(0.0f, 1.0f, 0.0f);
+        Vec3 z = T.Rotation * Vec3(0.0f, 0.0f, 1.0f);
 
-        x = x * T.scale.x;
-        y = y * T.scale.y;
-        z = z * T.scale.z;
+        x = x * T.Scale.X;
+        y = y * T.Scale.Y;
+        z = z * T.Scale.Z;
 
-        Vec3 p = T.position;
+        Vec3 p = T.Position;
 
         return Mat4(
-            x.x, x.y, x.z, 0.0f,
-            y.x, y.y, y.z, 0.0f,
-            z.x, z.y, z.z, 0.0f,
-            p.x, p.y, p.z, 1.0f
+            x.X, x.Y, x.Z, 0.0f,
+            y.X, y.Y, y.Z, 0.0f,
+            z.X, z.Y, z.Z, 0.0f,
+            p.X, p.Y, p.Z, 1.0f
         );
     }
 
     Mat4 Transform3d::ToMat4()
     {
-        Vec3 x = this->rotation * Vec3(1.0f, 0.0f, 0.0f);
-        Vec3 y = this->rotation * Vec3(0.0f, 1.0f, 0.0f);
-        Vec3 z = this->rotation * Vec3(0.0f, 0.0f, 1.0f);
+        Vec3 x = this->Rotation * Vec3(1.0f, 0.0f, 0.0f);
+        Vec3 y = this->Rotation * Vec3(0.0f, 1.0f, 0.0f);
+        Vec3 z = this->Rotation * Vec3(0.0f, 0.0f, 1.0f);
 
-        x = x * this->scale.x;
-        y = y * this->scale.y;
-        z = z * this->scale.z;
+        x = x * this->Scale.X;
+        y = y * this->Scale.Y;
+        z = z * this->Scale.Z;
 
-        Vec3 p = this->position;
+        Vec3 p = this->Position;
 
         return Mat4(
-            x.x, x.y, x.z, 0.0f,
-            y.x, y.y, y.z, 0.0f,
-            z.x, z.y, z.z, 0.0f,
-            p.x, p.y, p.z, 1.0f
+            x.X, x.Y, x.Z, 0.0f,
+            y.X, y.Y, y.Z, 0.0f,
+            z.X, z.Y, z.Z, 0.0f,
+            p.X, p.Y, p.Z, 1.0f
         );
     }
 
     const Mat4 Transform3d::ToMat4() const
     {
-        Vec3 x = this->rotation * Vec3(1.0f, 0.0f, 0.0f);
-        Vec3 y = this->rotation * Vec3(0.0f, 1.0f, 0.0f);
-        Vec3 z = this->rotation * Vec3(0.0f, 0.0f, 1.0f);
+        Vec3 x = this->Rotation * Vec3(1.0f, 0.0f, 0.0f);
+        Vec3 y = this->Rotation * Vec3(0.0f, 1.0f, 0.0f);
+        Vec3 z = this->Rotation * Vec3(0.0f, 0.0f, 1.0f);
 
-        x = x * this->scale.x;
-        y = y * this->scale.y;
-        z = z * this->scale.z;
+        x = x * this->Scale.X;
+        y = y * this->Scale.Y;
+        z = z * this->Scale.Z;
 
-        Vec3 p = this->position;
+        Vec3 p = this->Position;
 
         return Mat4(
-            x.x, x.y, x.z, 0.0f,
-            y.x, y.y, y.z, 0.0f,
-            z.x, z.y, z.z, 0.0f,
-            p.x, p.y, p.z, 1.0f
+            x.X, x.Y, x.Z, 0.0f,
+            y.X, y.Y, y.Z, 0.0f,
+            z.X, z.Y, z.Z, 0.0f,
+            p.X, p.Y, p.Z, 1.0f
         );
     }
 

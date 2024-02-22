@@ -11,9 +11,9 @@ namespace Clunk
         f32 s = sinf(Angle / 2.0f);
 
         (*this) = Quat(
-            norm.x * s,
-            norm.y * s,
-            norm.z * s,
+            norm.X * s,
+            norm.Y * s,
+            norm.Z * s,
             cosf(Angle / 2.0f)
         );
     }
@@ -24,9 +24,9 @@ namespace Clunk
         f32 s = sinf(Angle / 2.0f);
     
         return Quat(
-            norm.x * s,
-            norm.y * s,
-            norm.z * s,
+            norm.X * s,
+            norm.Y * s,
+            norm.Z * s,
             cosf(Angle / 2.0f)
         );
     }
@@ -42,11 +42,11 @@ namespace Clunk
         else if (fn == (tn * -1.0f))
         {
             Vec3 ortho = Vec3(1, 0, 0);
-            if(fabsf(fn.y) < fabsf(fn.x))
+            if(fabsf(fn.Y) < fabsf(fn.X))
             {
                 ortho = Vec3(0.0f, 1.0f, 0.0f);
             }
-            if(fabsf(fn.z) < fabs(fn.y) && fabs(fn.z) < fabsf(fn.x))
+            if(fabsf(fn.Z) < fabs(fn.Y) && fabs(fn.Z) < fabsf(fn.X))
             {
                 ortho = Vec3(0.0f, 0.0f, 1.0f);
             }
@@ -65,10 +65,10 @@ namespace Clunk
         if(lensq < EPSILON) { return; }
     
         f32 inverse_length = 1.0f / sqrtf(lensq);
-        x *= inverse_length;
-        y *= inverse_length;
-        z *= inverse_length;
-        w *= inverse_length;
+        X *= inverse_length;
+        Y *= inverse_length;
+        Z *= inverse_length;
+        W *= inverse_length;
     }
 
     Quat Quat::GetNormal()
@@ -79,10 +79,10 @@ namespace Clunk
         f32 inverse_length = 1.0f / sqrtf(lensq);
     
         return Quat(
-            x * inverse_length,
-            y * inverse_length,
-            z * inverse_length,
-            w * inverse_length
+            X * inverse_length,
+            Y * inverse_length,
+            Z * inverse_length,
+            W * inverse_length
         );
     }
 
@@ -93,10 +93,10 @@ namespace Clunk
     
         f32 inverse_lensq = 1.0f/ lensq;
         return Quat(
-            -Q.x * inverse_lensq,
-            -Q.y * inverse_lensq,
-            -Q.z * inverse_lensq,
-            Q.w * inverse_lensq
+            -Q.X * inverse_lensq,
+            -Q.Y * inverse_lensq,
+            -Q.Z * inverse_lensq,
+             Q.W * inverse_lensq
         );
     }
 
@@ -108,10 +108,10 @@ namespace Clunk
         f32 inverse_length = 1.0f / sqrtf(lensq);
         
         return Quat(
-            Q.x * inverse_length,
-            Q.y * inverse_length,
-            Q.z * inverse_length,
-            Q.w * inverse_length
+            Q.X * inverse_length,
+            Q.Y * inverse_length,
+            Q.Z * inverse_length,
+            Q.W * inverse_length
         );
     }
 
@@ -122,10 +122,10 @@ namespace Clunk
 
         f32 inverse_lensq = 1.0f/ lensq;
         return Quat(
-            -x * inverse_lensq,
-            -y * inverse_lensq,
-            -z * inverse_lensq,
-            w * inverse_lensq
+            -X * inverse_lensq,
+            -Y * inverse_lensq,
+            -Z * inverse_lensq,
+             W * inverse_lensq
         );
     }
 
@@ -136,10 +136,10 @@ namespace Clunk
     
         f32 inverse_lensq = 1.0f/ lensq;
         return Quat(
-            -x * inverse_lensq,
-            -y * inverse_lensq,
-            -z * inverse_lensq,
-            w * inverse_lensq
+            -X * inverse_lensq,
+            -Y * inverse_lensq,
+            -Z * inverse_lensq,
+             W * inverse_lensq
         );
     }
 
@@ -157,7 +157,7 @@ namespace Clunk
         return result;
     }
 
-    Quat Quat::LookRotation(const Vec3& Direction, const Vec3& Up, const Vec3& Right)
+    Quat Quat::LookRotation(const Vec3& Direction, const Vec3& Up)
     {
         Vec3 front = Vec3::Normalize(Direction); // Object Forward
         Vec3 up = Vec3::Normalize(Up); // Desired Up
@@ -187,9 +187,9 @@ namespace Clunk
         Vec3 front = (*this) * Vec3(0.f, 0.f, 1.f);
 
         return Mat4(
-            right.x, right.y, right.z, 0.0f,
-            up.x, up.y, up.z, 0.0f,
-            front.x, front.y, front.z, 0.0f,
+            right.X, right.Y, right.Z, 0.0f,
+            up.X, up.Y, up.Z, 0.0f,
+            front.X, front.Y, front.Z, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
         );
     }
@@ -201,9 +201,9 @@ namespace Clunk
         Vec3 front = Q * Vec3(0.f, 0.f, 1.f);
     
         return Mat4(
-            right.x, right.y, right.z, 0.0f,
-            up.x, up.y, up.z, 0.0f,
-            front.x, front.y, front.z, 0.0f,
+            right.X, right.Y, right.Z, 0.0f,
+            up.X, up.Y, up.Z, 0.0f,
+            front.X, front.Y, front.Z, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
         );
     }

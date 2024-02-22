@@ -44,7 +44,7 @@ namespace Clunk::Vk
         ));
     }
 
-    ClVkSimpleSkyBoxLayer::ClVkSimpleSkyBoxLayer(ClVkContext &VkCtx, const ClVkImage &DepthImage, const ClVkBuffer &TransformUniform, const char *MeshFile, std::vector<const char*> TextureFiles) :
+    ClVkSimpleSkyBoxLayer::ClVkSimpleSkyBoxLayer(ClVkContext &VkCtx, const ClVkImage &DepthImage, const ClVkBuffer &TransformUniform, std::vector<const char*> TextureFiles) :
         ClVk3dLayer()
     {
         mTexture = cl_create_vk_cubemap_image(VkCtx, TextureFiles);
@@ -78,6 +78,10 @@ namespace Clunk::Vk
             cl_create_vk_shader_module(VkCtx.Device, "./Shaders/GLSL/SimpleSkyBox.frag")
         };
         CreatePipeline(VkCtx, shader_modules, mRenderPass, mPipelineLayout);
+        for(ClVkShaderModule shader : shader_modules)
+        {
+            cl_destroy_vk_shader_module(VkCtx.Device, shader);
+        }
 
         mVerts = cl_create_vk_gpu_array_buffer<SimpleSkyBoxVertex>(VkCtx, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, SKY_VERTS);
         mIndices = cl_create_vk_gpu_array_buffer<u32>(VkCtx, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, SKY_INDICES);
@@ -107,7 +111,10 @@ namespace Clunk::Vk
     }
 
     void ClVkSimpleSkyBoxLayer::DrawFrame(const ClVkContext &VkCtx, const VkCommandBuffer &CmdBuffer, size_t CurrentImage)
-    {
+    {   
+        BeginRenderPass(VkCtx, CmdBuffer, CurrentImage);
+        Draw(VkCtx, CmdBuffer);
+        EndRenderPass(CmdBuffer);
     }
 
     void ClVkSimpleSkyBoxLayer::CreateDescriptor(ClVkContext &VkCtx, const ClVkBuffer &TransformUniform)
@@ -120,6 +127,10 @@ namespace Clunk::Vk
             get_vk_desc_set_layout_binding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT),
             get_vk_desc_set_layout_binding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT)
         };
+        // std::vector<VkDescriptorSetLayoutBinding> bindings = {
+        //     get_vk_desc_set_layout_binding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT),
+        //     get_vk_desc_set_layout_binding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT)
+        // };
 
         VkDescriptorSetLayoutCreateInfo layout_info = {
             .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
@@ -164,6 +175,7 @@ namespace Clunk::Vk
                 get_vk_buffer_write_desc_set(mDescriptor.Sets[i], buffer_info1, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER),
                 get_vk_buffer_write_desc_set(mDescriptor.Sets[i], buffer_info2, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER),
                 get_vk_image_write_desc_set(mDescriptor.Sets[i], img_info1, 2)
+                // get_vk_image_write_desc_set(mDescriptor.Sets[i], img_info1, 1)
             };
 
             vkUpdateDescriptorSets(VkCtx.Device, static_cast<u32>(desc_writes.size()), desc_writes.data(), 0, nullptr);
@@ -219,7 +231,7 @@ namespace Clunk::Vk
 
         VkPipelineRasterizationStateCreateInfo rasterizer_info = create_info_vk_pipeline_rasterization(
             VkPolygonMode::VK_POLYGON_MODE_FILL,
-            VkCullModeFlagBits::VK_CULL_MODE_BACK_BIT,
+            VkCullModeFlagBits::VK_CULL_MODE_NONE,
             VkFrontFace::VK_FRONT_FACE_CLOCKWISE,
             1.0f
         );
@@ -270,5 +282,15 @@ namespace Clunk::Vk
     
     void ClVkSimpleSkyBoxLayer::Draw(const ClVkContext &VkCtx, VkCommandBuffer CmdBuffer)
     {
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(CmdBuffer, 0, 1, &mVerts.Handle, offsets);
+        vkCmdBindIndexBuffer(CmdBuffer, mIndices.Handle, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdBindDescriptorSets(CmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelineLayout, 0, 1, &mDescriptor.Sets[VkCtx.FrameSync.GetCurrentIndex()], 0, nullptr);
+
+        // vkCmdDrawIndexed(CmdBuffer, static_cast<u32>(mIndices.Size), 1, 0, 0, 0);
+        // u32 size = static_cast<u32>(mIndices.Size) / sizeof(u32);
+        vkCmdDrawIndexed(CmdBuffer, mIndices.Count, 1, 0, 0, 0); 
+        // vkCmdDraw(CmdBuffer, 36, 1, 0, 0);
     }
 }

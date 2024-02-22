@@ -51,6 +51,7 @@ target_link_libraries(${Target}
     TinyObjLoader
     MeshOptimizer
     VkMemAllocator
+    glm::glm
     STB_Image
     PCH
     Core

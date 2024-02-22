@@ -24,8 +24,8 @@ namespace Clunk::Vk
         // Create world transform uniforms
         mWorldTransform = ClVkTransforms{
             // .model = Mat4::Identity(),
-            .view = Mat4::LookAtLH(Vec3(2.0f, 2.0f, 2.0f), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 1.0f)),
-            .proj = Mat4::PerspectiveLH(45.f, static_cast<f32>(width/ height), 0.1f, 100.f)
+            .view = Mat4::LookAtLH(Vec3(1.0f, 5.0f, 1.0f), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 1.0f)),
+            .proj = Mat4::PerspectiveLH(45.f, static_cast<f32>(width/ height), 0.1f, 1000.f)
         };
         mWorldTransform.proj[5] *= -1;
         mWorldTransformUniform = cl_create_vk_uniform_buffer<ClVkTransforms>(mVkCtx, mWorldTransform);
@@ -34,6 +34,11 @@ namespace Clunk::Vk
         mEndLayer = ClVkEndLayer(mVkCtx, &mDepthImage);
 
         mLayers3d.Push( new ClVkSimple3dLayer(mVkCtx, mDepthImage, mWorldTransformUniform, "./Assets/Models/viking_room/viking_room.obj", "./Assets/Models/viking_room/viking_room.png" ));
+
+        std::vector<const char*> sky_textures = {
+            "./Assets/Images/Skyboxes/piazza_bologni/piazza_bologni_1k.hdr"
+        };
+        mLayers3d.Push( new ClVkSimpleSkyBoxLayer(mVkCtx, mDepthImage, mWorldTransformUniform, sky_textures) );
         // mLayers2d.Push( new ClVkSimple2dLayer(mVkCtx, "./Assets/Images/statue.jpg") );
     }
 
