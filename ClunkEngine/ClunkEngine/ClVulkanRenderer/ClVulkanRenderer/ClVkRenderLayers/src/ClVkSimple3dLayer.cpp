@@ -109,7 +109,7 @@ namespace Clunk::Vk
 
     void ClVkSimple3dLayer::Update(ClVkContext &VkCtx, u32 CurrentIndex, ClVkBuffer &ProjViewUniform, const ClProjectionView &ProjView, f32 DeltaTime)
     {
-        cl_update_vk_buffer(VkCtx, TransformUniform, &Transforms, sizeof(Transforms));
+        cl_update_vk_buffer(VkCtx, ProjViewUniform, &ProjView, sizeof(ClProjectionView));
         
         static auto start_time = std::chrono::high_resolution_clock::now();
         auto current_time = std::chrono::high_resolution_clock::now();
@@ -163,9 +163,9 @@ namespace Clunk::Vk
         for(u32 i = 0; i < NumFrames; i++)
         {
             VkDescriptorBufferInfo buffer_info1 = {
-                .buffer = TransformUniform.Handle,
+                .buffer = ProjViewUniform.Handle,
                 .offset = 0,
-                .range = TransformUniform.Size
+                .range = ProjViewUniform.Size
             };
             VkDescriptorBufferInfo buffer_info2 = {
                 .buffer = mModelSpaceBuffer.Handle,

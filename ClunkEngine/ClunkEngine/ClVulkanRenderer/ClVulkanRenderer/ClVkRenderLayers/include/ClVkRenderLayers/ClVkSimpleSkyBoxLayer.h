@@ -54,7 +54,7 @@ namespace Clunk::Vk
 
         virtual void Destroy(ClVkContext& VkCtx) override;
 
-        virtual void Update(ClVkContext& VkCtx, u32 CurrentIndex, ClVkBuffer& TransformUniform, const ClVkTransforms& Transforms, f32 DeltaTime) override;
+        virtual void Update(ClVkContext& VkCtx, u32 CurrentIndex, ClVkBuffer& ProjViewUniform, const ClProjectionView& ProjView, f32 DeltaTime) override;
 
         virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 

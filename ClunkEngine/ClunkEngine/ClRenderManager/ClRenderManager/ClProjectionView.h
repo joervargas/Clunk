@@ -16,7 +16,8 @@
 // };
 
 // struct ClVkTransforms
+struct ClProjectionView
 {
-    Clunk::Mat4 view;
-    Clunk::Mat4 proj;
+    Clunk::Mat4 View;
+    Clunk::Mat4 Proj;
 };

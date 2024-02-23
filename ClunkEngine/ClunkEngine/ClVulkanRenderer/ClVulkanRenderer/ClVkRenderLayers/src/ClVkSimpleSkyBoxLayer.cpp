@@ -104,9 +104,9 @@ namespace Clunk::Vk
         vkDestroySampler(VkCtx.Device, mSampler, nullptr);
     }
 
-    void ClVkSimpleSkyBoxLayer::Update(ClVkContext &VkCtx, u32 CurrentIndex, ClVkBuffer &TransformUniform, const ClVkTransforms &Transforms, f32 DeltaTime)
+    void ClVkSimpleSkyBoxLayer::Update(ClVkContext &VkCtx, u32 CurrentIndex, ClVkBuffer &ProjViewUniform, const ClProjectionView &ProjView, f32 DeltaTime)
     {
-        cl_update_vk_buffer(VkCtx, TransformUniform, &Transforms, sizeof(Transforms));
+        cl_update_vk_buffer(VkCtx, ProjViewUniform, &ProjView, sizeof(ClProjectionView));
         cl_update_vk_buffer(VkCtx, mModelSpaceBuffer, &mModelSpace, sizeof(Mat4));
     }
 
