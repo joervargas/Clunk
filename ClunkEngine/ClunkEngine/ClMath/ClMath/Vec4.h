@@ -1,9 +1,10 @@
 #pragma once
 
-
 #include <PCH/pch.h>
 
 #include <cmath>
+
+#include "Vec3.h"
 
 namespace Clunk
 {
@@ -34,6 +35,18 @@ namespace Clunk
             Y = values[1];
             Z = values[2];
             W = values[3];
+        }
+
+////////////////////////////////////////////////////////////
+
+        TVec3<T> ToVec3()
+        {
+            return TVec3<T>(X, Y, Z);
+        }
+
+        TVec3<T> ToVec3() const
+        {
+            return TVec3<T>(X, Y, Z);
         }
 
 ////////////////////////////////////////////////////////////

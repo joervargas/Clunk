@@ -26,7 +26,9 @@ namespace Clunk::Vk
         mRenderPass = cl_create_vk_renderpass(VkCtx, renderpass_info);
         mFramebuffers = cl_create_vk_color_depth_framebuffers(VkCtx, mRenderPass, DepthImage.View);
 
+
         mModelSpace = Mat4::Identity();
+        mModelTransforms = Transform3d(mModelSpace.Position.ToVec3());
         mModelSpaceBuffer = cl_create_vk_uniform_buffer<Mat4>(VkCtx, mModelSpace);
         
         CreateDescriptor(VkCtx, TransformUniform);
@@ -113,7 +115,9 @@ namespace Clunk::Vk
         auto current_time = std::chrono::high_resolution_clock::now();
         float time = std::chrono::duration<float, std::chrono::seconds::period>(current_time - start_time).count();
 
-        mModelSpace = Mat4::RotateZ(mModelSpace, 0.03f * time);
+        mModelTransforms.Rotation.SetAngleAxis(0.3f * time, Vec3(0.0f, 0.0f, 1.0f));
+        // mModelSpace = Mat4::RotateZ(mModelSpace, 0.03f * time);
+        mModelSpace = mModelTransforms.ToMat4();
         cl_update_vk_buffer(VkCtx, mModelSpaceBuffer, &mModelSpace, sizeof(Mat4));
     }
 

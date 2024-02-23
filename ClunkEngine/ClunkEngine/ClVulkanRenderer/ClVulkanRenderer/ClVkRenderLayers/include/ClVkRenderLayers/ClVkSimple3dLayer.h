@@ -3,8 +3,7 @@
 #include "ClVkRenderLayerBase.h"
 #include <ClVulkan/VkShaderUtils.h>
 
-#include <ClMath/Vec2.h>
-#include <ClMath/Vec3.h>
+#include <ClMath/ClMath.h>
 
 #include <PCH/pch.h>
 
@@ -76,20 +75,23 @@ namespace Clunk::Vk
 
     protected:
 
-        void CreateDescriptor(ClVkContext& VkCtx, const ClVkBuffer& TransformUniform);
-
-        void CreatePipeline(const ClVkContext& VkCtx, std::vector<ClVkShaderModule>& ShaderModules, ClVkRenderPass& RenderPass, VkPipelineLayout& Layout, VkExtent2D CustomExtent = VkExtent2D{ .width = 0, .height = 0 });
-
-        void Draw(const ClVkContext& VkCtx, VkCommandBuffer CmdBuffer);
-
         ClVkBuffer mVerts;
         ClVkBuffer mIndices;
 
         ClVkBuffer mModelSpaceBuffer;
         Mat4 mModelSpace;
+        Transform3d mModelTransforms;
 
         ClVkImage mTexture;
         VkSampler mSampler;
+
+    protected:
+
+        void CreateDescriptor(ClVkContext& VkCtx, const ClVkBuffer& TransformUniform);
+
+        void CreatePipeline(const ClVkContext& VkCtx, std::vector<ClVkShaderModule>& ShaderModules, ClVkRenderPass& RenderPass, VkPipelineLayout& Layout, VkExtent2D CustomExtent = VkExtent2D{ .width = 0, .height = 0 });
+
+        void Draw(const ClVkContext& VkCtx, VkCommandBuffer CmdBuffer);
 
     };
 }
