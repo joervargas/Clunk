@@ -149,11 +149,11 @@ namespace Clunk::Vk
         }
     }
 
-    void ClVk3dLayerList::Update(ClVkContext& VkCtx, u32 CurrentIndex, ClVkBuffer &TransformUniform, const ClVkTransforms &Transforms, f32 DeltaTime)
+    void ClVk3dLayerList::Update(ClVkContext& VkCtx, u32 CurrentIndex, ClVkBuffer &ProjViewUniform, const ClProjectionView &ProjView, f32 DeltaTime)
     {
         for(auto& layer : mList)
         {
-            layer->Update(VkCtx, CurrentIndex, TransformUniform, Transforms, DeltaTime);
+            layer->Update(VkCtx, CurrentIndex, ProjViewUniform, ProjView, DeltaTime);
         }
     }
 

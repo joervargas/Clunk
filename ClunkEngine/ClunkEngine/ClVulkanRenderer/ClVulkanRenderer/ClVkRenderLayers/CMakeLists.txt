@@ -17,6 +17,7 @@ include_directories(../)
 include_directories(../ClVulkan/include)
 # include_directories(../../libs/VkMemAllocator/include)
 
+link_directories(../)
 link_directories(../ClVulkan)
 
 target_include_directories(${Target}

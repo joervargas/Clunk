@@ -6,7 +6,7 @@
 #include <ClMath/ClMath.h>
 
 #include <ClVkRenderLayers/ClVkRenderLayers.h>
-#include "ClVkTransforms.h"
+#include <ClRenderManager/ClProjectionView.h>
 
 #include <vulkan/vulkan.h>
 #include <chrono>
@@ -30,7 +30,7 @@ namespace Clunk::Vk
         ClVkRenderer(const ClVkRenderer& Other) :
             mVkLoader(Other.mVkLoader), mVkCtx(Other.mVkCtx),
             mDepthImage(Other.mDepthImage),
-            mWorldTransform(Other.mWorldTransform), mWorldTransformUniform(Other.mWorldTransformUniform),
+            mWorldProjView(Other.mWorldProjView), mWorldProjViewUniform(Other.mWorldProjViewUniform),
             mBeginLayer(Other.mBeginLayer), mEndLayer(Other.mEndLayer),
             mLayers2d(Other.mLayers2d), mLayers3d(Other.mLayers3d),
             m_bIsResized(Other.m_bIsResized)
@@ -41,8 +41,8 @@ namespace Clunk::Vk
             mVkLoader = std::move(Other.mVkLoader);
             mVkCtx = std::move(Other.mVkCtx);
             mDepthImage = std::move(Other.mDepthImage);
-            mWorldTransform = std::move(Other.mWorldTransform);
-            mWorldTransformUniform = std::move(Other.mWorldTransformUniform);
+            mWorldProjView = std::move(Other.mWorldProjView);
+            mWorldProjViewUniform = std::move(Other.mWorldProjViewUniform);
             mBeginLayer = std::move(Other.mBeginLayer);
             mEndLayer = std::move(Other.mEndLayer);
             mLayers2d = std::move(Other.mLayers2d);
@@ -56,8 +56,8 @@ namespace Clunk::Vk
             mVkLoader = Other.mVkLoader;
             mVkCtx = Other.mVkCtx;
             mDepthImage = Other.mDepthImage;
-            mWorldTransform = Other.mWorldTransform;
-            mWorldTransformUniform = Other.mWorldTransformUniform;
+            mWorldProjView = Other.mWorldProjView;
+            mWorldProjViewUniform = Other.mWorldProjViewUniform;
             mBeginLayer = Other.mBeginLayer;
             mEndLayer = Other.mEndLayer;
             mLayers2d = Other.mLayers2d;
@@ -73,8 +73,8 @@ namespace Clunk::Vk
             mVkLoader = std::move(Other.mVkLoader);
             mVkCtx = std::move(Other.mVkCtx);
             mDepthImage = std::move(Other.mDepthImage);
-            mWorldTransform = std::move(Other.mWorldTransform);
-            mWorldTransformUniform = std::move(Other.mWorldTransformUniform);
+            mWorldProjView = std::move(Other.mWorldProjView);
+            mWorldProjViewUniform = std::move(Other.mWorldProjViewUniform);
             mBeginLayer = std::move(Other.mBeginLayer);
             mEndLayer = std::move(Other.mEndLayer);
             mLayers2d = std::move(Other.mLayers2d);
@@ -104,8 +104,8 @@ namespace Clunk::Vk
 
         ClVkImage mDepthImage;
 
-        ClVkTransforms mWorldTransform;
-        ClVkBuffer mWorldTransformUniform;
+        ClProjectionView mWorldProjView;
+        ClVkBuffer mWorldProjViewUniform;
 
         ClVkBeginLayer mBeginLayer;
 

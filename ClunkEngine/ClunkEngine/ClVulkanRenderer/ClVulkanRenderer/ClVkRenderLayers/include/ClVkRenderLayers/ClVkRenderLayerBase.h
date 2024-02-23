@@ -6,7 +6,7 @@
 #include <ClVulkan/ClVkContext.h>
 #include <ClVulkan/ClVkRenderPass.h>
 #include <ClVulkan/ClVkDescriptors.h>
-#include "ClVkTransforms.h"
+#include <ClRenderManager/ClProjectionView.h>
 #include <utility>
 
 namespace Clunk::Vk
@@ -217,7 +217,7 @@ namespace Clunk::Vk
 
         virtual ~ClVk3dLayer() {};
 
-        virtual void Update(ClVkContext& VkCtx, u32 CurrentIndex, ClVkBuffer& TransformUniform, const ClVkTransforms& Transforms, f32 DeltaTime) = 0;
+        virtual void Update(ClVkContext& VkCtx, u32 CurrentIndex, ClVkBuffer& ProjViewUniform, const ClProjectionView& ProjView, f32 DeltaTime) = 0;
 
         virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) = 0;
 
@@ -268,7 +268,7 @@ namespace Clunk::Vk
 
         size_t Size() { return mList.size(); }
 
-        virtual void Update(ClVkContext& VkCtx, u32 CurrentIndex, ClVkBuffer& TransformUniform, const ClVkTransforms& Transforms, f32 DeltaTime) override;
+        virtual void Update(ClVkContext& VkCtx, u32 CurrentIndex, ClVkBuffer& ProjViewUniform, const ClProjectionView& ProjView, f32 DeltaTime) override;
 
         virtual void DrawFrame(const ClVkContext& VkCtx, const VkCommandBuffer& CmdBuffer, size_t CurrentImage) override;
 
