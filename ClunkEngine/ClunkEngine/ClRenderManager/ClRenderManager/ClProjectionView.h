@@ -16,7 +16,7 @@
 //     Clunk::Mat4 proj;
 // };
 
-struct ClVkTransforms
+// struct ClVkTransforms
 =======
 struct ClProjectionView
 >>>>>>> c88e78f524e931970af550dd9b3e286bdbe2d650:ClunkEngine/ClunkEngine/ClRenderManager/ClRenderManager/ClProjectionView.h
