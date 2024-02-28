@@ -28,8 +28,8 @@ namespace Clunk
         RenderCtx.Init();
 
         // Set events
-        OnClose = new WindowListener<Application>(&Events::Window::Close, this, &Application::Close);
-        OnResize = new WindowListener<Application>(&Events::Window::Resize, this, &Application::Resize);
+        OnClose = new Events::WindowListener<Application>(&Events::Window::Close, this, &Application::Close);
+        OnResize = new Events::WindowListener<Application>(&Events::Window::Resize, this, &Application::Resize);
 
         return true;
     }
@@ -47,21 +47,21 @@ namespace Clunk
         return true;
     }
 
-    void Application::Close(const EWindowState& State) 
+    void Application::Close(const Events::EWindowState& State) 
     {
         CLOG_INFO("Close command executed!");
         Quit();
     }
 
-    void Application::Resize(const EWindowState &State)
+    void Application::Resize(const Events::EWindowState &State)
     {
         RenderCtx.SetIsResized(true);
     }
 
-    // void Application::Escape(const KeyData& Data)
-    // {
-    //     CLOG_INFO("Close command executed!");
-    //     Quit();
-    // }
+    void Application::Escape(const Events::EButtonState& State)
+    {
+        CLOG_INFO("Close command executed!");
+        Quit();
+    }
     
 }

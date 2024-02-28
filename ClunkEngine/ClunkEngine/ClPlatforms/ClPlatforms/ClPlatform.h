@@ -2,6 +2,9 @@
 
 #include <PCH/pch.h>
 
+#include "ClPlatform_EventTypes.h"
+#include "ClPlatform_EventStatics.h"
+
 #ifdef PLATFORM_SDL
     #define SDL_MAIN_HANDLED
     #include <SDL.h>

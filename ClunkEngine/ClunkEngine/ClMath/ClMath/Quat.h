@@ -152,9 +152,9 @@ namespace Clunk
             return Quat(0.0f, 0.0f, 0.0f, 1.0f);
         }
 
-        void SetAngleAxis(f32 Angle, const Vec3& Axis);
+        void SetAngleAxis(f32 Degrees, const Vec3& Axis);
 
-        static Quat AngleAxis(f32 Angle, const Vec3& Axis);
+        static Quat AngleAxis(f32 Degrees, const Vec3& Axis);
 
         static Quat FromTo(const Vec3& From, const Vec3& To);
 
@@ -262,9 +262,13 @@ namespace Clunk
             return Quat::GetNormal((delta^T) * Start);
         }
 
-        static Quat LookRotation(const Vec3& Direction, const Vec3& Up);
+        static Quat LookRotation(const Vec3& Direction, Vec3& Up);
+
+        void LookRotaion(const Vec3& Direction, Vec3& Up);
 
         Mat4 ToMat4();
+
+        Mat4 ToMat4() const;
 
         static Mat4 ToMat4(const Quat& Q);
 

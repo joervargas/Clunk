@@ -3,7 +3,7 @@
 
 namespace Clunk::Events
 {
-    namespace Key
+    namespace Keys
     {
         ButtonEvent ESC_Key;
         ButtonEvent W_Key;

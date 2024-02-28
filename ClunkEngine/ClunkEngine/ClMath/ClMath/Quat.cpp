@@ -5,29 +5,29 @@
 namespace Clunk
 {
 
-    void Quat::SetAngleAxis(f32 Angle, const Vec3& Axis)
+    void Quat::SetAngleAxis(f32 Degrees, const Vec3& Axis)
     {
         Vec3 norm = Vec3::Normalize(Axis);
-        f32 s = sinf(Angle / 2.0f);
+        f32 s = sinf(Degrees / 2.0f);
 
         (*this) = Quat(
             norm.X * s,
             norm.Y * s,
             norm.Z * s,
-            cosf(Angle / 2.0f)
+            cosf(Degrees / 2.0f)
         );
     }
 
-    Quat Quat::AngleAxis(f32 Angle, const Vec3& Axis)
+    Quat Quat::AngleAxis(f32 Degrees, const Vec3& Axis)
     {
         Vec3 norm = Vec3::Normalize(Axis);
-        f32 s = sinf(Angle / 2.0f);
+        f32 s = sinf(Degrees / 2.0f);
     
         return Quat(
             norm.X * s,
             norm.Y * s,
             norm.Z * s,
-            cosf(Angle / 2.0f)
+            cosf(Degrees / 2.0f)
         );
     }
 
@@ -157,7 +157,7 @@ namespace Clunk
         return result;
     }
 
-    Quat Quat::LookRotation(const Vec3& Direction, const Vec3& Up)
+    Quat Quat::LookRotation(const Vec3& Direction, Vec3& Up)
     {
         Vec3 front = Vec3::Normalize(Direction); // Object Forward
         Vec3 up = Vec3::Normalize(Up); // Desired Up
@@ -172,15 +172,56 @@ namespace Clunk
         // TODO: Change world up to global variable
         // Vec3 worldUp(0, 1, 0);
         Vec3 worldUp = Vec3::Cross(worldForward, right);
-        Vec3 objectUp = worldToObject * worldUp;
-    
-        Quat u2u = FromTo(objectUp, up);
+        // Vec3 objectUp = worldToObject * worldUp;
+        Up = worldToObject * worldUp;
+
+        // Quat u2u = FromTo(objectUp, up);
+        Quat u2u = FromTo(Up, up);
     
         Quat result = worldToObject * u2u;
         return Quat::GetNormal(result);
     }
 
+    void Quat::LookRotaion(const Vec3 &Direction, Vec3 &Up)
+    {
+        Vec3 front = Vec3::Normalize(Direction); // Object Forward
+        Vec3 up = Vec3::Normalize(Up); // Desired Up
+        Vec3 right = Vec3::Cross(up, front);
+        up = Vec3::Cross(front, right);
+    
+        // TODO: Change world forward to a global variable
+        // Vec3 worldForward(0, 0, 1);
+        Vec3 worldForward = Vec3::Cross(right, up);
+        Quat worldToObject = FromTo(worldForward, front);
+    
+        // TODO: Change world up to global variable
+        // Vec3 worldUp(0, 1, 0);
+        Vec3 worldUp = Vec3::Cross(worldForward, right);
+        // Vec3 objectUp = worldToObject * worldUp;
+        Up = worldToObject * worldUp;
+
+        // Quat u2u = FromTo(objectUp, up);
+        Quat u2u = FromTo(Up, up);
+    
+        Quat result = worldToObject * u2u;
+        *this = Quat::GetNormal(result);
+    }
+
     Mat4 Quat::ToMat4()
+    {
+        Vec3 right = (*this) * Vec3(1.f, 0.f, 0.f);
+        Vec3 up = (*this) * Vec3(0.f, 1.f, 0.f);
+        Vec3 front = (*this) * Vec3(0.f, 0.f, 1.f);
+
+        return Mat4(
+            right.X, right.Y, right.Z, 0.0f,
+            up.X, up.Y, up.Z, 0.0f,
+            front.X, front.Y, front.Z, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        );
+    }
+
+    Mat4 Quat::ToMat4() const
     {
         Vec3 right = (*this) * Vec3(1.f, 0.f, 0.f);
         Vec3 up = (*this) * Vec3(0.f, 1.f, 0.f);

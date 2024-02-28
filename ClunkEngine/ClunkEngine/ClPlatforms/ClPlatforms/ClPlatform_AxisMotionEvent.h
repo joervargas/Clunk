@@ -4,7 +4,7 @@
 #include "ClPlatform_IEvent.h"
 
 
-namespace Clunk
+namespace Clunk::Events
 {
     class AxisMotionEvent : IEvent
     {

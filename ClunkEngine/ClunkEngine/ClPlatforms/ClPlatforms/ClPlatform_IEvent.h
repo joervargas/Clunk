@@ -2,58 +2,60 @@
 
 #include "ClPlatform_EventTypes.h"
 
-
-class IEventListener
+namespace Clunk::Events
 {
-public:
+    class IEventListener
+    {
+    public:
 
- virtual ~IEventListener() {};
+    virtual ~IEventListener() {};
 
-};
+    };
 
-class IEvent
-{
-public:
+    class IEvent
+    {
+    public:
 
-    virtual ~IEvent() {};
+        virtual ~IEvent() {};
 
-    void Attach(IEventListener* listener);
-    void Detach(IEventListener* listener);
+        void Attach(IEventListener* listener);
+        void Detach(IEventListener* listener);
 
-    void Notify();
+        void Notify();
 
-private:
+    private:
 
-};
-
-
-class IButtonListener : IEventListener
-{
-public:
-
-    virtual ~IButtonListener() {}
-
-    virtual void Execute(const EButtonState& State) = 0;
-
-};
-
-class IAxisMotionListener : IEventListener
-{
-public:
-
-    virtual ~IAxisMotionListener() {}
-
-    virtual void Execute(const AxisMotionData& Data) = 0;
-
-};
+    };
 
 
-class IWindowListener : IEventListener
-{
-public:
+    class IButtonListener : IEventListener
+    {
+    public:
 
-    virtual ~IWindowListener() {}
+        virtual ~IButtonListener() {}
 
-    virtual void Execute(const EWindowState& State) = 0;
+        virtual void Execute(const EButtonState& State) = 0;
 
-};
+    };
+
+    class IAxisMotionListener : IEventListener
+    {
+    public:
+
+        virtual ~IAxisMotionListener() {}
+
+        virtual void Execute(const AxisMotionData& Data) = 0;
+
+    };
+
+
+    class IWindowListener : IEventListener
+    {
+    public:
+
+        virtual ~IWindowListener() {}
+
+        virtual void Execute(const EWindowState& State) = 0;
+
+    };
+}

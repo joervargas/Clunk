@@ -11,6 +11,8 @@ file(GLOB HDR_FILES
 include_directories(../)
 # include_directories(../Defines)
 
+add_subdirectory(${Target}/ClCamera)
+
 if(${VULKAN_GRAPHICS})
     add_compile_definitions(VK_GFX)
     message("Vulkan found in ${Target}!")
@@ -44,6 +46,7 @@ target_link_libraries(${Target}
     TinyXML2
     STB_Image
     PCH
+    ClPlatforms
     Core
 )
 

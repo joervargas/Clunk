@@ -51,10 +51,10 @@ namespace Clunk
          */
         b8 Render(f32 DeltaTime);
 
-        void Close(const EWindowState& State);
-        void Resize(const EWindowState& State);
+        void Close(const Events::EWindowState& State);
+        void Resize(const Events::EWindowState& State);
         
-        // void Escape(const KeyData& Data);
+        void Escape(const Events::EButtonState& BtnState);
 
         void Quit() { bIsRunning = false; }
 
@@ -65,8 +65,8 @@ namespace Clunk
 
         ClRenderContext RenderCtx;
 
-        WindowListener<Application>* OnClose;
-        WindowListener<Application>* OnResize;
+        Events::WindowListener<Application>* OnClose;
+        Events::WindowListener<Application>* OnResize;
         // WindowListener<Application>* OnMaximize;
         // WindowListener<Application>* OnMinimize;
     };

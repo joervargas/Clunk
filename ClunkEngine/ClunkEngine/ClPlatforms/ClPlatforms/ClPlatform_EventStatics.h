@@ -7,7 +7,7 @@
 
 namespace Clunk::Events
 {
-    namespace Key
+    namespace Keys
     {
         extern ButtonEvent ESC_Key;
         extern ButtonEvent W_Key;

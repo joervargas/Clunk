@@ -3,7 +3,7 @@
 #include "ClPlatform_EventTypes.h"
 #include "ClPlatform_IEvent.h"
 
-namespace Clunk
+namespace Clunk::Events
 {
     class ButtonEvent : IEvent
     {
@@ -53,7 +53,7 @@ namespace Clunk
 
         virtual ~ButtonListener() {}
 
-        virtual void Execute(const EButtonState& State)
+        virtual void Execute(const EButtonState& State) override
         {
             (m_target->*m_callBack)(State);
         }

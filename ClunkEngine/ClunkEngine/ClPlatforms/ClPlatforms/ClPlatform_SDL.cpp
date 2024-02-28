@@ -3,8 +3,8 @@
 #ifdef PLATFORM_SDL
 
 #include <Core/Logger.h>
-#include "ClPlatform_EventTypes.h"
-#include "ClPlatform_EventStatics.h"
+// #include "ClPlatform_EventTypes.h"
+// #include "ClPlatform_EventStatics.h"
 // #include <Events/WindowEvents.h>
 // #include <Events/KeyEvents.h>
 
@@ -113,7 +113,7 @@ namespace Clunk
             //     SDL_Log("~ SDL Window %d shown \n", windowEvent.windowID);
             //     break;
             case SDL_WINDOWEVENT_RESIZED:
-                Events::Window::Resize.Notify(EWindowState::WS_RESIZED);
+                Events::Window::Resize.Notify(Events::EWindowState::WS_RESIZED);
                 // WindowEvents::WE_Resize.Set(WindowEvent);
                 // Window::Resize.Listener->fire_callback(Window::Resize.Listener->Obj, data);
                 // SDL_Log(
@@ -124,17 +124,17 @@ namespace Clunk
                 // );
                 break;
             case SDL_WINDOWEVENT_MINIMIZED:
-                Events::Window::Minimize.Notify(EWindowState::WS_MINIMIZED);
+                Events::Window::Minimize.Notify(Events::EWindowState::WS_MINIMIZED);
                 // WindowEvents::WE_Minimize.Set(WindowEvent);
                 // SDL_Log("~ SDL Window %d minimized", windowEvent.windowID);
                 break;
             case SDL_WINDOWEVENT_MAXIMIZED:
-                Events::Window::Maximize.Notify(EWindowState::WS_MAXIMIZED);
+                Events::Window::Maximize.Notify(Events::EWindowState::WS_MAXIMIZED);
                 // WindowEvents::WE_Maximize.Set(WindowEvent);
                 // SDL_Log("~ SDL Window %d maximized", windowEvent.windowID);
                 break;
             case SDL_WINDOWEVENT_CLOSE:
-                Events::Window::Close.Notify(EWindowState::WS_CLOSE);
+                Events::Window::Close.Notify(Events::EWindowState::WS_CLOSE);
                 // WindowEvents::WE_Close.Set(WindowEvent);
                 // SDL_Log("~ SDL Window %d closed \n", windowEvent.windowID);
                 break;
@@ -150,7 +150,7 @@ namespace Clunk
             case SDL_KEYDOWN:
                 if(KeyboardEvent.keysym.sym == SDLK_ESCAPE)
                 {
-                    Events::Key::ESC_Key.Notify(EButtonState::BS_PRESSED);
+                    Events::Keys::ESC_Key.Notify(Events::EButtonState::BS_PRESSED);
                     // KeyEvents::KE_ESC.Set(KeyboardEvent);
                     // Events::Key::ESC_Key.Listener->fire_callback(Events::Key::ESC_Key.Listener->Obj, EButtonState::BS_PRESSED);
                 }

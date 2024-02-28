@@ -54,6 +54,7 @@ namespace Clunk::Vk
         // auto current_time = std::chrono::high_resolution_clock::now();
         // float time = std::chrono::duration<float, std::chrono::seconds::period>(current_time - start_time).count();
 
+        cl_update_vk_buffer(mVkCtx, mWorldProjViewUniform, &mWorldProjView, sizeof(ClProjectionView));
         // mWorldTransform.model = Mat4::RotateZ(mWorldTransform.model, 0.03f * time);
         mLayers3d.Update(mVkCtx, mVkCtx.FrameSync.GetCurrentIndex(), mWorldProjViewUniform, mWorldProjView, DeltaTime);
         // mLayers2d.Update(mVCtx, mVkCtx.FrameSync.GetCurrentIndex(), DeltaTime);

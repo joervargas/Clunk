@@ -213,15 +213,15 @@ STATIC_ASSERT(sizeof(f64) == 8, "Expected f64 to be 8 bytes.");
 #ifdef VEXPORT
 // Exports
     #ifdef _MSC_VER
-        #define VAPI __declspec(dllexport)
+        #define CLAPI __declspec(dllexport)
     #else
-        #define VAPI __attribute__((visibility("default")))
+        #define CLAPI __attribute__((visibility("default")))
     #endif
 #else
 // Imports
     #ifdef _MSC_VER
         /** @brief Import/export qualifier */
-        #define VAPI __declspec(dllimport)
+        #define CLAPI __declspec(dllimport)
     #else
         /** @brief Import/export qualifier */
         #define CLAPI

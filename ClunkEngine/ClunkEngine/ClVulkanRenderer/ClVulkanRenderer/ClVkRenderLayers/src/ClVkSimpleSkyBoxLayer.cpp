@@ -106,7 +106,7 @@ namespace Clunk::Vk
 
     void ClVkSimpleSkyBoxLayer::Update(ClVkContext &VkCtx, u32 CurrentIndex, ClVkBuffer &ProjViewUniform, const ClProjectionView &ProjView, f32 DeltaTime)
     {
-        cl_update_vk_buffer(VkCtx, ProjViewUniform, &ProjView, sizeof(ClProjectionView));
+        // cl_update_vk_buffer(VkCtx, ProjViewUniform, &ProjView, sizeof(ClProjectionView));
         cl_update_vk_buffer(VkCtx, mModelSpaceBuffer, &mModelSpace, sizeof(Mat4));
     }
 

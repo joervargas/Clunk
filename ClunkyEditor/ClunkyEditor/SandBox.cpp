@@ -21,6 +21,7 @@ b8 Sandbox::Initialize()
 
     // OnEscPressed = new KeyListener<Sandbox>(EKeyState::KS_PRESSED, &KeyEvents::KE_ESC, this, &Application::Escape);
     // EscKeyListener = DelegateButtonListener{ .Obj = this, .fire_callback = &Sandbox::Close };
-    
+    EscKeyListener = new Clunk::Events::ButtonListener<Sandbox>(&Clunk::Events::Keys::ESC_Key, this, &Application::Escape);
+
     return bInitialized;
 }
