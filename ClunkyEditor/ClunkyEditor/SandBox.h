@@ -12,10 +12,8 @@ public:
 
 private:
 
-    // KeyListener<Sandbox>* OnEscPressed;
-    // DelegateButtonListener EscKeyListener;
     Clunk::Events::ButtonListener<Sandbox>* EscKeyListener;
-    
+
 };
 
 

@@ -89,12 +89,68 @@ namespace Clunk
 
         virtual Vec3 GetPosition() const { return m_CameraPos; };
 
-        virtual void MoveForward() { Movement.Forward = true; }
-        virtual void MoveBackward() { Movement.Backward = true; }
-        virtual void MoveRight() { Movement.Right = true; }
-        virtual void MoveLeft() { Movement.Left = true; }
-        virtual void MoveUp() { Movement.Up = true; }
-        virtual void MoveDown() { Movement.Down = true; }
+
+        // Events
+        void MouseMoved(const Events::AxisMotionData& MouseMotionData)
+        {
+            
+        }
+
+        void MoveForward(const Events::EButtonState& BtnState)
+        {
+            if(BtnState == Events::EButtonState::BS_PRESSED)
+            {
+                Movement.Forward = true;
+            } else {
+                Movement.Forward = false;
+            }
+        }
+        void MoveBackward(const Events::EButtonState& BtnState)
+        {
+            if(BtnState == Events::EButtonState::BS_PRESSED)
+            {
+                Movement.Backward = true;
+            } else {
+                Movement.Backward = false;
+            }
+        }
+        void MoveRight(const Events::EButtonState& BtnState)
+        {
+            if(BtnState  == Events::EButtonState::BS_PRESSED)
+            {
+                Movement.Right = true;
+            } else {
+                Movement.Right = false;
+            }
+        }
+        void MoveLeft(const Events::EButtonState& BtnState)
+        {
+            if(BtnState == Events::EButtonState::BS_PRESSED)
+            {
+                Movement.Left = true;
+            } else {
+                Movement.Right = false;
+            }
+        }
+        void MoveUp(const Events::EButtonState& BtnState)
+        {
+            if(BtnState == Events::EButtonState::BS_PRESSED)
+            {
+                Movement.Up = true;
+            } else {
+                Movement.Up = false;
+            }
+        }
+        void MoveDown(const Events::EButtonState& BtnState)
+        {
+            if(BtnState == Events::EButtonState::BS_PRESSED)
+            {
+                Movement.Down = true;
+            } else {
+                Movement.Down = false;
+            }
+        }
+
         virtual void MoveFast() { Movement.Fast = true; }
 
     protected:
@@ -110,6 +166,15 @@ namespace Clunk
         Vec3 m_Up = Vec3(0.f, 0.f, 1.0f);
         Vec3 m_WorldUp = Vec3(0.f, 0.f, 1.0f);
         Quat m_CameraOrientaion = Quat(Vec3(), 0);
+
+        Events::ButtonListener<ClCamera>* WKeyListener;
+        Events::ButtonListener<ClCamera>* SKeyListener;
+        Events::ButtonListener<ClCamera>* AKeyListener;
+        Events::ButtonListener<ClCamera>* DKeyListener;
+        Events::ButtonListener<ClCamera>* EKeyListener;
+        Events::ButtonListener<ClCamera>* QKeyListener;
+
+        Events::AxisMotionListener<ClCamera>* MouseMotionListener;
 
     protected:
 
@@ -129,8 +194,6 @@ namespace Clunk
             m_Right = Vec3::Cross(m_Forward, m_WorldUp);
             m_Up = Vec3::Cross(m_Right, m_Forward);
         }
-
-
 
     };
 

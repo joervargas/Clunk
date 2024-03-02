@@ -10,6 +10,8 @@ namespace Clunk::Events
         ButtonEvent S_Key;
         ButtonEvent A_Key;
         ButtonEvent D_Key;
+        ButtonEvent Q_Key;
+        ButtonEvent E_Key;
     } // namespace Key
 
     namespace Mouse

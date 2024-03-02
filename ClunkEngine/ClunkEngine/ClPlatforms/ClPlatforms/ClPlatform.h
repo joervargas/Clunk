@@ -29,7 +29,7 @@ namespace Clunk
         void Create_Window(String name, i32 width, i32 height);
 
         void Destroy();
-        
+
         void PumpEvents();
 
         /**
@@ -40,7 +40,7 @@ namespace Clunk
         void GetDrawableSize(i32* Width, i32* Height);
 
         void Wait();
-        
+
         // Platform platform = Platform::Linux;
         #ifdef PLATFORM_SDL
             SDL_Window* GetWindow() const { return m_Window; }
@@ -48,11 +48,11 @@ namespace Clunk
             
             // bool shouldQuit(SDL_Event* event);
 
-            void ProcessKeyboardInput(const SDL_KeyboardEvent& event);
+            void ProcessKeyboardInput(const SDL_KeyboardEvent& KeyboardEvent);
 
-            void ProcessMouseMotion(const SDL_MouseMotionEvent& event);
+            void ProcessMouseMotion(const SDL_MouseMotionEvent& MouseMotionEvent);
 
-            void ProcessMouseButton(const SDL_MouseButtonEvent& event);
+            void ProcessMouseButton(const SDL_MouseButtonEvent& MouseButtonEvent);
         #endif
 
     private:
@@ -65,7 +65,7 @@ namespace Clunk
         #ifdef PLATFORM_SDL
             // Window to display
             SDL_Window* m_Window = NULL;
-            
+
             // SDL Events fired
             SDL_Event m_Event;
         #endif

@@ -14,6 +14,9 @@ namespace Clunk::Events
         extern ButtonEvent S_Key;
         extern ButtonEvent A_Key;
         extern ButtonEvent D_Key;
+        extern ButtonEvent Q_Key;
+        extern ButtonEvent E_Key;
+
     } // namespace Key
 
     namespace Mouse

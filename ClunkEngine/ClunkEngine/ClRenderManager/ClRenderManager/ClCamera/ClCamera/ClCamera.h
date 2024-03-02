@@ -3,8 +3,15 @@
 #include "ClFlyCameraMovement.h"
 #include "ClProjection.h"
 
+#include <ClPlatforms/ClPlatform.h>
+
 namespace Clunk
 {
+    // struct ClProjectionView
+    // {
+    //     Mat4 Projection;
+    //     Mat4 View;
+    // };
 
     class ClCamera
     {
@@ -27,10 +34,14 @@ namespace Clunk
         Mat4 GetViewMatrix() const { return p_CameraMovement->GetViewMatrix(); }
         Mat4 GetProjectionMatrix() const { return Projection.GetProjectionMatrix(); }
 
+        // ClProjectionView GetProjectionViewData() const { return mProjView; }
+
     private:
 
         const ICameraMovement* p_CameraMovement;
 
+        // ClProjectionView mProjView;
+        
     };
 
 }

@@ -145,32 +145,86 @@ namespace Clunk
 
     void ClPlatform::ProcessKeyboardInput(const SDL_KeyboardEvent& KeyboardEvent) 
     {
-        switch(KeyboardEvent.type)
-        {
-            case SDL_KEYDOWN:
-                if(KeyboardEvent.keysym.sym == SDLK_ESCAPE)
+        // switch(KeyboardEvent.type)
+        // {
+        //     case SDL_KEYUP:
+        //     case SDL_KEYDOWN:
+                switch (KeyboardEvent.keysym.sym)
                 {
-                    Events::Keys::ESC_Key.Notify(Events::EButtonState::BS_PRESSED);
-                    // KeyEvents::KE_ESC.Set(KeyboardEvent);
-                    // Events::Key::ESC_Key.Listener->fire_callback(Events::Key::ESC_Key.Listener->Obj, EButtonState::BS_PRESSED);
+                case SDLK_ESCAPE:
+                    Events::Keys::ESC_Key.Notify( KeyboardEvent.type == SDL_KEYDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
+                    break;
+                case SDLK_w:
+                    Events::Keys::W_Key.Notify( KeyboardEvent.type == SDL_KEYDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
+                    break;
+                case SDLK_s:
+                    Events::Keys::S_Key.Notify( KeyboardEvent.type == SDL_KEYDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
+                    break;
+                case SDLK_a:
+                    Events::Keys::A_Key.Notify( KeyboardEvent.type == SDL_KEYDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
+                    break;
+                case SDLK_d:
+                    Events::Keys::D_Key.Notify( KeyboardEvent.type == SDL_KEYDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
+                    break;
+                case SDLK_e:
+                    Events::Keys::E_Key.Notify( KeyboardEvent.type == SDL_KEYDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
+                    break;
+                case SDLK_q:
+                    Events::Keys::Q_Key.Notify( KeyboardEvent.type == SDL_KEYDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
+                    break;
+                default:
+                    break;
                 }
-                break;
-            case SDL_KEYUP:
+        //         break;
+        //     // case SDL_KEYUP:
 
+        //         break;
+        //     default:
+        //         break;
+        // }
+    }
+
+    void ClPlatform::ProcessMouseMotion(const SDL_MouseMotionEvent& MouseMovtionEvent)
+    {
+        static i32 last_x = 0;
+        static i32 last_y = 0;
+
+        Events::AxisMotionData data = Events::AxisMotionData{
+            .X = MouseMovtionEvent.x,
+            .Y = MouseMovtionEvent.y,
+            .X_Delta = MouseMovtionEvent.x - last_x,
+            .Y_Delta = MouseMovtionEvent.y - last_y
+        };
+        last_x = MouseMovtionEvent.x;
+        last_y = MouseMovtionEvent.y;
+
+        Events::Mouse::MouseMotion.Notify(data);
+    }
+
+    void ClPlatform::ProcessMouseButton(const SDL_MouseButtonEvent& MouseButtonEvent) 
+    {
+        // switch (MouseButtonEvent.type)
+        // {
+        // case SDL_MOUSEBUTTONUP:
+        // case SDL_MOUSEBUTTONDOWN:
+            switch (MouseButtonEvent.button)
+            {
+            case SDL_BUTTON_LEFT:
+                Events::Mouse::Left_MButton.Notify(MouseButtonEvent.type == SDL_MOUSEBUTTONDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
+                break;
+            case SDL_BUTTON_MIDDLE:
+                Events::Mouse::Middle_MButton.Notify(MouseButtonEvent.type == SDL_MOUSEBUTTONDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
+                break;
+            case SDL_BUTTON_RIGHT:
+                Events::Mouse::Right_MButton.Notify(MouseButtonEvent.type == SDL_MOUSEBUTTONDOWN ? Events::EButtonState::BS_PRESSED : Events::EButtonState::BS_RELEASED);
                 break;
             default:
                 break;
-        }
-    }
-
-    void ClPlatform::ProcessMouseMotion(const SDL_MouseMotionEvent& event)
-    {
-        
-    }
-
-    void ClPlatform::ProcessMouseButton(const SDL_MouseButtonEvent& event) 
-    {
-        
+            }
+            // break;
+        // default:
+        //     break;
+        // }
     }
 
 }
